@@ -1,20 +1,20 @@
 
 public class User {
-    protected String UserID;
-    private String Password;
-    protected String Name;
-    protected String Role;
+    protected String userID;
+    private String password;
+    protected String name;
+    protected String role;
     
-    public boolean login(String User, String Pass) {
-        if (UserID == User && Password == Pass){
+    public boolean login(String user, String pass) {
+        if (userID == user && password == pass){
             return True;
         }
         else return False;
     };
     
-    public boolean changePassword(String OldPass, String NewPass){
-        if (Password == OldPass) {
-            Password = NewPass;
+    public boolean changePassword(String oldPass, String newPass){
+        if (password == oldPass) {
+            password = newPass;
             return True;
         }
         else return False;
