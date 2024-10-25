@@ -1,23 +1,26 @@
-
+package Hospital;
 public class User {
-    protected String userID;
+    private String userID;
     private String password;
-    protected String name;
-    protected String role;
+    private String role;
     
     public boolean login(String user, String pass) {
         if (userID == user && password == pass){
-            return True;
+            return true;
         }
-        else return False;
+        else return false;
     };
     
     public boolean changePassword(String oldPass, String newPass){
         if (password == oldPass) {
             password = newPass;
-            return True;
+            return true;
         }
-        else return False;
+        else return false;
+    }
+    
+    public String getRole() {
+    	return role;
     }
     
 }
