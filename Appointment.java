@@ -1,4 +1,3 @@
-package Hospital;
 import java.util.Date;
 import java.util.Calendar;
 
