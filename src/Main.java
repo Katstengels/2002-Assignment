@@ -29,7 +29,7 @@ public class Main {
                 Doctor doc = (Doctor) s;
                 doc.houseMD();                          //Use houseMD function in Doctor class
                 System.out.println(doc.toString());     //Use toString inherited from Staff class
-
+                if (doc.getName().equals("Emily Clarke")) System.out.println("KHALESSI "); //Find specific doctor via name
             }
         }
 
