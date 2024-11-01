@@ -1,18 +1,24 @@
+package newAssignment;
 import java.util.Calendar;
+import java.util.Date;
 import java.text.SimpleDateFormat;
 
 public class Schedule {
-	private Calendar time = Calendar.getInstance();;
+	private Calendar calendar = Calendar.getInstance();;
+	private Date dateTime;
 	private boolean available;
+	private Appointment appointment;
 	private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("E, dd MMM YYYY");
 	
 	public Schedule (int inDay, int inTime) {
-		time.add(Calendar.DATE, inDay);
-		time.set(Calendar.HOUR_OF_DAY, (9+inTime));
-		time.set(Calendar.MINUTE, 0);
-		time.set(Calendar.SECOND, 0);
-		available = true;
+		calendar.add(Calendar.DATE, inDay);					//Today + inDay
+		calendar.set(Calendar.HOUR_OF_DAY, (9+inTime));		//First apt at 9 am (one hour slot) + Nth appointment
+		calendar.set(Calendar.MINUTE, 0);					//Ensure hour ends with :00
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		dateTime = calendar.getTime();						//Set dateTime for apt as the above
+		available = false;									//default value
 	}
 	
 	public void changeAvail(boolean avail) {
@@ -20,18 +26,26 @@ public class Schedule {
 	}
 	
 	public String getDate() {
-		return dateFormat.format(time.getTime());
+		return dateFormat.format(dateTime.getTime());
 	}
 	public String getTime() {
-		return timeFormat.format(time.getTime());
+		return timeFormat.format(dateTime.getTime());
 	}
 	
-	public Calendar getDateTime() {
-		return time;
+	public Date getDateTime() {
+		return dateTime;
 	}
 	
 	public boolean getAvail() {
 		return available;
 	}
-
+	
+	public void addAppointment(Appointment inApt) {
+		appointment = inApt;
+	}
+	
+	public Appointment getAppointment() {
+		return appointment;
+	}
+	
 }
