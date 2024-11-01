@@ -118,16 +118,16 @@ class Doctor extends Staff{
 		    }
 	    }
 	    return false;
-    }
+  }
 	
 	public void addAppointment(Appointment a) {
 		for (int i=0; i<7; i++){
-		    for (int j=0; j<MAX_APT; j++){
-			    if (a.getDateTime() == schedule[i][j].getDateTime()) {
+		  for (int j=0; j<MAX_APT; j++){
+			  if (a.getDateTime() == schedule[i][j].getDateTime()) {
 			    schedule[i][j].addAppointment(a);
-			    }
+			  }
 			    
-		    }
+		  }
 		}
 	}
 }
