@@ -78,18 +78,18 @@ public class HospitalApp {
 					choice = sc.nextInt();
 					
 					switch(choice) {
-					case 1:
+					case 1: // view patient medical record
 						patAmount = 0;
 						for (Patient p : patientList) {
 							patAmount++;
 							System.out.println((patAmount) + ". " + p.getName());
-						}
+						} // print patient list
 						
 						do {					
 							System.out.println("Select patient:");
 							patSelect = sc.nextInt();
 							if (patSelect > patAmount) System.out.println("Invalid patient! Please enter again.");
-						} while (patSelect > patAmount);
+						} while (patSelect > patAmount); // patient selection
 						
 						pat = patientList.get(patAmount-1);
 						System.out.println("Name		: " + pat.getName());
@@ -106,52 +106,52 @@ public class HospitalApp {
 						System.out.println();
 						break;
 						
-					case 2:
+					case 2: // update patient record
 						patAmount = 0;
 						aptAmount = 0;
 						for (Patient p : patientList) {
 							patAmount++;
 							System.out.println((patAmount) + ". " + p.getName());
-						}
+						} // print patient list
 						
 						do {					
 							System.out.println("Select patient:");
 							patSelect = sc.nextInt();
 							if (patSelect > patAmount) System.out.println("Invalid patient! Please enter again.");
-						} while (patSelect > patAmount);
+						} while (patSelect > patAmount); // patient selection
 						
 						pat = patientList.get(patAmount-1);
 						
-						//need patient update method
+						// need patient update method
 						
 						System.out.println();
 						break;
 						
-					case 3:
+					case 3: // personal schedule
 						d.getAllAvailability();
 						System.out.println();
 						break;
 					
-					case 4:
+					case 4: // set availability
 						d.setAvailability();
 						System.out.println();
 						break;
 						
-					case 5:
+					case 5: // accept or reject appointments
 						aptAmount = 0;
 						for (Appointment a : appointmentList) {
-							if(a.getDoctor().equals(d.getName())) {
+							if(a.getDoctor().equals(d.getName())) { // list all appointments under dr's name
 								aptAmount++;
 								System.out.println(aptAmount + ". " + a.getID() + ": " + a.getDate() + " " + a.getTime());
 							}
-						}
+						} 
 						
 						if (aptAmount != 0) {
 							do {					
 								System.out.println("Select appointment:");
 								aptSelect = sc.nextInt();
 								if (aptSelect > aptAmount) System.out.println("Invalid appointment! Please enter again.");
-							} while (aptSelect > aptAmount);
+							} while (aptSelect > aptAmount); // appointment selection
 							
 							apt = appointmentList.get(aptSelect-1);
 							
@@ -182,13 +182,13 @@ public class HospitalApp {
 						System.out.println();
 						break;
 						
-					case 6:
+					case 6: // view upcoming appointments
 						System.out.println("Upcoming appointments: ");
 						
 						aptAmount = 0;
 						
 						for (Appointment a : appointmentList) {
-							if (a.getDoctor().equals(d.getName()) && a.getDateTime().after(now)) {
+							if (a.getDoctor().equals(d.getName()) && a.getDateTime().after(now)) { // list appointments that are in the future and under dr's name
 								System.out.println();
 								System.out.println("Appointment ID	: " + a.getID());
 								System.out.println("Date			: " + a.getDate());
@@ -202,13 +202,13 @@ public class HospitalApp {
 						System.out.println();
 						break;
 					
-					case 7:
+					case 7: // appointment outcome
 						patAmount = 0;
 						aptAmount = 0;
 						for (Patient p : patientList) {
 							patAmount++;
 							System.out.println((patAmount) + ". " + p.getName());
-						}
+						} // list patients
 						
 						do {					
 							System.out.println("Select patient:");
@@ -218,7 +218,7 @@ public class HospitalApp {
 						
 						pat = patientList.get(patAmount-1);
 						for (Appointment a : appointmentList) {
-							if (pat.getName().equals(a.getPatient()) && d.getName().equals(a.getDoctor())) {
+							if (pat.getName().equals(a.getPatient()) && d.getName().equals(a.getDoctor())) { // appointments with both pt's and dr's names
 								aptAmount++;
 								System.out.println((aptAmount) + ". " + a.getDate());
 							}
@@ -239,7 +239,7 @@ public class HospitalApp {
 						System.out.println();
 						break;
 						
-					case 8:
+					case 8: // logout
 						System.out.println("Logging out...");
 						sc.nextLine();
 						loggedIn = false;
@@ -256,17 +256,23 @@ public class HospitalApp {
 				break;
 				
 			case "Pharmacist":
-				System.out.println("Pharmacist");
+				System.out.println("Pharmacist"); // just to test can delete later
+
+				//enter your code here
 				
 				break;
 				
 			case "Administrator":
-				System.out.println("Admin");
+				System.out.println("Admin"); // just to test can delete later
+
+				//enter your code here
 				
 				break;
 				
 			case "Patient":
-				System.out.println("Patient");
+				System.out.println("Patient"); // just to test can delete later
+
+				//enter your code here
 				
 				break;
 			}
