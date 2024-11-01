@@ -7,8 +7,8 @@ public class Schedule {
 	private Date dateTime;
 	private boolean available;
 	private Appointment appointment;
-	private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm"); // display time in the format 12:00 from Date data
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("E, dd MMM YYYY"); // display in the format "Friday, 01 Nov 2024" from Date data
+	private SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm"); // display time from Date data in the format 12:00
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("E, dd MMM YYYY"); // display date from Date data in the format "Friday, 01 Nov 2024"
 	
 	public Schedule (int inDay, int inTime) {
 		calendar.add(Calendar.DATE, inDay);					//Today + inDay
