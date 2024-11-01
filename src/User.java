@@ -23,7 +23,7 @@ public class User {
   	String newPass;
   	String confirmPass;
     	
-   	if (firstLogin) {
+   	if (firstLogin) { // forces change password during first login
 			System.out.println("Please change your password. ");
     	do {
   			System.out.println("Enter new password: ");
@@ -33,7 +33,7 @@ public class User {
     			if (!newPass.equals(confirmPass)) System.out.println("Passwords does not match! Please enter again.");
   		} while (!newPass.equals(confirmPass));
   		changePassword("password", newPass);
-			firstLogin = false;
+			firstLogin = false; 
     }    	
   	return true;
   }
