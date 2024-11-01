@@ -1,5 +1,3 @@
-package newAssignment;
-
 import java.util.Scanner;
 
 public class User {
