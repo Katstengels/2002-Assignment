@@ -58,16 +58,16 @@ public class StaffInv {
 
                 Staff staff = null;
                 if (role.equals("Doctor")) {
-                    System.out.println(" Doc here");
+                    System.out.println(" Doc loaded ");
                     staff = new Doctor(userID, name, role, gender, age, password);
                 } else if (role.equals("Pharmacist")) {
-                    System.out.println(" Big Pharma");
+                    System.out.println(" Pharma loaded ");
                     staff = new Pharmacist(userID, name, role, gender, age, password);
                 } else if (role.equals("Administrator")) {
-                    System.out.println(" Waste of $");
+                    System.out.println(" Admin loaded ");
                     staff = new Administrator(userID, name, role, gender, age, password);
                 } else {
-                    System.out.println(" PLEB here");
+                    System.out.println(" Other loaded ");
                     staff = new Staff(userID, name, role, gender, age, password);
                 }
                 allStaff.add(staff);
