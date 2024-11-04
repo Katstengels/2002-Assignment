@@ -10,11 +10,13 @@ public class HospitalApp {
 
 	public static void main(String[] args) {
 		
-        PatientInv pList = PatientInv.getInstance();
+        	PatientInv pList = PatientInv.getInstance();
 		StaffInv sList = StaffInv.getInstance();
+		MedicineInv mList = MedicineInv.getInstance();
 		
 		ArrayList<Staff> staffList = sList.copyStaffList(); //Use members in staff list instance from StaffInv
 		ArrayList<Patient> patientList = pList.copyPatientList();
+		ArrayList<Medicine> medicineList = mList.copyMedicineInventory(); 
 		ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
 		
 		Scanner sc = new Scanner(System.in);
@@ -28,7 +30,7 @@ public class HospitalApp {
 		do {
 			do {
 				System.out.println("Enter Username: ");
-				username = sc.nextLine();
+				username = sc.nextLine().toUpperCase();
 				System.out.println("Enter Password: ");
 				password = sc.nextLine();
 				
@@ -307,10 +309,67 @@ public class HospitalApp {
 				break;
 				
 			case "Pharmacist":
-				System.out.println("Pharmacist"); // just to test can delete later
+			Pharmacist pharma = (Pharmacist) user;
 
-				//enter your code here
-				
+                    	Scanner scPharma = new Scanner(System.in); //Used new scanner to prevent Username from being entered on exit.
+
+				    int choice = 0;
+		
+				    do{
+					System.out.println();
+					System.out.println("Hello " + pharma.getName() + ", welcome to the Pharmacy menu");
+					System.out.println("1. Change Password");
+					System.out.println("2. PatientCare");
+					System.out.println("3. Medicine Management");
+					System.out.println("4. Quit");
+		
+					do {
+					    System.out.println("Enter selection: ");
+					    choice = scPharma.nextInt();
+					    if (choice>4 || choice < 1) System.out.println("Invalid choice! Please enter again.");
+					} while (choice>4 || choice < 1);
+		
+		
+					switch(choice){
+					    case 1:
+		
+						break;
+					    case 2:
+						System.out.println("PatientCare temp");
+						break;
+					    case 3:
+						mList.printList();
+						int m;
+						do {
+						    System.out.println("1. Add stock");
+						    System.out.println("2. Replenish low stocks");
+						    System.out.println("3. Previous Menu");
+						    do {
+							System.out.println("Enter selection: ");
+							m = scPharma.nextInt();
+							if (m>3 || m < 1) System.out.println("Invalid choice! Please enter again.");
+						    } while (m>3 || m < 1);
+						    switch(m){
+							case 1:
+							case 2:
+							    mList.autoRestock();
+							    break;
+							case 3:
+							    break;
+						    }
+						}while(m !=3);
+		
+		
+		                                break;
+		                            case 4:
+		                                loggedIn = false;
+		                                break;
+		                        }
+		
+		
+		                    }while(choice !=4);
+		
+
 				break;
 				
 			case "Administrator":
