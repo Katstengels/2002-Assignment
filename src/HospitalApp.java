@@ -80,9 +80,10 @@ public class HospitalApp {
 					switch(choice) {
 					case 1: // view patient medical record
 						patAmount = 0;
+						System.out.println("Patient list: ");
 						for (Patient p : patientList) {
 							patAmount++;
-							System.out.println((patAmount) + ". " + p.getName());
+							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
 						} // print patient list
 						
 						do {					
@@ -109,9 +110,12 @@ public class HospitalApp {
 					case 2: // update patient record
 						patAmount = 0;
 						aptAmount = 0;
+						int particular;
+						
+						System.out.println("Patient list: ");
 						for (Patient p : patientList) {
 							patAmount++;
-							System.out.println((patAmount) + ". " + p.getName());
+							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
 						} // print patient list
 						
 						do {					
@@ -121,8 +125,53 @@ public class HospitalApp {
 						} while (patSelect > patAmount); // patient selection
 						
 						pat = patientList.get(patSelect-1);
+
+						do {
+							System.out.println("Select item to edit: ");
+							System.out.println("1. Name");
+							System.out.println("2. DOB");
+							System.out.println("3. Email");
+							System.out.println("4. Contact no");
+							System.out.println("5. Blood type");
+							System.out.println("6. Exit");
+
+							do {
+								System.out.println("Enter selection: ");
+								particular = sc.nextInt();
+								if (particular>6) System.out.println("Invalid choice! Please enter again.");
+							} while (particular>6);
+
+							switch (particular){
+							case 1:
+								System.out.println("Enter new name: ");
+								// need patient update method
+								break;
+									
+							case 2:
+								System.out.println("Enter new DOB: ");
+								// need patient update method
+								break;
+									
+							case 3:
+								System.out.println("Enter new email: ");
+								// need patient update method
+								break;
+									
+							case 4:
+								System.out.println("Enter new contact no: ");
+								// need patient update method
+								break;
+									
+							case 5:
+								System.out.println("Enter new blood type: ");
+								// need patient update method
+								break;
+									
+							case 6:
+								break;
+							}
 						
-						// need patient update method
+						} while (particular != 6);
 						
 						System.out.println();
 						break;
@@ -139,10 +188,11 @@ public class HospitalApp {
 						
 					case 5: // accept or reject appointments
 						aptAmount = 0;
+						System.out.println("Appointment list: ");
 						for (Appointment a : appointmentList) {
 							if(a.getDoctor().equals(d.getName())) { // list all appointments under dr's name
 								aptAmount++;
-								System.out.println(aptAmount + ". " + a.getID() + ": " + a.getDate() + " " + a.getTime());
+								System.out.println(aptAmount + ". " + a.getID() + ": " + a.getDate() + " " + a.getTime() + " " + a.getPatient());
 							}
 						} 
 						
@@ -205,9 +255,10 @@ public class HospitalApp {
 					case 7: // appointment outcome
 						patAmount = 0;
 						aptAmount = 0;
+						System.out.println("Patient list: ");
 						for (Patient p : patientList) {
 							patAmount++;
-							System.out.println((patAmount) + ". " + p.getName());
+							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
 						} // list patients
 						
 						do {					
@@ -220,7 +271,7 @@ public class HospitalApp {
 						for (Appointment a : appointmentList) {
 							if (pat.getName().equals(a.getPatient()) && d.getName().equals(a.getDoctor())) { // appointments with both pt's and dr's names
 								aptAmount++;
-								System.out.println((aptAmount) + ". " + a.getDate());
+								System.out.println((aptAmount) + ". " + a.getID() + " " + a.getDate());
 							}
 						}
 						if (aptAmount != 0) {
