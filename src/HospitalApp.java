@@ -91,7 +91,7 @@ public class HospitalApp {
 							if (patSelect > patAmount) System.out.println("Invalid patient! Please enter again.");
 						} while (patSelect > patAmount); // patient selection
 						
-						pat = patientList.get(patAmount-1);
+						pat = patientList.get(patSelect-1);
 						System.out.println("Name		: " + pat.getName());
 						System.out.println("DOB		: " + dateFormat.format(pat.getDOB()));
 						System.out.println("Email		: " + pat.getEmail());
@@ -120,7 +120,7 @@ public class HospitalApp {
 							if (patSelect > patAmount) System.out.println("Invalid patient! Please enter again.");
 						} while (patSelect > patAmount); // patient selection
 						
-						pat = patientList.get(patAmount-1);
+						pat = patientList.get(patSelect-1);
 						
 						// need patient update method
 						
