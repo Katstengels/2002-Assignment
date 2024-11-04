@@ -79,8 +79,16 @@ public class MedicineInv {
     }
 
     public void printList() {
+        System.out.println("==================================================");
+        System.out.printf("%-20s %-10s %-10s \n","Medication","Amount","Stock lvl");
+        System.out.println("==================================================");
+        String health = new String();
         for (Medicine medicine : medicineList) {
-            System.out.println(medicine);
+            if(medicine.getQuantity()<=medicine.getLowStockAlertAmt()) health = "LOW";
+                else health = "OK";
+
+            System.out.printf("%-20s %-10s %-10s \n",medicine.getName(),Integer.toString(medicine.getQuantity()), health);
+            System.out.println("--------------------------------------------------");
         }
         System.out.println();
     }
@@ -90,7 +98,7 @@ public class MedicineInv {
     }
 
     public int getLowStockAlertAmount(String name) {
-        return medicineList.get(findMedicineIndex(name)).getLowStockAlert();
+        return medicineList.get(findMedicineIndex(name)).getLowStockAlertAmt();
     }
 
     public void plusStock(String name, int amount){
@@ -110,6 +118,23 @@ public class MedicineInv {
         }
     }
 
+    public void autoRestock(){
+        boolean trig = false;
+        for (Medicine medicine : medicineList) {
+            boolean restock ;
+            if(medicine.getQuantity()<=medicine.getLowStockAlertAmt()) restock = true;
+            else restock = false;
+
+            if(restock) {
+                medicine.plusStock(100);
+                trig = true;
+            }
+
+        }
+        if (trig) System.out.println("----------- All low stocks replenished ! ---------");
+        else System.out.println("----------- !!! All stocks healthy !!! -----------");
+    }
+
     public void stockWarning(String name) {
         if (this.getQuanity(name) == 0) {
             System.out.println(name + " HAS BEEN DEPLETED");
@@ -118,5 +143,13 @@ public class MedicineInv {
         if (this.getQuanity(name) <= this.getLowStockAlertAmount(name)) {
             System.out.println("ALERT: " + name + " is in short supply");
         }
+    }
+
+    public void printLowStock() {
+
+        for (Medicine medicine : medicineList) {
+            stockWarning(medicine.getName());
+        }
+
     }
 }
