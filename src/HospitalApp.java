@@ -309,66 +309,66 @@ public class HospitalApp {
 				break;
 				
 			case "Pharmacist":
-			Pharmacist pharma = (Pharmacist) user;
+				Pharmacist pharma = (Pharmacist) user;
 
-                    	Scanner scPharma = new Scanner(System.in); //Used new scanner to prevent Username from being entered on exit.
+				Scanner scPharma = new Scanner(System.in); //Used new scanner to prevent Username from being entered on exit.
 
-				    int choice = 0;
-		
-				    do{
+				int choiceP = 0;
+
+				do {
 					System.out.println();
 					System.out.println("Hello " + pharma.getName() + ", welcome to the Pharmacy menu");
 					System.out.println("1. Change Password");
 					System.out.println("2. PatientCare");
 					System.out.println("3. Medicine Management");
 					System.out.println("4. Quit");
-		
+
 					do {
-					    System.out.println("Enter selection: ");
-					    choice = scPharma.nextInt();
-					    if (choice>4 || choice < 1) System.out.println("Invalid choice! Please enter again.");
-					} while (choice>4 || choice < 1);
-		
-		
-					switch(choice){
-					    case 1:
-		
-						break;
-					    case 2:
-						System.out.println("PatientCare temp");
-						break;
-					    case 3:
-						mList.printList();
-						int m;
-						do {
-						    System.out.println("1. Add stock");
-						    System.out.println("2. Replenish low stocks");
-						    System.out.println("3. Previous Menu");
-						    do {
-							System.out.println("Enter selection: ");
-							m = scPharma.nextInt();
-							if (m>3 || m < 1) System.out.println("Invalid choice! Please enter again.");
-						    } while (m>3 || m < 1);
-						    switch(m){
-							case 1:
-							case 2:
-							    mList.autoRestock();
-							    break;
-							case 3:
-							    break;
-						    }
-						}while(m !=3);
-		
-		
-		                                break;
-		                            case 4:
-		                                loggedIn = false;
-		                                break;
-		                        }
-		
-		
-		                    }while(choice !=4);
-		
+						System.out.println("Enter selection: ");
+						choiceP = scPharma.nextInt();
+						if (choiceP > 4 || choiceP < 1) System.out.println("Invalid choiceP! Please enter again.");
+					} while (choiceP > 4 || choiceP < 1);
+
+
+					switch (choiceP) {
+						case 1:
+
+							break;
+						case 2:
+							System.out.println("PatientCare temp");
+							break;
+						case 3:
+							mList.printList();
+							int m;
+							do {
+								System.out.println("1. Add stock");
+								System.out.println("2. Replenish low stocks");
+								System.out.println("3. Previous Menu");
+								do {
+									System.out.println("Enter selection: ");
+									m = scPharma.nextInt();
+									if (m > 3 || m < 1) System.out.println("Invalid choiceP! Please enter again.");
+								} while (m > 3 || m < 1);
+								switch (m) {
+									case 1:
+									case 2:
+										mList.autoRestock();
+										break;
+									case 3:
+										break;
+								}
+							} while (m != 3);
+
+
+							break;
+						case 4:
+							loggedIn = false;
+							break;
+					}
+
+
+				} while (choiceP != 4);
+
 
 				break;
 				
