@@ -14,7 +14,9 @@ public class StaffInv {
 
     // Private constructor to prevent multiple instances
     public StaffInv(){
+        //Initialise the staffList
         this.staffList = importCSV_S();
+        System.out.println("S loaded");
     }
 
     //Static instance of the class
@@ -62,13 +64,13 @@ public class StaffInv {
 
                 Staff staff = null;
                 if (role.equals("Doctor")) {
-                    System.out.println(" Doc here");
+                    //System.out.println(" Doc here");
                     staff = new Doctor(userID, name, role, gender, age, password);
                 } else if (role.equals("Pharmacist")) {
-                    System.out.println(" Big Pharma");
+                    //System.out.println(" Big Pharma");
                     staff = new Pharmacist(userID, name, role, gender, age, password);
                 } else {
-                    System.out.println(" PLEB here");
+                    //System.out.println(" PLEB here");
                     staff = new Staff(userID, name, role, gender, age, password);
                 }
                 allStaff.add(staff);

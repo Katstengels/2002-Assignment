@@ -14,6 +14,7 @@ public class PatientInv {
     public PatientInv(){
         // Initialize the inventory
         this.patientList = importCSV_P();
+        System.out.println("P loaded");
     }
 
     //Static instance of the class

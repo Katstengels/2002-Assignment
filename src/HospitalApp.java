@@ -9,15 +9,16 @@ import java.util.Scanner;
 public class HospitalApp {
 
 	public static void main(String[] args) {
-		
+
         PatientInv pList = PatientInv.getInstance();
 		StaffInv sList = StaffInv.getInstance();
 		MedicineInv mList = MedicineInv.getInstance();
 		
 		ArrayList<Staff> staffList = sList.copyStaffList(); //Use members in staff list instance from StaffInv
 		ArrayList<Patient> patientList = pList.copyPatientList();
-		ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
 		ArrayList<Medicine> medicineList = mList.copyMedicineList();
+		ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
+
 		
 		Scanner sc = new Scanner(System.in);
 		String username, password;
@@ -29,6 +30,7 @@ public class HospitalApp {
 		
 		do {
 			do {
+				logInScreen();
 				System.out.println("Enter Username: ");
 				username = sc.nextLine().toUpperCase();
 				System.out.println("Enter Password: ");
@@ -257,10 +259,100 @@ public class HospitalApp {
 				break;
 				
 			case "Pharmacist":
-				System.out.println("Pharmacist"); // just to test can delete later
+				Pharmacist pharma = (Pharmacist) user;
 
-				//enter your code here
-				
+				Scanner scPharma = new Scanner(System.in); //Used new scanner to prevent Username from being entered on exit.
+
+				int choiceP = 0;
+
+				do {
+					System.out.println();
+					System.out.println("Hello " + pharma.getName() + ", welcome to the Pharmacy menu");
+					System.out.println("1. Fulfill medication "); //TODO
+					System.out.println("2. Manually update status"); //TODO
+					System.out.println("3. Medicine Management");
+					System.out.println("4. EXTRA"); //TODO
+					System.out.println("5. Change Password");
+					System.out.println("6. Quit");
+
+
+					do {
+						System.out.println("Enter selection: ");
+						choiceP = scPharma.nextInt();
+						if (choiceP > 6 || choiceP < 1) System.out.println("Invalid choiceP! Please enter again.");
+					} while (choiceP > 6 || choiceP < 1);
+
+
+					switch (choiceP) {
+						case 1:
+
+							break;
+						case 2:
+							System.out.println("PatientCare temp");
+
+							if (appointmentList.isEmpty()) System.out.println("======= No Appointments to be shown =========");
+
+							for (Appointment a : appointmentList) {
+								System.out.println(a.getID()+ " "+
+										a.getPatient()+" "+
+										a.getOutcome()+" "+
+										a.getStatus());
+
+							}
+
+							break;
+						case 3:
+							mList.printList();
+							int m;
+							do {
+								System.out.println("1. Display stock");
+								System.out.println("2. Request restock");
+								System.out.println("3. Replenishment & Request log");
+								System.out.println("4. Previous Menu");
+								do {
+									System.out.println("Enter selection: ");
+									m = scPharma.nextInt();
+									if (m > 4 || m < 1) System.out.println("Invalid choiceP! Please enter again.");
+								} while (m > 4 || m < 1);
+								switch (m) {
+									case 1:
+										//mList.minusStock("Paracetamol",90);
+
+										mList.printList();
+										break;
+									case 2:
+
+										break;
+									case 3:
+										mList.autoRestock();
+										break;
+									case 4:
+										break;
+								}
+							} while (m != 4);
+
+
+							break;
+						case 4:
+
+							break;
+						case 5:
+							String oldP, newP;
+							boolean trig;
+							oldP = scPharma.nextLine();
+							newP = scPharma.nextLine();
+							trig = pharma.changePassword(oldP,newP);
+							break;
+						case 6:
+							loggedIn = false;
+							break;
+					}
+
+
+				} while (choiceP != 6);
+
+
+
 				break;
 				
 			case "Administrator":
@@ -481,7 +573,7 @@ public class HospitalApp {
 		                                
 										System.out.println("Name		: " + meddo.getName());
 										System.out.println("Quantity		: " + meddo.getQuantity());
-										System.out.println("Low Stock Alert		: " + meddo.getLowStockAlert());
+										System.out.println("Low Stock Alert		: " + meddo.getLowStockAlertAmt());
 	
 								
 		                                
@@ -561,4 +653,19 @@ public class HospitalApp {
 		} while (!loggedIn); //go back to login page
 	}
 
+
+	private static void logInScreen(){
+		System.out.println(
+				"         _   _                 _ _        _ \n" +
+				"   _    | | | | ___  ___ _ __ (_) |_ __ _| |\n" +
+				" _| |_  | |_| |/ _ \\/ __| '_ \\| | __/ _` | |\n" +
+				"|_   _| |  _  | (_) \\__ \\ |_) | | || (_| | |\n" +
+				" _|_|__ |_| |_|\\___/|___/ .__/|_|\\__\\__,_|_|\n" +
+				"|  \\/  | __ _ _ __   __ |_|__ _  ___ _ __   \n" +
+				"| |\\/| |/ _` | '_ \\ / _` |/ _` |/ _ \\ '__|  \n" +
+				"| |  | | (_| | | | | (_| | (_| |  __/ |     \n" +
+				"|_|  |_|\\__,_|_| |_|\\__,_|\\__, |\\___|_|     \n" +
+				"                          |___/             ");
+
+	}
 }

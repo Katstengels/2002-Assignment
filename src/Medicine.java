@@ -21,7 +21,7 @@ class Medicine {
         return quantity;
     }
 
-    public int getLowStockAlert() {
+    public int getLowStockAlertAmt() {
         return lowStockAlert;
     }
     
