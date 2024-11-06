@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Date;
 import java.text.ParseException;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class StaffInv {
 
@@ -58,16 +60,13 @@ public class StaffInv {
 
                 Staff staff = null;
                 if (role.equals("Doctor")) {
-                    System.out.println(" Doc loaded ");
+                    System.out.println(" Doc here");
                     staff = new Doctor(userID, name, role, gender, age, password);
                 } else if (role.equals("Pharmacist")) {
-                    System.out.println(" Pharma loaded ");
+                    System.out.println(" Big Pharma");
                     staff = new Pharmacist(userID, name, role, gender, age, password);
-                } else if (role.equals("Administrator")) {
-                    System.out.println(" Admin loaded ");
-                    staff = new Administrator(userID, name, role, gender, age, password);
                 } else {
-                    System.out.println(" Other loaded ");
+                    System.out.println(" PLEB here");
                     staff = new Staff(userID, name, role, gender, age, password);
                 }
                 allStaff.add(staff);
@@ -99,6 +98,56 @@ public class StaffInv {
             if(staffList.get(index).getUserID().equals(userID)) break;
         }
         return (index>50 ? -1:index);
+    }
+    
+    //Administrator only method
+    public void addStaff(Staff staff) {
+        if (staff != null) {
+            staffList.add(staff);
+            System.out.println("Staff member added successfully.");
+        } else {
+            System.out.println("Invalid staff member.");
+        }
+    }
+
+    //Administrator only method
+    public boolean removeStaff(String userID) {
+        int index = findStaffIndexID(userID);
+
+        if (index != -1) {
+            staffList.remove(index);
+            System.out.println("Staff member removed successfully.");
+            return true;
+        } else {
+            System.out.println("Staff member with ID " + userID + " not found.");
+            return false;
+        }
+    }
+    
+    public void updateCSV() {
+        String filePath = "resources/Staff_list.csv";
+
+        try (FileWriter writer = new FileWriter(filePath)) {
+            // Write the header row
+            writer.write("StaffID,name,role,gender,age\n");
+
+            // Write each staff member's data
+            for (Staff staff : staffList) {
+                writer.write(String.format("%s,%s,%s,%s,%d\n",
+                    staff.getUserID(),
+                    staff.getName(),
+                    staff.getRole(),
+                    staff.getGender(),
+                    staff.getAge()
+                ));
+            }
+
+            System.out.println("CSV file has been updated successfully.");
+
+        } catch (IOException e) {
+            System.out.println("Error while writing to the CSV file.");
+            e.printStackTrace();
+        }
     }
 
 }
