@@ -1,5 +1,3 @@
-package newAssignment;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
@@ -10,14 +8,14 @@ public class HospitalApp {
 
 	public static void main(String[] args) {
 		
-        	PatientInv pList = PatientInv.getInstance();
+        PatientInv pList = PatientInv.getInstance();
 		StaffInv sList = StaffInv.getInstance();
 		MedicineInv mList = MedicineInv.getInstance();
 		
 		ArrayList<Staff> staffList = sList.copyStaffList(); //Use members in staff list instance from StaffInv
 		ArrayList<Patient> patientList = pList.copyPatientList();
-		ArrayList<Medicine> medicineList = mList.copyMedicineInventory(); 
 		ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
+		ArrayList<Medicine> medicineList = mList.copyMedicineList();
 		
 		Scanner sc = new Scanner(System.in);
 		String username, password;
@@ -30,7 +28,7 @@ public class HospitalApp {
 		do {
 			do {
 				System.out.println("Enter Username: ");
-				username = sc.nextLine().toUpperCase();
+				username = sc.nextLine();
 				System.out.println("Enter Password: ");
 				password = sc.nextLine();
 				
@@ -51,11 +49,10 @@ public class HospitalApp {
 						}
 				 	}
 				}   
-				
+					
 				if (!loggedIn) {
 					System.out.println("Username or password incorrect! Please try again.");
 				}
-				
 			} while (!loggedIn);
 			
 			System.out.println("Welcome!");
@@ -82,10 +79,9 @@ public class HospitalApp {
 					switch(choice) {
 					case 1: // view patient medical record
 						patAmount = 0;
-						System.out.println("Patient list: ");
 						for (Patient p : patientList) {
 							patAmount++;
-							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
+							System.out.println((patAmount) + ". " + p.getName());
 						} // print patient list
 						
 						do {					
@@ -112,12 +108,9 @@ public class HospitalApp {
 					case 2: // update patient record
 						patAmount = 0;
 						aptAmount = 0;
-						int particular;
-						
-						System.out.println("Patient list: ");
 						for (Patient p : patientList) {
 							patAmount++;
-							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
+							System.out.println((patAmount) + ". " + p.getName());
 						} // print patient list
 						
 						do {					
@@ -127,53 +120,8 @@ public class HospitalApp {
 						} while (patSelect > patAmount); // patient selection
 						
 						pat = patientList.get(patSelect-1);
-
-						do {
-							System.out.println("Select item to edit: ");
-							System.out.println("1. Name");
-							System.out.println("2. DOB");
-							System.out.println("3. Email");
-							System.out.println("4. Contact no");
-							System.out.println("5. Blood type");
-							System.out.println("6. Exit");
-
-							do {
-								System.out.println("Enter selection: ");
-								particular = sc.nextInt();
-								if (particular>6) System.out.println("Invalid choice! Please enter again.");
-							} while (particular>6);
-
-							switch (particular){
-							case 1:
-								System.out.println("Enter new name: ");
-								// need patient update method
-								break;
-									
-							case 2:
-								System.out.println("Enter new DOB: ");
-								// need patient update method
-								break;
-									
-							case 3:
-								System.out.println("Enter new email: ");
-								// need patient update method
-								break;
-									
-							case 4:
-								System.out.println("Enter new contact no: ");
-								// need patient update method
-								break;
-									
-							case 5:
-								System.out.println("Enter new blood type: ");
-								// need patient update method
-								break;
-									
-							case 6:
-								break;
-							}
 						
-						} while (particular != 6);
+						// need patient update method
 						
 						System.out.println();
 						break;
@@ -190,11 +138,10 @@ public class HospitalApp {
 						
 					case 5: // accept or reject appointments
 						aptAmount = 0;
-						System.out.println("Appointment list: ");
 						for (Appointment a : appointmentList) {
 							if(a.getDoctor().equals(d.getName())) { // list all appointments under dr's name
 								aptAmount++;
-								System.out.println(aptAmount + ". " + a.getID() + ": " + a.getDate() + " " + a.getTime() + " " + a.getPatient());
+								System.out.println(aptAmount + ". " + a.getID() + ": " + a.getDate() + " " + a.getTime());
 							}
 						} 
 						
@@ -257,10 +204,9 @@ public class HospitalApp {
 					case 7: // appointment outcome
 						patAmount = 0;
 						aptAmount = 0;
-						System.out.println("Patient list: ");
 						for (Patient p : patientList) {
 							patAmount++;
-							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
+							System.out.println((patAmount) + ". " + p.getName());
 						} // list patients
 						
 						do {					
@@ -273,7 +219,7 @@ public class HospitalApp {
 						for (Appointment a : appointmentList) {
 							if (pat.getName().equals(a.getPatient()) && d.getName().equals(a.getDoctor())) { // appointments with both pt's and dr's names
 								aptAmount++;
-								System.out.println((aptAmount) + ". " + a.getID() + " " + a.getDate());
+								System.out.println((aptAmount) + ". " + a.getDate());
 							}
 						}
 						if (aptAmount != 0) {
@@ -309,73 +255,297 @@ public class HospitalApp {
 				break;
 				
 			case "Pharmacist":
-				Pharmacist pharma = (Pharmacist) user;
+				System.out.println("Pharmacist"); // just to test can delete later
 
-				Scanner scPharma = new Scanner(System.in); //Used new scanner to prevent Username from being entered on exit.
-
-				int choiceP = 0;
-
-				do {
-					System.out.println();
-					System.out.println("Hello " + pharma.getName() + ", welcome to the Pharmacy menu");
-					System.out.println("1. Change Password");
-					System.out.println("2. PatientCare");
-					System.out.println("3. Medicine Management");
-					System.out.println("4. Quit");
-
-					do {
-						System.out.println("Enter selection: ");
-						choiceP = scPharma.nextInt();
-						if (choiceP > 4 || choiceP < 1) System.out.println("Invalid choiceP! Please enter again.");
-					} while (choiceP > 4 || choiceP < 1);
-
-
-					switch (choiceP) {
-						case 1:
-
-							break;
-						case 2:
-							System.out.println("PatientCare temp");
-							break;
-						case 3:
-							mList.printList();
-							int m;
-							do {
-								System.out.println("1. Add stock");
-								System.out.println("2. Replenish low stocks");
-								System.out.println("3. Previous Menu");
-								do {
-									System.out.println("Enter selection: ");
-									m = scPharma.nextInt();
-									if (m > 3 || m < 1) System.out.println("Invalid choiceP! Please enter again.");
-								} while (m > 3 || m < 1);
-								switch (m) {
-									case 1:
-									case 2:
-										mList.autoRestock();
-										break;
-									case 3:
-										break;
-								}
-							} while (m != 3);
-
-
-							break;
-						case 4:
-							loggedIn = false;
-							break;
-					}
-
-
-				} while (choiceP != 4);
-
-
+				//enter your code here
+				
 				break;
 				
 			case "Administrator":
-				System.out.println("Admin"); // just to test can delete later
-
+				user = new Administrator(username, password, username);	
+				int admchoice, staffSelect=0, staffAmount=0;
 				//enter your code here
+				do {
+					System.out.println("1. View and Manage Hospital Staff");
+					System.out.println("2. View Appointments Details");
+					System.out.println("3. View and Manage Medication Inventory");
+					System.out.println("4. Approve Replenishment Requests");
+					System.out.println("5. Logout");
+					admchoice = sc.nextInt();
+					sc.nextLine();
+					switch(admchoice) {
+		        case 1:
+		            int choice2;
+		            do {
+		            System.out.println("---- View and Manage Hospital Staff ----");
+		            System.out.println("1. View Hospital Staff");
+		            System.out.println("2. Manage Hospital Staff");
+		            System.out.println("3. Back");
+		            choice2 = sc.nextInt();
+		            sc.nextLine();
+		            switch(choice2){
+		                case 1:
+		                	staffAmount=0;
+		                	int filterc = 0;
+		                    System.out.println("Viewing hospital staff...");
+		                   
+		                    do {
+		                    System.out.println("1. Filter by Staff Role");
+		                    System.out.println("2. Filter by Staff Gender");
+		                    System.out.println("3. Filter by Staff Age");
+		                    System.out.println("4. View all Staff");
+		                    System.out.println("5. Back");
+		                    filterc = sc.nextInt();
+		                    sc.nextLine();
+		                    if (filterc>5 || filterc<1) System.out.println("Invalid choice! Please choose again.");
+		                    
+		                    
+		                    else if (filterc == 4) {
+		                    	System.out.println("Staff list: ");
+		                    	sList.printList();
+		                    	break;
+		                    }
+		                    
+		                    else {
+		                    	((Administrator) user).filterStaff(filterc);  
+		                    	break;
+		                    }
+		                    
+		                    } while (filterc!=5);
+		                    // view view view
+		                    break;										
+		
+		                case 2:
+		                    int choice3;
+		                    System.out.println("Managing hospital staff...");
+		                    //show hospital staff
+		                    do {
+		                        System.out.println("Select action: ");
+		                        System.out.println("1. Add Staff");
+		                        System.out.println("2. Update Staff Details");
+		                        System.out.println("3. Remove Staff");
+		                        System.out.println("4. Back");
+		                        choice3 = sc.nextInt();
+		                        sc.nextLine();
+		                        switch(choice3){
+		                            case 1:
+		                                System.out.println("---- Add hospital staff ----");
+		                                ((Administrator) user).addStaff();
+		                                break;
+		                            case 2:
+		                                int choice4, staffCount=0;
+		                                boolean found = false;
+		                                String desiredID;
+		                                System.out.println("---- Update hospital staff ----");
+		                                
+		                                do{
+		                                System.out.println("Enter User ID of staff to update:");
+		                                desiredID = sc.nextLine();
+		                                for (Staff staff : staffList) {
+		            	                    if (staff.getID().equalsIgnoreCase(desiredID)) {
+		            	                        staffSelect = staffAmount;
+		            	                        found=true;
+		            	                        break;
+		            	                    }
+		            	                    staffAmount++;
+		            	                }
+		                                if (!found) System.out.println("User ID not found! Please try again.");
+		                                } while (!found);
+		                                
+		                                Staff staffy = staffList.get(staffSelect);
+		                                System.out.println("Staff ID	: " + staffy.getID());
+										System.out.println("Name		: " + staffy.getName());
+										System.out.println("Gender		: " + staffy.getGender());
+										System.out.println("Age		: " + staffy.getAge());
+										System.out.println("Role		: " + staffy.getRole());
+								
+		                                
+		                                do {
+		                                System.out.println("Select item to edit: ");
+		    							System.out.println("1. Name");
+		    							System.out.println("2. Gender");
+		    							System.out.println("3. Age");
+		    							System.out.println("4. Role");
+		    							System.out.println("5. Back");
+		    							choice4 = sc.nextInt();
+		    							sc.nextLine();
+		    							switch(choice4){
+		    							    case 1:
+		    							        System.out.println("Enter new staff name:");
+		    							        String newfield = sc.nextLine();
+		    							        staffy.changeName(newfield);
+		    							        break;
+		    							    case 2:
+		    							        System.out.println("Enter new staff gender:");
+		    							        newfield = sc.nextLine();
+		    							        staffy.changeGender(newfield);
+		    							        break;
+		    							    case 3:
+		    							        System.out.println("Enter new staff age:");
+		    							        int newage = sc.nextInt();
+		    							        staffy.changeAge(newage);
+		    							        sc.nextLine();
+		    							        break;
+		    							    case 4:
+		    							        System.out.println("Enter new staff role:");
+		    							        newfield = sc.nextLine();
+		    							        staffy.changeRole(newfield);
+		    							        break;
+		    							    case 5: 
+		    							        System.out.println("Case 5 entered. Going back...");
+		    							        break;
+		    							}
+		                                } while (choice4!=5);
+		                                break;
+		                                
+		    							
+		        
+		                            case 3:
+		                                System.out.println("---- Remove hospital staff ----");
+		                                ((Administrator) user).removeStaff();
+		                                break;
+		                            case 4:
+		                                System.out.println("Case 4 entered. Going back..."); 
+		                                break;
+		                        }
+		                        //((Administrator) user).updateStaffInv();
+		                        
+		                    } while (choice3!=4);
+		                    break;
+		                case 3:
+		                    System.out.println("Case 3 entered. Going back..."); 
+		                    break;
+		            }
+		            }  while (choice2!=3);
+		            break;
+		        case 2:
+		            System.out.println("Case 2 entered.");
+		            break;
+		        case 3:
+		            
+		            int choicew, choicev;
+		            do {
+		            System.out.println("Select action: ");
+		            System.out.println("1. View Medicine Inventory");
+		            System.out.println("2. Manage Medicine Inventory");
+		            System.out.println("3. Back");
+		            choicew = sc.nextInt();
+		            switch(choicew) {
+		                case 1:
+		                    System.out.println("Viewing medication...");
+		                    ((Administrator) user).getMedicineInventory().printList();
+		                    break;
+		                case 2:
+		                     do {
+		                        System.out.println("Select action: ");
+		                        System.out.println("1. Add Medication");
+		                        System.out.println("2. Remove Medication");
+		                        System.out.println("3. Update Medication Fields");
+		                        System.out.println("4. Back");
+		                        choicev = sc.nextInt();
+		                        switch(choicev) {
+		                            case 1:
+		                                System.out.println("Adding medication...");
+		                                ((Administrator) user).addMedicine();
+		                                break;
+		                            case 2:
+		                                System.out.println("Removing medication...");
+		                                ((Administrator) user).removeMedicine();
+		                                break;
+		                            case 3:
+		                            	sc.nextLine();
+		                                System.out.println("Updating medication...");
+		                                int choice4, medCount=0, medSelect=0, medAmount=0;
+		                                boolean foundm = false;
+		                                String desiredMedName;
+		                                System.out.println("---- Update Medication ----");
+		                                
+		                                do{
+		                                medAmount = 0;
+		                                System.out.println("Enter name of medication to update:");
+		                                desiredMedName = sc.nextLine();
+		                                for (Medicine medicine : medicineList) {
+		            	                    if (medicine.getName().equalsIgnoreCase(desiredMedName)) {
+		            	                        medSelect = medAmount;
+		            	                        foundm=true;
+		            	                        break;
+		            	                    }
+		            	                    medAmount++;
+		            	                }
+		                                if (!foundm) System.out.println("Medicine not found! Please try again.");
+		                                } while (!foundm);
+		                                
+		                                Medicine meddo = medicineList.get(medSelect);
+		                                
+										System.out.println("Name		: " + meddo.getName());
+										System.out.println("Quantity		: " + meddo.getQuantity());
+										System.out.println("Low Stock Alert		: " + meddo.getLowStockAlert());
+	
+								
+		                                
+		                                do {
+		                                System.out.println("Select item to edit: ");
+		    							System.out.println("1. Name");
+		    							System.out.println("2. Quantity");
+		    							System.out.println("3. Low Stock Alert");
+		    							
+		    							System.out.println("4. Back");
+		    							choice4 = sc.nextInt();
+		    							sc.nextLine();
+		    							switch(choice4){
+		    							    case 1:
+		    							        System.out.println("Enter new medicine name:");
+		    							        String newfield = sc.nextLine();
+		    							        meddo.changeName(newfield);
+		    							        
+		    							        break;
+		    							    case 2:
+		    							        System.out.println("Enter new medicine quantity:");
+		    							        int newAmount = sc.nextInt();
+		    							        meddo.changeQuantity(newAmount);
+		    							        sc.nextLine();
+		    							        break;
+		    							    case 3:
+		    							        System.out.println("Enter new low stock alert threshold:");
+		    							        newAmount = sc.nextInt();
+		    							        meddo.changeLowStockAlert(newAmount);
+		    							        sc.nextLine();
+		    							        break;
+		    							    
+		    							    case 4: 
+		    							        System.out.println("Case 4 entered. Going back...");
+		    							        break;
+		    							}
+		                                } while (choice4!=4);
+		                                break;
+		                               
+		                            case 4:
+		                                System.out.println("Case 4 entered. Going back...");
+		                                break;
+		                        }
+		                
+		            } while (choicev!=4);
+		            
+		                    break;
+		                case 3:
+		                    System.out.println("Case 3 entered. Going back...");
+		                    break;
+		                    
+		            }
+
+		            }while (choicew!=3);
+		            break;
+		        case 4: 
+		            System.out.println("Case 4 entered.");
+		            break;
+		        case 5:
+		            System.out.println("Case 5 entered. Logging out...");
+		            break;
+		        default:
+		            System.out.println("Invalid option entered. Please try again. ");
+		            break;
+		    }
+		} while (admchoice!=5);
 				
 				break;
 				
@@ -386,7 +556,6 @@ public class HospitalApp {
 				
 				break;
 			}
-			
 		} while (!loggedIn); //go back to login page
 	}
 
