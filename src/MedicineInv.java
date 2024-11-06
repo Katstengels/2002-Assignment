@@ -70,27 +70,27 @@ public class MedicineInv {
 
 
     public int findMedicineIndex(String name){
-        int index;
-        for(index = 0; index <60; index++)
+        int index=0;
+        for (Medicine medicine : medicineList)
         {
-            if(medicineList.get(index).getName().equals(name)) break;
+            if(medicine.getName().equals(name)) 
+            	{
+            	return index;
+            	}
+            index++;
         }
-        return (index>50 ? -1:index);
+        return -1;
     }
 
     public void printList() {
-        System.out.println("==================================================");
-        System.out.printf("%-20s %-10s %-10s \n","Medication","Amount","Stock lvl");
-        System.out.println("==================================================");
-        String health = new String();
         for (Medicine medicine : medicineList) {
-            if(medicine.getQuantity()<=medicine.getLowStockAlertAmt()) health = "LOW";
-                else health = "OK";
-
-            System.out.printf("%-20s %-10s %-10s \n",medicine.getName(),Integer.toString(medicine.getQuantity()), health);
-            System.out.println("--------------------------------------------------");
+            System.out.println(medicine);
         }
         System.out.println();
+    }
+    
+    public ArrayList<Medicine> copyMedicineList() {
+        return medicineList;
     }
 
     public int getQuanity(String name) {
@@ -98,7 +98,7 @@ public class MedicineInv {
     }
 
     public int getLowStockAlertAmount(String name) {
-        return medicineList.get(findMedicineIndex(name)).getLowStockAlertAmt();
+        return medicineList.get(findMedicineIndex(name)).getLowStockAlert();
     }
 
     public void plusStock(String name, int amount){
@@ -118,23 +118,6 @@ public class MedicineInv {
         }
     }
 
-    public void autoRestock(){
-        boolean trig = false;
-        for (Medicine medicine : medicineList) {
-            boolean restock ;
-            if(medicine.getQuantity()<=medicine.getLowStockAlertAmt()) restock = true;
-            else restock = false;
-
-            if(restock) {
-                medicine.plusStock(100);
-                trig = true;
-            }
-
-        }
-        if (trig) System.out.println("----------- All low stocks replenished ! ---------");
-        else System.out.println("----------- !!! All stocks healthy !!! -----------");
-    }
-
     public void stockWarning(String name) {
         if (this.getQuanity(name) == 0) {
             System.out.println(name + " HAS BEEN DEPLETED");
@@ -144,12 +127,28 @@ public class MedicineInv {
             System.out.println("ALERT: " + name + " is in short supply");
         }
     }
-
-    public void printLowStock() {
-
-        for (Medicine medicine : medicineList) {
-            stockWarning(medicine.getName());
+    
+    //Medicine methods
+    public void addMedicine(Medicine medicine) {
+        if (medicine != null) {
+        	medicineList.add(medicine);
+            System.out.println("Medicine added successfully.");
+        } else {
+            System.out.println("Invalid medicine.");
         }
+    }
+    
+    
+    public boolean removeMedicine(String medName) {
+        int index = findMedicineIndex(medName);
 
+        if (index != -1) {
+            medicineList.remove(index);
+            System.out.println("Medicine removed successfully.");
+            return true;
+        } else {
+            System.out.println("Medicine " + medName + " not found.");
+            return false;
+        }
     }
 }
