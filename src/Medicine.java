@@ -1,3 +1,5 @@
+package src;
+
 class Medicine {
     private String name;
     private int quantity;

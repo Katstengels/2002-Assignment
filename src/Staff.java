@@ -1,3 +1,5 @@
+package src;
+
 public class Staff extends User {
 
     private String name;

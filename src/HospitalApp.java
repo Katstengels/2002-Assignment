@@ -1,3 +1,5 @@
+package src;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
@@ -28,7 +30,7 @@ public class HospitalApp {
 		do {
 			do {
 				System.out.println("Enter Username: ");
-				username = sc.nextLine();
+				username = sc.nextLine().toUpperCase();
 				System.out.println("Enter Password: ");
 				password = sc.nextLine();
 				
