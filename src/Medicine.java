@@ -22,6 +22,23 @@ class Medicine {
     public int getLowStockAlert() {
         return lowStockAlert;
     }
+    
+    public void changeName(String newName) {
+    	this.name = newName;
+    	System.out.println("Name changed successfully!");
+    	return;
+    }
+    public void changeQuantity(int newquantity) {
+    	this.quantity = newquantity;
+    	System.out.println("Quantity changed successfully!");
+    	return;
+    }
+    public void changeLowStockAlert(int newlowstockalert) {
+    	this.lowStockAlert = newlowstockalert;
+    	System.out.println("Low Stock Alert threshold changed successfully!");
+    	return;
+    }
+    
 
     @Override
     public String toString() {
@@ -37,4 +54,6 @@ class Medicine {
     public void minusStock(int amount) {
         quantity -= amount;
     }
+    
+    
 }
