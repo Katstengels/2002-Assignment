@@ -60,7 +60,7 @@ public class HospitalApp {
 			} while (!loggedIn);
 			
 			System.out.println("Welcome!");
-			
+
 			switch (user.getRole()) {
 			case "Doctor":
 				Doctor d = (Doctor) user;
@@ -268,12 +268,12 @@ public class HospitalApp {
 				do {
 					System.out.println();
 					System.out.println("Hello " + pharma.getName() + ", welcome to the Pharmacy menu");
-					System.out.println("1. Fulfill medication "); //TODO
-					System.out.println("2. Manually update status"); //TODO
-					System.out.println("3. Medicine Management");
-					System.out.println("4. EXTRA"); //TODO
+					System.out.println("1. Fulfill medication orders"); //TODO
+					System.out.println("2. Display stock"); //TODO
+					System.out.println("3. Request restock");
+					System.out.println("4. Request log"); //TODO
 					System.out.println("5. Change Password");
-					System.out.println("6. Quit");
+					System.out.println("6. Log off");
 
 
 					do {
@@ -285,29 +285,37 @@ public class HospitalApp {
 
 					switch (choiceP) {
 						case 1:
+							//1. Fulfill medication orders
+							//Print all appointments with prescriptions
+
+							for (Appointment a : appointmentList) {
+								if(a.isHasMedication())
+								{
+									int index = appointmentList.indexOf(a);
+									System.out.println("================= Prescription ===================");
+									System.out.printf("%-10s %-10s %-10s %-10s \n",index,"Medication","Amount","Status");
+									System.out.println("==================================================");
+
+									a.printPrescription();
+								}
+							}
+							//Choose appointment with the index shown
+
+							//Choose which medication to fulfill, update "medIsFilled" per PrescriptedMed and update medicineList
 
 							break;
 						case 2:
-							System.out.println("PatientCare temp");
-
-							if (appointmentList.isEmpty()) System.out.println("======= No Appointments to be shown =========");
-
-							for (Appointment a : appointmentList) {
-								System.out.println(a.getID()+ " "+
-										a.getPatient()+" "+
-										a.getOutcome()+" "+
-										a.getStatus());
-
-							}
-
+							//2. Display stock
+							mList.printList();
 							break;
 						case 3:
+							//3. Request restock
 							mList.printList();
 							int m;
 							do {
-								System.out.println("1. Display stock");
-								System.out.println("2. Request restock");
-								System.out.println("3. Replenishment & Request log");
+								System.out.println("1. ");
+								System.out.println("2. ");
+								System.out.println("3. ");
 								System.out.println("4. Previous Menu");
 								do {
 									System.out.println("Enter selection: ");
@@ -324,7 +332,7 @@ public class HospitalApp {
 
 										break;
 									case 3:
-										mList.autoRestock();
+
 										break;
 									case 4:
 										break;
@@ -334,16 +342,23 @@ public class HospitalApp {
 
 							break;
 						case 4:
+							//4. Request log
 
 							break;
 						case 5:
+							//5. Change Password
 							String oldP, newP;
 							boolean trig;
+							System.out.println("Please enter your current password: ");
 							oldP = scPharma.nextLine();
+							System.out.println("Please enter your new password");
 							newP = scPharma.nextLine();
-							trig = pharma.changePassword(oldP,newP);
+
+							if(!pharma.changePassword(oldP,newP))
+							{System.out.println("Password is incorrect");}
 							break;
 						case 6:
+							//6. Log off
 							loggedIn = false;
 							break;
 					}
