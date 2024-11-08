@@ -712,112 +712,108 @@ public class HospitalApp {
 				
 				break;
 				
-			case "Patient":
-                Patient patient = (Patient) user;
+	                       case "Patient":
+                            Patient patient = (Patient) user;
 
-                int choicePatient = 0;
-                do {
-                    System.out.println();
-                    System.out.println("Hello " + patient.getName() + ", welcome to the Patient menu");
-                    System.out.println("1. View Appointments");
-                    System.out.println("2. View Prescriptions");
-                    System.out.println("3. Update Personal Details");
-                    System.out.println("4. Change Password");
-                    System.out.println("5. Log off");
-
-                    // Ensure a valid input is provided for choicePatient
-                    do {
-                        System.out.println("Enter selection: ");
-                        choicePatient = sc.nextInt();
-                        sc.nextLine(); // Clear the newline
-                        if (choicePatient < 1 || choicePatient > 5) {
-                            System.out.println("Invalid choice! Please enter a number between 1 and 5.");
-                        }
-                    } while (choicePatient < 1 || choicePatient > 5);
-
-                    switch (choicePatient) {
-                        case 1:
-                            // View Appointments
-                            if (patient.getAppointments().isEmpty()) {
-                                System.out.println("You have no upcoming appointments.");
-                            } else {
-                                System.out.println("Your Appointments:");
-                                for (Appointment appointment : patient.getAppointments()) {
-                                    System.out.println(appointment); // Assuming Appointment class has a toString() method
-                                }
-                            }
-                        break;
-
-                        case 2:
-                            // View Prescriptions
-                            if (patient.getPrescriptions().isEmpty()) {
-                                System.out.println("You have no prescriptions.");
-                            } else {
-                                System.out.println("Your Prescriptions:");
-                                for (Prescription prescription : patient.getPrescriptions()) {
-                                    System.out.println(prescription); // Assuming Prescription class has a toString() method
-                                }
-                           }
-                        break;
-
-                        case 3:
-                            // Update Personal Details
-                            System.out.println("1. Update Address");
-                            System.out.println("2. Update Contact Number");
-                            System.out.println("3. Back to Patient Menu");
-                            int updateChoice;
+                            int choicePatient = 0;
                             do {
-                                System.out.println("Enter selection: ");
-                             updateChoice = sc.nextInt();
-                                sc.nextLine(); // Clear the newline
-                                if (updateChoice < 1 || updateChoice > 3) {
-                                 System.out.println("Invalid choice! Please enter a number between 1 and 3.");
+                                System.out.println();
+                                System.out.println("Hello " + patient.getName() + ", welcome to the Patient menu");
+                                System.out.println("1. View Appointments");
+                                System.out.println("2. View Medical Record");
+                                System.out.println("3. Update Personal Details");
+                                System.out.println("4. Change Password");
+                                System.out.println("5. Schedule Appointment");
+                                System.out.println("6. Reschedule Appointment");
+                                System.out.println("7. Cancel Appointment");
+                                System.out.println("8. Log off");
+
+                                // Ensure valid input for choicePatient
+                                do {
+                                    System.out.println("Enter selection: ");
+                                    choicePatient = sc.nextInt();
+                                    sc.nextLine(); // Clear the newline
+                                    if (choicePatient < 1 || choicePatient > 8) {
+                                        System.out.println("Invalid choice! Please enter a number between 1 and 8.");
+                                    }
+                                } while (choicePatient < 1 || choicePatient > 8);
+
+                                switch (choicePatient) {
+                                    case 1:
+                                        // View Scheduled Appointments
+                                        patient.viewScheduledAppointments();
+                                        break;
+
+                                    case 2:
+                                        // View Medical Record
+                                        patient.viewMedicalRecord();
+                                        break;
+
+                                    case 3:
+                                        // Update Personal Details
+                                        patient.updatePersonalInfo();
+                                        break;
+
+                                    case 4:
+                                        // Change Password
+                                        System.out.println("Please enter your current password: ");
+                                        String oldPassword = sc.nextLine();
+                                        System.out.println("Please enter your new password: ");
+                                        String newPassword = sc.nextLine();
+                                        if (patient.changePassword(oldPassword, newPassword)) {
+                                            System.out.println("Password changed successfully.");
+                                        } else {
+                                            System.out.println("Incorrect current password. Please try again.");
+                                        }
+                                        break;
+
+                                    case 5:
+                                        // Schedule an Appointment
+                                        System.out.println("Enter the doctor's ID to view available slots: ");
+                                        String doctorID = sc.nextLine();
+                                        Doctor doctor = hospital.getDoctorByID(doctorID); // Assuming this method exists
+                                        if (doctor != null) {
+                                            patient.viewAvailableSlots(doctor);
+                                            System.out.println("Enter the date and time for the appointment (yyyy-MM-dd HH:mm): ");
+                                            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(sc.nextLine());
+                                            patient.scheduleAppointment(doctor, date);
+                                        } else {
+                                            System.out.println("Doctor not found.");
+                                        }
+                                        break;
+
+                                    case 6:
+                                        // Reschedule an Appointment
+                                        System.out.println("Enter Appointment ID to reschedule: ");
+                                        String appointmentID = sc.nextLine();
+                                        System.out.println("Enter the new date and time (yyyy-MM-dd HH:mm): ");
+                                        Date newDate = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(sc.nextLine());
+                                        patient.rescheduleAppointment(appointmentID, doctor, newDate); // doctor should be retrieved based on appointment details
+                                        break;
+
+                                    case 7:
+                                        // Cancel an Appointment
+                                        System.out.println("Enter Appointment ID to cancel: ");
+                                        appointmentID = sc.nextLine();
+                                        Appointment appointment = hospital.getAppointmentByID(appointmentID); // Assuming this method exists
+                                        if (appointment != null) {
+                                            patient.cancelAppointment(appointment);
+                                        } else {
+                                            System.out.println("Appointment not found.");
+                                        }
+                                        break;
+
+                                    case 8:
+                                        // Log off
+                                        System.out.println("Logging off...");
+                                        loggedIn = false;
+                                        break;
                                 }
-                            } while (updateChoice < 1 || updateChoice > 3);
 
-                            switch (updateChoice) {
-                                case 1:
-                                    System.out.println("Enter new address:");
-                                    String newAddress = sc.nextLine();
-                                    patient.updateAddress(newAddress);
-                                    System.out.println("Address updated successfully.");
-                                break;
-                                case 2:
-                                    System.out.println("Enter new contact number:");
-                                    String newContact = sc.nextLine();
-                                    patient.updateContactNumber(newContact);
-                                    System.out.println("Contact number updated successfully.");
-                                break;
-                               case 3:
-                                    System.out.println("Returning to Patient menu...");
-                                break;
-                            }
-                        break;
+                            } while (choicePatient != 5);
+                            break;
 
-                        case 4:
-                            // Change Password
-                            System.out.println("Please enter your current password: ");
-                            String oldPassword = sc.nextLine();
-                            System.out.println("Please enter your new password: ");
-                            String newPassword = sc.nextLine();
-                            if (patient.changePassword(oldPassword, newPassword)) {
-                                System.out.println("Password changed successfully.");
-                            } else {
-                                   System.out.println("Incorrect current password. Please try again.");
-                            }
-                        break;
-
-                        case 5:
-                           // Log off
-                             System.out.println("Logging off...");
-                            loggedIn = false;
-                        break;
-                        }
-
-                } while (choicePatient != 5);
-                break;
-
-		} 
+                    }
 		} while (!loggedIn); //go back to login page
 	}
 
