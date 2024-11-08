@@ -1,4 +1,4 @@
-package src;
+//package src;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,7 +10,7 @@ public class HospitalApp {
 
 	public static void main(String[] args) {
 
-        PatientInv pList = PatientInv.getInstance();
+        	PatientInv pList = PatientInv.getInstance();
 		StaffInv sList = StaffInv.getInstance();
 		MedicineInv mList = MedicineInv.getInstance();
 		
@@ -27,9 +27,8 @@ public class HospitalApp {
 		Calendar calendar = Calendar.getInstance();
 		Date now = calendar.getTime();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM YYYY");
-		int patSelect, aptSelect, medSelect, docSelect, patAmount, aptAmount, medAmount, docAmount;
+		int patSelect, aptSelect, medSelect, patAmount, aptAmount, medAmount;
 		Patient pat;
-		Doctor doc;
 		Appointment apt;
 		Medicine med;
 		int choice;
@@ -84,7 +83,7 @@ public class HospitalApp {
 					choice = sc.nextInt();
 					
 					switch(choice) {
-					case 1: // view patient medical record
+					case 1 -> { // view patient medical record
 						patAmount = 0;
 						for (Patient p : patientList) {
 							patAmount++;
@@ -110,9 +109,10 @@ public class HospitalApp {
 							}
 						}
 						System.out.println();
-						break;
+                        break;
+					}
 						
-					case 2: // update patient record
+					case 2 -> { // update patient record
 						patAmount = 0;
 						aptAmount = 0;
 						for (Patient p : patientList) {
@@ -129,21 +129,24 @@ public class HospitalApp {
 						pat = patientList.get(patSelect-1);
 						
 						pat.updatePart();
-						
+							
 						System.out.println();
-						break;
+                        break;
+					}
 						
-					case 3: // personal schedule
-						doctor.getAllAvailability(true);
+					case 3 -> { // personal schedule
+						doctor.getAllAvailability();
 						System.out.println();
-						break;
+                        break;
+					}
 					
-					case 4: // set availability
+					case 4 -> { // set availability
 						doctor.setAvailability();
 						System.out.println();
-						break;
+                        break;
+					}
 						
-					case 5: // accept or reject appointments
+					case 5 -> { // accept or reject appointments
 						aptAmount = 0;
 						for (Appointment a : appointmentList) {
 							if(a.getDoctor().equals(doctor.getName()) && a.getStatus().equals("pending")) { // list all appointments under dr's name
@@ -172,23 +175,24 @@ public class HospitalApp {
 							} while (acc>2);
 							
 							switch (acc) {
-							case 1:
+							case 1 -> {
 								apt.updateStatus("Confirmed");
 								doctor.addAppointment(apt);
 								System.out.println("Appointment accepted.");
-								break;
-							case 2:
+							}
+							case 2 -> {
 								apt.updateStatus("Rejected");
 								System.out.println("Appointment rejected.");
-								break;
+							}
 							}
 						}
 						
 						else System.out.println("No appointment found!");
 						System.out.println();
-						break;
+                        break;
+					}
 						
-					case 6: // view upcoming appointments
+					case 6 -> { // view upcoming appointments
 						System.out.println("Upcoming appointments: ");
 						
 						aptAmount = 0;
@@ -206,9 +210,10 @@ public class HospitalApp {
 						
 						if (aptAmount == 0) System.out.println("No appointment found!");
 						System.out.println();
-						break;
+                        break;
+					}
 					
-					case 7: // appointment outcome
+					case 7 -> { // appointment outcome
 						int medYN, medAptAmt;
 						patAmount = 0;
 						aptAmount = 0;
@@ -256,7 +261,7 @@ public class HospitalApp {
 							} while (medYN<2);
 							
 							switch (medYN) {
-							case 1:
+							case 1 -> {
 								apt.TrueHasMedication();
 								
 								System.out.println("Medicine list: ");
@@ -279,28 +284,26 @@ public class HospitalApp {
 								medAptAmt = sc.nextInt();
 								
 								apt.addPrescript(med.getName(), medAptAmt);
+							}
 								
-								break;
-								
-							case 2:
-								break;
+							case 2 -> {}
 							}
 						}
 						
 						else System.out.println("No appointment found!");
 						System.out.println();
-						break;
+                        break;
+					}
 						
-					case 8: // logout
+					case 8 -> { // logout
 						System.out.println("Logging out...");
 						sc.nextLine();
 						loggedIn = false;
 						System.out.println();
-						break;
+                        break;
+					}
 						
-					default:
-						System.out.println("Invalid choice! Please enter again.");
-						break;
+					default -> System.out.println("Invalid choice! Please enter again.");
 					}
 				} while (choice != 8);
 				
@@ -710,118 +713,113 @@ public class HospitalApp {
 				break;
 				
 			case "Patient":
-				Patient patient = (Patient) user;
-				int counting = 0;
-				String docID = "";
-				
-				do {
-					System.out.println("Hello " + patient.getName() + ", welcome to the patient menu");
-					System.out.println("1. View Medical Records");
-					System.out.println("2. Update Personal Information");
-					System.out.println("3. View Available Appointment Slots");
-					System.out.println("4. Schedule Appointment");
-					System.out.println("5. Reschedule Appointment");
-					System.out.println("6. Cancel Appointment");
-					System.out.println("7. View Scheduled Appointments");
-					System.out.println("8. View Past Appointment Records");
-					System.out.println("9. Logout");
-					choice = sc.nextInt();
-					
-					switch(choice) {
-					case 1: // view med record
-						System.out.println("Name		: " + patient.getName());
-						System.out.println("DOB		: " + dateFormat.format(patient.getDOB()));
-						System.out.println("Email		: " + patient.getEmail());
-						System.out.println("Contact no.	: " + patient.getContactNum());
-						System.out.println("Blood type	: " + patient.getBloodType());
-						System.out.println("Previous appointment outcomes:");
-						for (Appointment a : appointmentList) {
-							if (patient.getName().equals(a.getPatient())) {
-								System.out.println(a.getDate() + ": " + a.getOutcome());
-							}
-						}
-						System.out.println();
-						break;
-						
-					case 2: // update particular
-						patient.updatePart();
-						System.out.println();
-						break;
-						
-					case 3: // view avail apt slots
-						docSelect = 0;
-						docAmount = 0;
-						
-						for (Staff s : staffList) {
-							if (s.getRole() == "Doctor") {
-								docAmount++;
-								System.out.println(docAmount + ". " + s.getName());
-							}
-							
-							do {
-								System.out.println("Select doctor: ");
-								docSelect = sc.nextInt();
-								
-								if (docSelect>docAmount) System.out.println("Invalid doctor! Please enter again.");
-							} while (docSelect>docAmount);
-						}
-						
-						for (Staff s : staffList) {
-							if (s.getRole() == "Doctor") {
-								counting++;
-								if (counting == docSelect) {
-									docID = s.getID();
-									break;
-								}
-							}
-						}
-						
-						doc = (Doctor) staffList.get(sList.findStaffIndexID(docID));
-						
-						doc.getAvailSlots();
-						
-						System.out.println();
-						break;
-						
-					case 4: // make apt
-						
-						System.out.println();
-						break;
-						
-					case 5: // reschedule apt
-						System.out.println();
-						break;
-						
-					case 6: // cancel apt
-						System.out.println();
-						break;
-						
-					case 7: // view apt
-						System.out.println();
-						break;
-						
-					case 8: // view apt record
-						System.out.println();
-						break;
-						
-					case 9:
-						System.out.println("Logging out...");
-						sc.nextLine();
-						loggedIn = false;
-						System.out.println();
-						break;
-						
-					default:
-						System.out.println("Invalid choice! Please enter again.");
-						break;
-					}
-				} while (choice > 8);
-				
-				break;
-			}
+                Patient patient = (Patient) user;
+
+                int choicePatient = 0;
+                do {
+                    System.out.println();
+                    System.out.println("Hello " + patient.getName() + ", welcome to the Patient menu");
+                    System.out.println("1. View Appointments");
+                    System.out.println("2. View Prescriptions");
+                    System.out.println("3. Update Personal Details");
+                    System.out.println("4. Change Password");
+                    System.out.println("5. Log off");
+
+                    // Ensure a valid input is provided for choicePatient
+                    do {
+                        System.out.println("Enter selection: ");
+                        choicePatient = sc.nextInt();
+                        sc.nextLine(); // Clear the newline
+                        if (choicePatient < 1 || choicePatient > 5) {
+                            System.out.println("Invalid choice! Please enter a number between 1 and 5.");
+                        }
+                    } while (choicePatient < 1 || choicePatient > 5);
+
+                    switch (choicePatient) {
+                        case 1:
+                            // View Appointments
+                            if (patient.getAppointments().isEmpty()) {
+                                System.out.println("You have no upcoming appointments.");
+                            } else {
+                                System.out.println("Your Appointments:");
+                                for (Appointment appointment : patient.getAppointments()) {
+                                    System.out.println(appointment); // Assuming Appointment class has a toString() method
+                                }
+                            }
+                        break;
+
+                        case 2:
+                            // View Prescriptions
+                            if (patient.getPrescriptions().isEmpty()) {
+                                System.out.println("You have no prescriptions.");
+                            } else {
+                                System.out.println("Your Prescriptions:");
+                                for (Prescription prescription : patient.getPrescriptions()) {
+                                    System.out.println(prescription); // Assuming Prescription class has a toString() method
+                                }
+                           }
+                        break;
+
+                        case 3:
+                            // Update Personal Details
+                            System.out.println("1. Update Address");
+                            System.out.println("2. Update Contact Number");
+                            System.out.println("3. Back to Patient Menu");
+                            int updateChoice;
+                            do {
+                                System.out.println("Enter selection: ");
+                             updateChoice = sc.nextInt();
+                                sc.nextLine(); // Clear the newline
+                                if (updateChoice < 1 || updateChoice > 3) {
+                                 System.out.println("Invalid choice! Please enter a number between 1 and 3.");
+                                }
+                            } while (updateChoice < 1 || updateChoice > 3);
+
+                            switch (updateChoice) {
+                                case 1:
+                                    System.out.println("Enter new address:");
+                                    String newAddress = sc.nextLine();
+                                    patient.updateAddress(newAddress);
+                                    System.out.println("Address updated successfully.");
+                                break;
+                                case 2:
+                                    System.out.println("Enter new contact number:");
+                                    String newContact = sc.nextLine();
+                                    patient.updateContactNumber(newContact);
+                                    System.out.println("Contact number updated successfully.");
+                                break;
+                               case 3:
+                                    System.out.println("Returning to Patient menu...");
+                                break;
+                            }
+                        break;
+
+                        case 4:
+                            // Change Password
+                            System.out.println("Please enter your current password: ");
+                            String oldPassword = sc.nextLine();
+                            System.out.println("Please enter your new password: ");
+                            String newPassword = sc.nextLine();
+                            if (patient.changePassword(oldPassword, newPassword)) {
+                                System.out.println("Password changed successfully.");
+                            } else {
+                                   System.out.println("Incorrect current password. Please try again.");
+                            }
+                        break;
+
+                        case 5:
+                           // Log off
+                             System.out.println("Logging off...");
+                            loggedIn = false;
+                        break;
+                        }
+
+                } while (choicePatient != 5);
+                break;
+
+		} 
 		} while (!loggedIn); //go back to login page
 	}
-
 
 	private static void logInScreen(){
 		System.out.println(
