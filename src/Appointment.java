@@ -76,6 +76,28 @@ public class Appointment {
     }
   }
 
+
+  public void fulfillPrescription(String medName) {
+    for (PrescriptedMed medicine : pMedList) {
+      if (medicine.getMedName().equalsIgnoreCase(medName)) {
+        // Mark as fulfilled
+        medicine.setMedIsFilled(true);
+        System.out.println("Prescription for " + medName + " has been fulfilled.");
+        return; // Exit once the prescription is found and fulfilled
+      }
+    }
+    System.out.println("Medication " + medName + " not found in the list.");
+  }
+
+  public int getPrescribedAmount(String medName) {
+    for (PrescriptedMed medicine : pMedList) {
+      if (medicine.getMedName().equalsIgnoreCase(medName)) {
+        return medicine.getMedAmount(); // Return the amount if found
+      }
+    }
+    return -1; // Return -1 if the medication is not found
+  }
+
   private int findPrescriptIndex(String med){
     int index=0;
     for (PrescriptedMed medicine : pMedList)
@@ -90,8 +112,6 @@ public class Appointment {
   }
 
   public void printPrescription(){
-    addPrescript("Paracetamol",10); //TEMP
-    addPrescript("Ibuprofen",20);   //TEMP
 
     for(PrescriptedMed n : pMedList) {
       String status;
@@ -104,6 +124,12 @@ public class Appointment {
       System.out.println("--------------------------------------------------");
     }
 
+  }
+
+  public void testingAddDescription(){   //TEMP FOR TESTING ONLY
+    addPrescript("Paracetamol",10);
+    addPrescript("Ibuprofen",20);
+    this.hasMedication = true;
   }
 
 }

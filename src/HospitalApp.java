@@ -18,6 +18,7 @@ public class HospitalApp {
 		ArrayList<Patient> patientList = pList.copyPatientList();
 		ArrayList<Medicine> medicineList = mList.copyMedicineList();
 		ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
+		ArrayList<RestockForm> restockList = new ArrayList<>();
 
 		
 		Scanner sc = new Scanner(System.in);
@@ -319,7 +320,7 @@ public class HospitalApp {
 					System.out.println("Hello " + pharma.getName() + ", welcome to the Pharmacy menu");
 					System.out.println("1. Fulfill medication orders"); //TODO
 					System.out.println("2. Display stock"); //TODO
-					System.out.println("3. Request restock");
+					System.out.println("3. Request restock MENU");
 					System.out.println("4. Request log"); //TODO
 					System.out.println("5. Change Password");
 					System.out.println("6. Log off");
@@ -337,20 +338,46 @@ public class HospitalApp {
 							//1. Fulfill medication orders
 							//Print all appointments with prescriptions
 
+							int index = -1;
 							for (Appointment a : appointmentList) {
 								if(a.isHasMedication())
 								{
-									int index = appointmentList.indexOf(a);
+									index = appointmentList.indexOf(a);
 									System.out.println("================= Prescription ===================");
-									System.out.printf("%-10s %-10s %-10s %-10s \n",index,"Medication","Amount","Status");
+									System.out.printf("%-10s %-10s %-10s %-10s \n","IndexNo","Medication","Amount","Status");
 									System.out.println("==================================================");
 
+									System.out.printf("%-10d",index);
 									a.printPrescription();
 								}
 							}
 							//Choose appointment with the index shown
+							if(index!=-1)
+							{
+								System.out.println("Choose appointment with the index above");
+								int apptIndex = -1;
+								while (true) {													//Reject non-int inputs
+									if (scPharma.hasNextInt()) {
+										apptIndex = scPharma.nextInt(); // Read the integer input
+										break; // Exit loop if an integer was successfully read
+									} else {
+										System.out.println("Invalid input. Please enter an integer.");
+										scPharma.next(); // Consume the invalid input to avoid infinite loop
+									}
+								}
+								Appointment a = appointmentList.get(apptIndex);
+								a.printPrescription();
 
-							//Choose which medication to fulfill, update "medIsFilled" per PrescriptedMed and update medicineList
+								System.out.println("Enter prescription you would like to fulfill");
+								//Choose which medication to fulfill, update "medIsFilled" per PrescriptedMed and update medicineList
+								String prescription = scPharma.nextLine();
+
+								a.fulfillPrescription(prescription);
+								mList.minusStock(prescription,a.getPrescribedAmount(prescription));
+								System.out.println("Prescription fulfilled!");
+
+							}else System.out.println("No appointment found!");
+
 
 							break;
 						case 2:
@@ -359,13 +386,14 @@ public class HospitalApp {
 							break;
 						case 3:
 							//3. Request restock
-							mList.printList();
 							int m;
 							do {
-								System.out.println("1. ");
-								System.out.println("2. ");
-								System.out.println("3. ");
-								System.out.println("4. Previous Menu");
+								mList.printList();
+								//RestockForm rForm = new RestockForm(null,-1,null);
+								System.out.println("1. Request restock - Specific medication");
+								System.out.println("2. Request restock - All of low");
+								System.out.println("3. Cancel restock request");
+								System.out.println("4. Back");
 								do {
 									System.out.println("Enter selection: ");
 									m = scPharma.nextInt();
@@ -373,32 +401,65 @@ public class HospitalApp {
 								} while (m > 4 || m < 1);
 								switch (m) {
 									case 1:
-										//mList.minusStock("Paracetamol",90);
-
+										//1. Request restock - Specific medication
 										mList.printList();
+										String restockMed = null;
+										int restockAmt = 0;
+
+										System.out.println("Which medication would you like to restock ?");
+										scPharma.nextLine();
+										restockMed = scPharma.nextLine();
+										restockAmt = scPharma.nextInt();
+
+										RestockForm rForm = new RestockForm(restockMed,restockAmt);
+										restockList.add(rForm);
+
+										System.out.println("Restock request has been made successfully.");
 										break;
 									case 2:
-
+										//2. Request restock - All low
+										mList.printLowStockMedicine();
+										//
 										break;
 									case 3:
+										//3. Cancel restock request
+										//Lists all requests
+										boolean triggg = false;
+										System.out.printf("%-10s %-20s %-10s %-20s\n","restockID","Medicine","Amount","Status");
+										for (RestockForm rF : restockList) {
+											if(!rF.isFulfilled()){
+												rF.printFormDetails();
+												triggg = true;
+											};
+										}
+										if (!triggg) {System.out.println("==========  There are no past requests  =========="); break;}
 
+										//RestockForm restockList = new RestockForm()
+
+
+										//restockList.remove(restockList);
 										break;
 									case 4:
+										//4. Back
 										break;
 								}
 							} while (m != 4);
-
-
 							break;
 						case 4:
 							//4. Request log
+							boolean trigg = false;
+							System.out.printf("%-10s %-20s %-10s %-20s\n","restockID","Medicine","Amount","Status");
+							for (RestockForm rF : restockList) {
+								rF.printFormDetails();
+								trigg = true;
+							}
+							if (!trigg) {System.out.println("==========  There are no past requests  ==========");}
 
 							break;
 						case 5:
 							//5. Change Password
 							scPharma.nextLine();
 							String oldP, newP;
-							boolean trig;
 							System.out.println("Please enter your current password: ");
 							oldP = scPharma.nextLine();
 							System.out.println("Please enter your new password");
@@ -412,7 +473,6 @@ public class HospitalApp {
 							loggedIn = false;
 							break;
 					}
-
 
 				} while (choiceP != 6);
 
