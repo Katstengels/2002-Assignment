@@ -1,4 +1,4 @@
-package newAssignment;
+package src;
 
 import java.util.Scanner;
 import java.util.Date;
