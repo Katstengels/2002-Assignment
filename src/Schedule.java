@@ -5,7 +5,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 public class Schedule {
-	private Calendar calendar = Calendar.getInstance();;
+	private Calendar calendar = Calendar.getInstance();
 	private Date dateTime;
 	private boolean available;
 	private Appointment appointment;
