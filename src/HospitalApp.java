@@ -10,7 +10,7 @@ public class HospitalApp {
 
 	public static void main(String[] args) {
 
-        	PatientInv pList = PatientInv.getInstance();
+        PatientInv pList = PatientInv.getInstance();
 		StaffInv sList = StaffInv.getInstance();
 		MedicineInv mList = MedicineInv.getInstance();
 		
@@ -27,8 +27,9 @@ public class HospitalApp {
 		Calendar calendar = Calendar.getInstance();
 		Date now = calendar.getTime();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM YYYY");
-		int patSelect, aptSelect, medSelect, patAmount, aptAmount, medAmount;
+		int patSelect, aptSelect, medSelect, docSelect, patAmount, aptAmount, medAmount, docAmount;
 		Patient pat;
+		Doctor doc;
 		Appointment apt;
 		Medicine med;
 		int choice;
@@ -128,7 +129,7 @@ public class HospitalApp {
 						pat = patientList.get(patSelect-1);
 						
 						pat.updatePart();
-							
+						
 						System.out.println();
 						break;
 						
@@ -709,9 +710,112 @@ public class HospitalApp {
 				break;
 				
 			case "Patient":
-				System.out.println("Patient"); // just to test can delete later
-
-				//enter your code here
+				Patient patient = (Patient) user;
+				int counting = 0;
+				String docID = "";
+				
+				do {
+					System.out.println("Hello " + patient.getName() + ", welcome to the patient menu");
+					System.out.println("1. View Medical Records");
+					System.out.println("2. Update Personal Information");
+					System.out.println("3. View Available Appointment Slots");
+					System.out.println("4. Schedule Appointment");
+					System.out.println("5. Reschedule Appointment");
+					System.out.println("6. Cancel Appointment");
+					System.out.println("7. View Scheduled Appointments");
+					System.out.println("8. View Past Appointment Records");
+					System.out.println("9. Logout");
+					choice = sc.nextInt();
+					
+					switch(choice) {
+					case 1: // view med record
+						System.out.println("Name		: " + patient.getName());
+						System.out.println("DOB		: " + dateFormat.format(patient.getDOB()));
+						System.out.println("Email		: " + patient.getEmail());
+						System.out.println("Contact no.	: " + patient.getContactNum());
+						System.out.println("Blood type	: " + patient.getBloodType());
+						System.out.println("Previous appointment outcomes:");
+						for (Appointment a : appointmentList) {
+							if (patient.getName().equals(a.getPatient())) {
+								System.out.println(a.getDate() + ": " + a.getOutcome());
+							}
+						}
+						System.out.println();
+						break;
+						
+					case 2: // update particular
+						patient.updatePart();
+						System.out.println();
+						break;
+						
+					case 3: // view avail apt slots
+						docSelect = 0;
+						docAmount = 0;
+						
+						for (Staff s : staffList) {
+							if (s.getRole() == "Doctor") {
+								docAmount++;
+								System.out.println(docAmount + ". " + s.getName());
+							}
+							
+							do {
+								System.out.println("Select doctor: ");
+								docSelect = sc.nextInt();
+								
+								if (docSelect>docAmount) System.out.println("Invalid doctor! Please enter again.");
+							} while (docSelect>docAmount);
+						}
+						
+						for (Staff s : staffList) {
+							if (s.getRole() == "Doctor") {
+								counting++;
+								if (counting == docSelect) {
+									docID = s.getID();
+									break;
+								}
+							}
+						}
+						
+						doc = (Doctor) staffList.get(sList.findStaffIndexID(docID));
+						
+						doc.getAllAvailability();
+						
+						System.out.println();
+						break;
+						
+					case 4: // make apt
+						
+						System.out.println();
+						break;
+						
+					case 5: // reschedule apt
+						System.out.println();
+						break;
+						
+					case 6: // cancel apt
+						System.out.println();
+						break;
+						
+					case 7: // view apt
+						System.out.println();
+						break;
+						
+					case 8: // view apt record
+						System.out.println();
+						break;
+						
+					case 9:
+						System.out.println("Logging out...");
+						sc.nextLine();
+						loggedIn = false;
+						System.out.println();
+						break;
+						
+					default:
+						System.out.println("Invalid choice! Please enter again.");
+						break;
+					}
+				} while (choice > 8);
 				
 				break;
 			}
