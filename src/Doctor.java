@@ -109,6 +109,19 @@ class Doctor extends Staff{
 			
 	}
 
+	public void getAvailSlots() {
+		int num = 0;
+		System.out.println("Available slots: ");
+		for (int i = 0; i<7; i++) {
+			System.out.println(schedule[i][1].getDate() + ": ");
+			for (int j = 0; j<MAX_APT; j++) {
+				if (schedule[i][j].getAvail()) {
+					num++;
+					System.out.println(num + ". " + schedule[i][j].getTime());
+				}
+			}
+		}
+	}
 				
 	public boolean getAvailability(Date time){
 	    for (int i=0; i<7; i++){
