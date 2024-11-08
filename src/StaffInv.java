@@ -62,7 +62,7 @@ public class StaffInv {
                 Staff staff = null;
                 if (role.equals("Doctor")) {
                     //System.out.println(" Doc here");
-                    staff = new Doctor(userID, name, role, gender, age, password, userID);
+                    staff = new Doctor(userID, name, role, gender, age, password);
                 } else if (role.equals("Pharmacist")) {
                     //System.out.println(" Big Pharma");
                     staff = new Pharmacist(userID, name, role, gender, age, password);
