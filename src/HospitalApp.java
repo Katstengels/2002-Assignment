@@ -127,8 +127,8 @@ public class HospitalApp {
 						
 						pat = patientList.get(patSelect-1);
 						
-						// need patient update method
-						
+						pat.updatePart();
+							
 						System.out.println();
 						break;
 						
