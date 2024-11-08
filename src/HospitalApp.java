@@ -10,7 +10,7 @@ public class HospitalApp {
 
 	public static void main(String[] args) {
 
-        PatientInv pList = PatientInv.getInstance();
+        	PatientInv pList = PatientInv.getInstance();
 		StaffInv sList = StaffInv.getInstance();
 		MedicineInv mList = MedicineInv.getInstance();
 		
@@ -27,6 +27,11 @@ public class HospitalApp {
 		Calendar calendar = Calendar.getInstance();
 		Date now = calendar.getTime();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM YYYY");
+		int patSelect, aptSelect, medSelect, patAmount, aptAmount, medAmount;
+		Patient pat;
+		Appointment apt;
+		Medicine med;
+		int choice;
 		
 		do {
 			do {
@@ -64,11 +69,6 @@ public class HospitalApp {
 			switch (user.getRole()) {
 			case "Doctor":
 				Doctor doctor = (Doctor) user;
-				int patSelect, aptSelect, medSelect, patAmount, aptAmount, medAmount;
-				Patient pat;
-				Appointment apt;
-				Medicine med;
-				int choice;
 				
 				do {
 					System.out.println("Hello " + doctor.getName() + ", welcome to the doctor menu");
@@ -208,7 +208,7 @@ public class HospitalApp {
 						break;
 					
 					case 7: // appointment outcome
-						int medYN;
+						int medYN, medAptAmt;
 						patAmount = 0;
 						aptAmount = 0;
 						for (Patient p : patientList) {
@@ -275,8 +275,9 @@ public class HospitalApp {
 								med = medicineList.get(medSelect-1);
 								
 								System.out.println("Enter medication amount: ");
+								medAptAmt = sc.nextInt();
 								
-								apt.addPrescript(med.getName(), sc.nextInt());
+								apt.addPrescript(med.getName(), medAptAmt);
 								
 								break;
 								
