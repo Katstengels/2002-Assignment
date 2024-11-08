@@ -63,13 +63,15 @@ public class HospitalApp {
 
 			switch (user.getRole()) {
 			case "Doctor":
-				Doctor d = (Doctor) user;
-				int patSelect, aptSelect, patAmount, aptAmount;
+				Doctor doctor = (Doctor) user;
+				int patSelect, aptSelect, medSelect, patAmount, aptAmount, medAmount;
 				Patient pat;
 				Appointment apt;
+				Medicine med;
 				int choice;
 				
 				do {
+					System.out.println("Hello " + doctor.getName() + ", welcome to the doctor menu");
 					System.out.println("1. View Patient Medical Records");
 					System.out.println("2. Update Patient Medical Records");
 					System.out.println("3. View Personal Schedule");
@@ -131,19 +133,19 @@ public class HospitalApp {
 						break;
 						
 					case 3: // personal schedule
-						d.getAllAvailability();
+						doctor.getAllAvailability();
 						System.out.println();
 						break;
 					
 					case 4: // set availability
-						d.setAvailability();
+						doctor.setAvailability();
 						System.out.println();
 						break;
 						
 					case 5: // accept or reject appointments
 						aptAmount = 0;
 						for (Appointment a : appointmentList) {
-							if(a.getDoctor().equals(d.getName())) { // list all appointments under dr's name
+							if(a.getDoctor().equals(doctor.getName()) && a.getStatus().equals("pending")) { // list all appointments under dr's name
 								aptAmount++;
 								System.out.println(aptAmount + ". " + a.getID() + ": " + a.getDate() + " " + a.getTime());
 							}
@@ -171,7 +173,7 @@ public class HospitalApp {
 							switch (acc) {
 							case 1:
 								apt.updateStatus("Confirmed");
-								d.addAppointment(apt);
+								doctor.addAppointment(apt);
 								System.out.println("Appointment accepted.");
 								break;
 							case 2:
@@ -191,7 +193,7 @@ public class HospitalApp {
 						aptAmount = 0;
 						
 						for (Appointment a : appointmentList) {
-							if (a.getDoctor().equals(d.getName()) && a.getDateTime().after(now)) { // list appointments that are in the future and under dr's name
+							if (a.getDoctor().equals(doctor.getName()) && a.getDateTime().after(now)) { // list appointments that are in the future and under dr's name
 								System.out.println();
 								System.out.println("Appointment ID	: " + a.getID());
 								System.out.println("Date			: " + a.getDate());
@@ -206,6 +208,7 @@ public class HospitalApp {
 						break;
 					
 					case 7: // appointment outcome
+						int medYN;
 						patAmount = 0;
 						aptAmount = 0;
 						for (Patient p : patientList) {
@@ -221,12 +224,15 @@ public class HospitalApp {
 						
 						pat = patientList.get(patAmount-1);
 						for (Appointment a : appointmentList) {
-							if (pat.getName().equals(a.getPatient()) && d.getName().equals(a.getDoctor())) { // appointments with both pt's and dr's names
+							if (pat.getName().equals(a.getPatient()) && doctor.getName().equals(a.getDoctor())) { // appointments with both pt's and dr's names
 								aptAmount++;
 								System.out.println((aptAmount) + ". " + a.getDate());
 							}
 						}
 						if (aptAmount != 0) {
+							medAmount = 0;
+							medSelect = 0;
+							
 							do {					
 								System.out.println("Select appointment:");
 								aptSelect = sc.nextInt();
@@ -235,7 +241,48 @@ public class HospitalApp {
 							
 							apt = appointmentList.get(aptSelect-1);
 							
+							System.out.println("Enter appointment outcome: ");
 							apt.updateOutcome(sc.nextLine());
+							System.out.println("Any medications prescribed?");
+							System.out.println("1. Yes");
+							System.out.println("2. No");
+							
+							do {
+								System.out.println("Enter choice: ");
+								medYN = sc.nextInt();
+								
+								if (medYN<2) System.out.println("Invalid choice! Please enter again.");
+							} while (medYN<2);
+							
+							switch (medYN) {
+							case 1:
+								apt.TrueHasMedication();
+								
+								System.out.println("Medicine list: ");
+								for (Medicine m : medicineList) {
+									medAmount++;
+									System.out.println(medAmount + ". " + m.getName());
+								}
+								
+								do {
+									System.out.println("Enter medicine: ");
+									medSelect = sc.nextInt();
+									
+									if (medSelect>medAmount) System.out.println("Invalid medicine! Please enter again.");
+									
+								} while (medSelect>medAmount);
+								
+								med = medicineList.get(medSelect-1);
+								
+								System.out.println("Enter medication amount: ");
+								
+								apt.addPrescript(med.getName(), sc.nextInt());
+								
+								break;
+								
+							case 2:
+								break;
+							}
 						}
 						
 						else System.out.println("No appointment found!");
@@ -564,7 +611,9 @@ public class HospitalApp {
 		                            case 3:
 		                            	sc.nextLine();
 		                                System.out.println("Updating medication...");
-		                                int choice4, medCount=0, medSelect=0, medAmount=0;
+		                                int choice4, medCount=0; 
+						medSelect=0; 
+						medAmount=0;
 		                                boolean foundm = false;
 		                                String desiredMedName;
 		                                System.out.println("---- Update Medication ----");
