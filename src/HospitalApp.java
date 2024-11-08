@@ -134,7 +134,7 @@ public class HospitalApp {
 						break;
 						
 					case 3: // personal schedule
-						doctor.getAllAvailability();
+						doctor.getAllAvailability(true);
 						System.out.println();
 						break;
 					
@@ -778,7 +778,7 @@ public class HospitalApp {
 						
 						doc = (Doctor) staffList.get(sList.findStaffIndexID(docID));
 						
-						doc.getAllAvailability();
+						doc.getAvailSlots();
 						
 						System.out.println();
 						break;
