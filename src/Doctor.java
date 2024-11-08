@@ -13,9 +13,9 @@ class Doctor extends Staff {
     Scanner sc = new Scanner(System.in);
 
     // Constructor
-    public Doctor(String userID, String name, String role, String gender, int age, String password, String doctorID) {
+    public Doctor(String userID, String name, String role, String gender, int age, String password) {
         super(userID, name, role, gender, age, password);
-        this.doctorID = doctorID; // Assign doctorID
+        this.doctorID = userID; // Assign doctorID
         doctors.add(this); // Add the new doctor to the static list
 
         // Initialize schedule
