@@ -1,6 +1,7 @@
 package src;
 
 import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.ArrayList;
@@ -128,7 +129,7 @@ public class HospitalApp {
 						
 						pat = patientList.get(patSelect-1);
 						
-						pat.updatePart();
+						//pat.updatePart();
 							
 						System.out.println();
                         break;
