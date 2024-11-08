@@ -43,6 +43,7 @@ public class Schedule {
 	
 	public void addAppointment(Appointment inApt) {
 		appointment = inApt;
+		available = false;
 	}
 	
 	public Appointment getAppointment() {
