@@ -87,7 +87,7 @@ public class HospitalApp {
 						patAmount = 0;
 						for (Patient p : patientList) {
 							patAmount++;
-							System.out.println((patAmount) + ". " + p.getName());
+							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
 						} // print patient list
 						
 						do {					
@@ -116,7 +116,7 @@ public class HospitalApp {
 						aptAmount = 0;
 						for (Patient p : patientList) {
 							patAmount++;
-							System.out.println((patAmount) + ". " + p.getName());
+							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
 						} // print patient list
 						
 						do {					
@@ -213,7 +213,7 @@ public class HospitalApp {
 						aptAmount = 0;
 						for (Patient p : patientList) {
 							patAmount++;
-							System.out.println((patAmount) + ". " + p.getName());
+							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
 						} // list patients
 						
 						do {					
