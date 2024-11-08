@@ -1,4 +1,4 @@
-package src;
+//package src;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +30,31 @@ public class Patient extends User {
         this.treatments = new ArrayList<>();
         this.appointments = new ArrayList<>();
     }
+
+    public String getID() {
+        return super.getUserID(); // Assuming userID is stored in the parent User class
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Date getDOB() {
+        return dateOfBirth;
+    }
+
+    public String getEmail() {
+        return emailAddress;
+    }
+
+    public String getContactNum() {
+        return contactNumber;
+    }
+
+    public String getBloodType() {
+        return bloodType;
+    }
+
 
     // Access patient medical records
     public void viewMedicalRecord() {
