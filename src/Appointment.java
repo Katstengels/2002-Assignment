@@ -87,6 +87,11 @@ public class Appointment {
     return -1;
   }
 
+    public void updateDateTime(Date newDate) {
+        this.date = newDate;
+    }
+
+
   public void printPrescription(){
     addPrescript("Paracetamol",10); //TEMP
     addPrescript("Ibuprofen",20);   //TEMP
