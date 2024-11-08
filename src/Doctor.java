@@ -1,4 +1,4 @@
-package src;
+package newAssignment;
 
 import java.util.Scanner;
 import java.util.Date;
@@ -15,6 +15,10 @@ class Doctor extends Staff{
 				schedule[i][j] = new Schedule(i, j);
 			}
 	    }
+	}
+	
+	public Schedule[][] getSchedule(){
+		return schedule;
 	}
 	
 	public void setAvailability() {
@@ -77,7 +81,7 @@ class Doctor extends Staff{
 	}
 	
 	
-	public void getAllAvailability(){
+	public void getAllAvailability(boolean docAccess){
 		int dChoice;
 		do {
 			for (int i=0; i<7; i++) {
@@ -88,17 +92,29 @@ class Doctor extends Staff{
 			dChoice = sc.nextInt();
 			
 			if (dChoice < 8 && dChoice > 0) {
-				System.out.format("%s\n", schedule[dChoice-1][1].getDate());
-				for(int j=0; j<MAX_APT; j++) {
-					System.out.format("%d. %s : ", j+1, schedule[dChoice-1][j].getTime());
-					if (schedule[dChoice-1][j].getAvail()) {
-						if (schedule[dChoice-1][j].getAppointment() != null) {
-							System.out.println(schedule[dChoice-1][j].getAppointment().getID() + " " + schedule[dChoice-1][j].getAppointment().getPatient());
+				if (docAccess) {
+					System.out.format("%s\n", schedule[dChoice-1][1].getDate());
+					for(int j=0; j<MAX_APT; j++) {
+						System.out.format("%d. %s : ", j+1, schedule[dChoice-1][j].getTime());
+						if (schedule[dChoice-1][j].getAvail()) {
+							if (schedule[dChoice-1][j].getAppointment() != null) {
+								System.out.println(schedule[dChoice-1][j].getAppointment().getID() + " " + schedule[dChoice-1][j].getAppointment().getPatient());
+							}
+							else System.out.println("Available");
 						}
-						else System.out.println("Available");
+						else System.out.println("Unavailable");
+					}	
+				}
+				else {
+					System.out.format("%s\n", schedule[dChoice-1][1].getDate());
+					for(int j=0; j<MAX_APT; j++) {
+						System.out.format("%d. %s : ", j+1, schedule[dChoice-1][j].getTime());
+						if (schedule[dChoice-1][j].getAvail()) {
+							System.out.println("Available");
+						}
+						else System.out.println("Unavailable");
 					}
-					else System.out.println("Unavailable");
-				}	
+				}
 				System.out.println();
 			}
 				
@@ -108,7 +124,7 @@ class Doctor extends Staff{
 		} while (dChoice != 8 );
 			
 	}
-
+	
 	public void getAvailSlots() {
 		int num = 0;
 		System.out.println("Available slots: ");
@@ -122,6 +138,7 @@ class Doctor extends Staff{
 			}
 		}
 	}
+
 				
 	public boolean getAvailability(Date time){
 	    for (int i=0; i<7; i++){
