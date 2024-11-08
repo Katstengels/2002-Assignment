@@ -2,13 +2,10 @@ package src;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Date;
-import java.text.ParseException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class StaffInv {
 
@@ -65,7 +62,7 @@ public class StaffInv {
                 Staff staff = null;
                 if (role.equals("Doctor")) {
                     //System.out.println(" Doc here");
-                    staff = new Doctor(userID, name, role, gender, age, password);
+                    staff = new Doctor(userID, name, role, gender, age, password, userID);
                 } else if (role.equals("Pharmacist")) {
                     //System.out.println(" Big Pharma");
                     staff = new Pharmacist(userID, name, role, gender, age, password);
