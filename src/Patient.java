@@ -55,7 +55,6 @@ public class Patient extends User {
         return bloodType;
     }
 
-
     // Access patient medical records
     public void viewMedicalRecord() {
         System.out.println("Patient ID: " + getUserID());
@@ -101,7 +100,7 @@ public class Patient extends User {
     // Schedule an appointment
     public void scheduleAppointment(Doctor doctor, Date date) {
         if (doctor.getAvailability(date)) {
-            Appointment newAppointment = new Appointment(this, doctor, date, "Scheduled");
+            Appointment newAppointment = new Appointment(this, doctor, date);
             doctor.addAppointment(newAppointment);
             appointments.add(newAppointment);
             System.out.println("Appointment scheduled successfully.");
@@ -112,15 +111,14 @@ public class Patient extends User {
 
     // Reschedule an appointment
     public void rescheduleAppointment(String appointmentID, Doctor doctor, Date newDate) {
-        for (Appointment appt : appointments) {
-            if (appt.getID().equals(appointmentID)) {
-                cancelAppointment(appt);
-                scheduleAppointment(doctor, newDate);
-                System.out.println("Appointment rescheduled successfully.");
-                return;
-            }
+        Appointment appointment = Appointment.getAppointmentByID(appointmentID);
+        if (appointment != null && appointments.contains(appointment)) {
+            cancelAppointment(appointment);
+            scheduleAppointment(doctor, newDate);
+            System.out.println("Appointment rescheduled successfully.");
+        } else {
+            System.out.println("Appointment not found.");
         }
-        System.out.println("Appointment not found.");
     }
 
     // Cancel an appointment
@@ -137,7 +135,7 @@ public class Patient extends User {
     public void viewScheduledAppointments() {
         System.out.println("Scheduled Appointments:");
         for (Appointment appt : appointments) {
-            System.out.println("Appointment ID: " + appt.getID() + " with Dr. " + appt.getDoctor() + " on " + appt.getDate());
+            System.out.println("Appointment ID: " + appt.getID() + " with Dr. " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTime());
         }
     }
 
@@ -145,7 +143,7 @@ public class Patient extends User {
     public void viewPastAppointmentOutcomes() {
         System.out.println("Past Appointment Outcomes:");
         for (Appointment appt : appointments) {
-            if (appt.getStatus().equals("completed")) {
+            if ("completed".equals(appt.getStatus())) {
                 System.out.println("Appointment ID: " + appt.getID() + " - Outcome: " + appt.getOutcome());
             }
         }
