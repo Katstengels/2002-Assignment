@@ -931,8 +931,27 @@ public class HospitalApp {
 
 				            case 8:
 				                // View Past Appointment Outcome Records
-								
-				              
+								boolean found = false;
+        
+        						for (Appointment appointment1 : appointmentList) {
+            						// Check if appointment belongs to the patient and is in the past with an outcome
+            						if (appointment1.getPatient().equals(patient.getName()) && 
+                						appointment1.getDateTime().before(new Date()) && 
+                						appointment1.getOutcome() != null) {
+                
+                							found = true;
+                							System.out.printf("Appointment ID: %s\n", appointment1.getID());
+                                            System.out.printf("Doctor: %s\n", appointment1.getDoctor());
+                                            System.out.printf("Date: %s\n", appointment1.getDate());
+                                            System.out.printf("Time: %s\n", appointment1.getTime());
+                                            System.out.printf("Outcome: %s\n", appointment1.getOutcome());
+                                        	System.out.println("--------------------------------------------------");
+            						}
+        						}
+
+        						if (!found) {
+            						System.out.println("No past appointments with recorded outcomes found for this patient.");
+        						}
 				                break;
 
 				            case 9:
