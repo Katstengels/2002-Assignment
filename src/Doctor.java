@@ -1,7 +1,9 @@
 package src;
 
-import java.util.Scanner;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Scanner;
 
 class Doctor extends Staff{
 	private final int MAX_APT = 7;		//Max no of appointment per day
@@ -82,7 +84,7 @@ class Doctor extends Staff{
 	
 	
 	public void getAllAvailability(boolean docAccess){
-		int dChoice;
+		int dChoice = 0;
 		do {
 			for (int i=0; i<7; i++) {
 				System.out.format("%d. %s\n", i+1, schedule[i][1].getDate());
@@ -138,6 +140,128 @@ class Doctor extends Staff{
 			}
 		}
 	}
+//rescheduling appointments
+public boolean rescheduleAppointmentByID(Patient patient, String appointmentID, Date newDateTime) {
+    // Step 1: Locate the appointment by ID
+    for (int i = 0; i < 7; i++) {
+        for (int j = 0; j < MAX_APT; j++) {
+            Appointment appointment = schedule[i][j].getAppointment();
+            if (appointment != null && appointment.getID().equals(appointmentID) && appointment.getPatient().equals(patient)) {
+                
+                // Step 2: Check if the new slot is available
+                for (int x = 0; x < 7; x++) {
+                    for (int y = 0; y < MAX_APT; y++) {
+                        if (schedule[x][y].getDateTime().equals(newDateTime) && schedule[x][y].getAvail()) {
+                            // Move the appointment to the new slot
+                            schedule[x][y].addAppointment(appointment);
+                            schedule[i][j].changeAvail(true); // Set old slot as available
+                            schedule[i][j].addAppointment(null); // Clear old appointment
+                            return true; // Success
+                        }
+                    }
+                }
+                return false; // New slot not available
+            }
+        }
+    }
+    return false; // Appointment not found
+}
+
+
+
+public void listAppointmentsForPatient(Patient patient) {
+    System.out.println("Upcoming appointments for " + patient.getName() + ":");
+
+    boolean found = false;
+    for (int i = 0; i < 7; i++) {
+        for (int j = 0; j < MAX_APT; j++) {
+            Appointment appointment = schedule[i][j].getAppointment();
+            if (appointment != null && appointment.getPatient().equals(patient)) {
+                found = true;
+                System.out.printf("ID: %s | Date: %s | Time: %s\n",
+                        appointment.getID(),
+                        schedule[i][j].getDate(),
+                        schedule[i][j].getTime());
+            }
+        }
+    }
+
+    if (!found) {
+        System.out.println("No upcoming appointments found for this patient.");
+    }
+}
+public void promptAndRescheduleForPatient(Patient patient) {
+    Scanner scanner = new Scanner(System.in);
+
+    // Step 1: List all appointments for the patient
+    listAppointmentsForPatient(patient);
+
+    // Step 2: Ask for Appointment ID to reschedule
+    System.out.print("Enter the Appointment ID to reschedule: ");
+    String appointmentID = scanner.nextLine();
+
+    // Step 3: Ask for new date and time
+    System.out.print("Enter the new date and time for the appointment (yyyy-MM-dd HH:mm): ");
+    String newDateTimeString = scanner.nextLine();
+    Date newDateTime;
+
+    // Step 4: Parse the new date and time
+    try {
+        newDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(newDateTimeString);
+    } catch (ParseException e) {
+        System.out.println("Invalid date/time format. Please enter in 'yyyy-MM-dd HH:mm' format.");
+        return;
+    }
+
+    // Step 5: Attempt to reschedule the appointment
+    boolean success = rescheduleAppointmentByID(patient, appointmentID, newDateTime);
+
+    // Step 6: Output result
+    if (success) {
+        System.out.println("Rescheduling successful.");
+    } else {
+        System.out.println("Rescheduling failed. Please check the appointment ID or time availability.");
+    }
+}
+
+// cancel appointments
+public void promptAndCancelAppointmentForPatient(Patient patient) {
+    Scanner scanner = new Scanner(System.in);
+
+    // Step 1: List all appointments for the patient
+    listAppointmentsForPatient(patient);
+
+    // Step 2: Ask for Appointment ID to cancel
+    System.out.print("Enter the Appointment ID to cancel: ");
+    String appointmentID = scanner.nextLine();
+
+    // Step 3: Attempt to cancel the appointment
+    boolean success = cancelAppointmentByID(patient, appointmentID);
+
+    // Step 4: Output result
+    if (success) {
+        System.out.println("Appointment canceled successfully.");
+    } else {
+        System.out.println("Cancellation failed. Please check the appointment ID.");
+    }
+}
+public boolean cancelAppointmentByID(Patient patient, String appointmentID) {
+    for (int i = 0; i < 7; i++) {
+        for (int j = 0; j < MAX_APT; j++) {
+            Appointment appointment = schedule[i][j].getAppointment();
+            if (appointment != null && appointment.getID().equals(appointmentID) && appointment.getPatient().equals(patient)) {
+                // Step 1: Remove the appointment and make the slot available
+                schedule[i][j].changeAvail(true); // Mark slot as available
+                schedule[i][j].addAppointment(null); // Remove the appointment
+                return true; // Successful cancellation
+            }
+        }
+    }
+    return false; // Appointment not found or mismatch
+}
+
+
+
 
 				
 	public boolean getAvailability(Date time){
