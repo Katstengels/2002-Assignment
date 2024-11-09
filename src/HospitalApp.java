@@ -1,9 +1,10 @@
 package src;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Calendar;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Scanner;
 
 public class HospitalApp {
@@ -816,36 +817,121 @@ public class HospitalApp {
 
 				            case 2:
 				                // Update Personal Information
-				                
+				                patient.updatePersonalInfo();
 				                break;
 
 				            case 3:
 				                // View Available Appointment Slots
-				               
-				                break;
+				                System.out.println("Enter the doctor's ID to view available slots: ");
+                				String doctorID = sc.nextLine();
+								Doctor doctor1 = null;
+								for (Staff s : staffList) {
+									if (s.getID().equals(doctorID)) {
+										if(s.getRole().equals("Doctor")){
+											doctor1 = (Doctor) s;
+											break;}
+									}
+								}
+								if(doctor1 == null) {
+									System.out.println("Doctor not found!");
+									break;
+								}
+								doctor1.getAvailSlots();
+					
+				
+				            break;
 
 				            case 4:
 				                // Schedule an Appointment
-				               
+								System.out.println("Enter the doctor's ID to schedule an appointment: ");
+								doctorID = sc.nextLine();
+								doctor1 = null;
+								for (Staff s : staffList) {
+									if (s.getID().equals(doctorID)) {
+										if(s.getRole().equals("Doctor")){
+											doctor1 = (Doctor) s;
+											break;}
+									}
+								}
+								if(doctor1 == null) {
+									System.out.println("Doctor not found!");
+									break;
+								}
+								doctor1.getAvailSlots();
+								System.out.println("Enter the date of the appointment (yyyy-MM-dd HH:mm):  ");
+								Date date = null;
+								try {
+									date = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(sc.nextLine());
+								} catch (ParseException e) {
+										System.out.println("Invalid date format. Please enter in 'yyyy-MM-dd HH:mm' format.");
+								}
+								System.out.println("Enter the time of the appointment (HH:mm): ");
+								String time = sc.nextLine();
+								Appointment appointment = new Appointment(patient, doctor1, date, time);
+								System.out.println("Appointment scheduled successfully!");
 				                break;
 
 				            case 5:
 				                // Reschedule an Appointment
+								System.out.println("Enter the doctor's ID to reschedule the appointment: ");
+								doctorID = sc.nextLine();
+								doctor1 = null;
+								for (Staff s : staffList) {
+									if (s.getID().equals(doctorID)) {
+										if(s.getRole().equals("Doctor")){
+											doctor1 = (Doctor) s;
+											break;}
+									}
+								}
+								if(doctor1 == null) {
+									System.out.println("Doctor not found!");
+									break;
+								}
+								doctor1.promptAndRescheduleForPatient(patient);
 				              
 				                break;
 
 				            case 6:
 				                // Cancel an Appointment
-				               
+								System.out.println("Enter the doctor's ID to cancel the appointment: ");
+								doctorID = sc.nextLine();
+								doctor1 = null;
+								for (Staff s : staffList) {
+									if (s.getID().equals(doctorID)) {
+										if(s.getRole().equals("Doctor")){
+											doctor1 = (Doctor) s;
+											break;}
+									}
+								}
+								if(doctor1 == null) {
+									System.out.println("Doctor not found!");
+									break;
+								}
+								doctor1.promptAndCancelAppointmentForPatient(patient);
 				                break;
 
 				            case 7:
 				                // View Scheduled Appointments
-				               
+								System.out.println("Enter the doctor's ID to view scheduled appointments: ");
+								doctorID = sc.nextLine();
+								doctor1 = null;
+								for (Staff s : staffList) {
+									if (s.getID().equals(doctorID)) {
+										if(s.getRole().equals("Doctor")){
+											doctor1 = (Doctor) s;
+											break;}
+									}
+								}
+								if(doctor1 == null) {
+									System.out.println("Doctor not found!");
+									break;
+								}
+				                doctor1.listAppointmentsForPatient(patient);
 				                break;
 
 				            case 8:
 				                // View Past Appointment Outcome Records
+								
 				              
 				                break;
 
@@ -858,11 +944,11 @@ public class HospitalApp {
 
 				    } while (choicePatient != 9);
 				    break;
-
-
+				}
+		
 				
 				
-			}
+			
 		} while (!loggedIn); //go back to login page
 	}
 
