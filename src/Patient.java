@@ -60,6 +60,28 @@ public class Patient extends User {
         System.out.println("Email: " + email);
         System.out.println("Blood Type: " + bloodType);
     }
+    public void updatePersonalInfo() {
+        System.out.println("Update Personal Information:");
+        System.out.println("1. Update Contact Number");
+        System.out.println("2. Update Email Address");
+        System.out.print("Choose an option: ");
+        int choice = sc.nextInt();
+        sc.nextLine(); // Consume newline
+        switch (choice) {
+            case 1:
+                System.out.print("Enter new contact number: ");
+                contactNum = sc.nextLine();
+                System.out.println("Contact number updated.");
+                break;
+            case 2:
+                System.out.print("Enter new email address: ");
+                email = sc.nextLine();
+                System.out.println("Email address updated.");
+                break;
+            default:
+                System.out.println("Invalid choice.");
+        }
+    }
 
 
 
