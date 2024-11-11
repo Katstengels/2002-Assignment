@@ -1,4 +1,3 @@
-package project2002;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -488,7 +487,7 @@ public class HospitalApp {
 				//enter your code here
 				do {
 					System.out.println("1. View and Manage Hospital Staff");
-					System.out.println("2. View Appointments Details");
+					System.out.println("2. Manage Appointments");
 					System.out.println("3. View and Manage Medication Inventory");
 					System.out.println("4. Approve Replenishment Requests");
 					System.out.println("5. Logout");
@@ -538,7 +537,7 @@ public class HospitalApp {
 		
 		                case 2:
 		                    int choice3;
-		                    System.out.println("Managing hospital staff...");
+		                    System.out.println("-----------Manage hospital staff------------");
 		                    //show hospital staff
 		                    do {
 		                        System.out.println("Select action: ");
@@ -640,10 +639,235 @@ public class HospitalApp {
 		            }  while (choice2!=3);
 		            break;
 		        case 2:
-		            System.out.println("Case 2 entered.");
+		        	int choicey, choicez, apptamt, choicef = 0;
+		        	 do  {
+		        	       System.out.println("1. View Appointment Details");
+		        	       System.out.println("2. Manage Appointment Details");
+		        	       System.out.println("3. Back");
+		        	       System.out.println("Select option: ");
+		        	       choicey = sc.nextInt();
+		        	       switch (choicey) {
+		        	           case 1:
+		        	                System.out.println("---------View Appointment Details----------");
+		        	                do {
+		        	                    System.out.println("1. Filter by doctor");
+		        	                    System.out.println("2. Filter by patient");
+		        	                    System.out.println("3. Filter by Appointment ID");
+		        	                    System.out.println("4. Back");
+		        	                    System.out.println("Select option: ");
+		        	                    choicez = sc.nextInt();
+		        	                    switch (choicez) {
+		        	                        case 1:
+		        	                            System.out.println("---------Filter by doctor----------");
+		        	                            sc.nextLine();
+		        	                            System.out.println("Enter doctor name: ");
+		        	                            String docName = sc.nextLine();
+		        	                            do {
+		        	                                System.out.println("1. View past appointments");
+		        	                                System.out.println("2. View upcoming appointments");
+		        	                                System.out.println("3. View all appointments");
+		        	                                System.out.println("4. Back");
+		        	                                choicef = sc.nextInt();
+		        	                                switch(choicef){
+		        	                                    case 1:
+		        	                                        System.out.println("Viewing past appointments...");
+		        	                                        apptamt = 0;
+		        	                						
+		        	                						for (Appointment a : appointmentList) {
+		        	                							if (a.getDoctor().equals(docName) && a.getDateTime().before(now)) { // list appointments that are in the future and under dr's name
+		        	                								System.out.println();
+		        	                								System.out.println("Appointment ID	: " + a.getID());
+		        	                								System.out.println("Date			: " + a.getDate());
+		        	                								System.out.println("Time 			: " + a.getTime());
+		        	                								System.out.println("Patient			: " + a.getPatient());
+		        	                								System.out.println("Status			: " + a.getStatus());
+		        	                								System.out.println("Outcome			: " + a.getOutcome());
+		        	                								
+		        	                								apptamt++;
+		        	                							}
+		        	                						}
+		        	                						
+		        	                						if (apptamt == 0) System.out.println("No appointment found!");
+		        	                						System.out.println();
+		        	                                        break;
+		        	                                    case 2:
+		        	                                        System.out.println("Viewing upcoming appointments...");
+apptamt = 0;
+		        	                						
+		        	                						for (Appointment a : appointmentList) {
+		        	                							if (a.getDoctor().equals(docName) && a.getDateTime().after(now)) { // list appointments that are in the future and under dr's name
+		        	                								System.out.println();
+		        	                								System.out.println("Appointment ID	: " + a.getID());
+		        	                								System.out.println("Date			: " + a.getDate());
+		        	                								System.out.println("Time 			: " + a.getTime());
+		        	                								System.out.println("Patient			: " + a.getPatient());
+		        	                								System.out.println("Status			: " + a.getStatus());
+		        	                								System.out.println("Outcome			: " + a.getOutcome());
+		        	                								
+		        	                								apptamt++;
+		        	                							}
+		        	                						}
+		        	                						
+		        	                						if (apptamt == 0) System.out.println("No appointment found!");
+		        	                						System.out.println();
+		        	                                       
+		        	                                        break;
+		        	                                    case 3:
+		        	                                        System.out.println("Viewing all appointments...");
+apptamt = 0;
+		        	                						
+		        	                						for (Appointment a : appointmentList) {
+		        	                							if (a.getDoctor().equals(docName)) { // list appointments that are in the future and under dr's name
+		        	                								System.out.println();
+		        	                								System.out.println("Appointment ID	: " + a.getID());
+		        	                								System.out.println("Date			: " + a.getDate());
+		        	                								System.out.println("Time 			: " + a.getTime());
+		        	                								System.out.println("Patient			: " + a.getPatient());
+		        	                								System.out.println("Status			: " + a.getStatus());
+		        	                								System.out.println("Outcome			: " + a.getOutcome());
+		        	                								
+		        	                								apptamt++;
+		        	                							}
+		        	                						}
+		        	                						
+		        	                						if (apptamt == 0) System.out.println("No appointment found!");
+		        	                						System.out.println();
+		        	                                        break;
+		        	                                       
+		        	                                    case 4:
+		        	                                        break;
+		        	                            
+		        	                                }
+		        	                            } while (choicef!=4);
+		        	                            break;
+		        	                        case 2:
+		        	                            System.out.println("---------Filter by patient----------");
+		        	                            sc.nextLine();
+		        	                            System.out.println("Enter patient name: ");
+		        	                            String patName = "null"; 
+		        	                            patName = sc.nextLine();
+		        	                             do {
+		        	                                System.out.println("1. View past appointments");
+		        	                                System.out.println("2. View upcoming appointments");
+		        	                                System.out.println("3. View all appointments");
+		        	                                System.out.println("4. Back");
+		        	                                choicef = sc.nextInt();
+		        	                                switch(choicef){
+		        	                                    case 1:
+		        	                                        System.out.println("Viewing past appointments...");
+		        	                                        apptamt=0;
+		        	                						for (Appointment a : appointmentList) {
+		        	                							if (a.getPatient().equals(patName) && a.getDateTime().before(now)) { // list appointments that are in the future and under dr's name
+		        	                								System.out.println();
+		        	                								System.out.println("Appointment ID	: " + a.getID());
+		        	                								System.out.println("Date			: " + a.getDate());
+		        	                								System.out.println("Time 			: " + a.getTime());
+		        	                								System.out.println("Patient			: " + a.getPatient());
+		        	                								System.out.println("Status			: " + a.getStatus());
+		        	                								System.out.println("Outcome			: " + a.getOutcome());
+		        	                								
+		        	                								apptamt++;
+		        	                							}
+		        	                						}
+		        	                						
+		        	                						if (apptamt == 0) System.out.println("No appointment found!");
+		        	                						System.out.println();
+		        	                                        break;
+		        	                                    case 2:
+		        	                                        System.out.println("Viewing upcoming appointments");
+		        	                                        apptamt=0;
+		        	                						for (Appointment a : appointmentList) {
+		        	                							if (a.getPatient().equals(patName) && a.getDateTime().after(now)) { // list appointments that are in the future and under dr's name
+		        	                								System.out.println();
+		        	                								System.out.println("Appointment ID	: " + a.getID());
+		        	                								System.out.println("Date			: " + a.getDate());
+		        	                								System.out.println("Time 			: " + a.getTime());
+		        	                								System.out.println("Patient			: " + a.getPatient());
+		        	                								System.out.println("Status			: " + a.getStatus());
+		        	                								System.out.println("Outcome			: " + a.getOutcome());
+		        	                								
+		        	                								apptamt++;
+		        	                							}
+		        	                						}
+		        	                						
+		        	                						if (apptamt == 0) System.out.println("No appointment found!");
+		        	                						System.out.println();
+		        	                                        break;
+		        	                                    case 3:
+		        	                                        System.out.println("Viewing all appointments");
+		        	                                        apptamt=0;
+		        	                						for (Appointment a : appointmentList) {
+		        	                							if (a.getPatient().equals(patName)) { // list appointments that are in the future and under dr's name
+		        	                								System.out.println();
+		        	                								System.out.println("Appointment ID	: " + a.getID());
+		        	                								System.out.println("Date			: " + a.getDate());
+		        	                								System.out.println("Time 			: " + a.getTime());
+		        	                								System.out.println("Patient			: " + a.getPatient());
+		        	                								System.out.println("Status			: " + a.getStatus());
+		        	                								System.out.println("Outcome			: " + a.getOutcome());
+		        	                								
+		        	                								apptamt++;
+		        	                							}
+		        	                						}
+		        	                						
+		        	                						if (apptamt == 0) System.out.println("No appointment found!");
+		        	                						System.out.println();
+		        	                                        break;
+		        	                                    case 4:
+		        	                                        break;
+		        	                            
+		        	                                }
+		        	                            } while (choicef!=4);
+		        	                            
+		        	                            break;
+		        	                        case 3:
+		        	                            System.out.println("---------Filter by Appointment ID----------");
+		        	                            sc.nextLine();
+		        	                            System.out.println("Enter Appointment ID: ");
+		        	                            String apptID = sc.nextLine();
+		        	                            
+    	                                        apptamt=0;
+    	                						for (Appointment a : appointmentList) {
+    	                							if (a.getID().equals(apptID)) { // list appointments that are in the future and under dr's name
+    	                								System.out.println();
+    	                								System.out.println("Appointment ID	: " + a.getID());
+    	                								System.out.println("Date			: " + a.getDate());
+    	                								System.out.println("Time 			: " + a.getTime());
+    	                								System.out.println("Patient			: " + a.getPatient());
+    	                								System.out.println("Status			: " + a.getStatus());
+    	                								System.out.println("Outcome			: " + a.getOutcome());
+    	                								
+    	                								apptamt++;
+    	                							}
+    	                						}
+    	                						
+    	                						if (apptamt == 0) System.out.println("No appointment found!");
+    	                						System.out.println();
+    	                                        
+		        	                          
+		        	                            break;
+		        	                        case 4:
+		        	                            System.out.println("Case 4 entered. Going back...");
+		        	                            break;
+		        	                    }
+		        	                } while (choicez!=4);
+		        	                
+		        	                break;
+		        	           case 2:
+		        	               System.out.println("---------Manage Appointment Details----------");
+		        	                break;
+		        	           case 3:
+		        	               System.out.println("Case 3 entered. Going back...");
+		        	                break;
+		        	          
+		        	            
+		        	       }
+		        	       
+		        	   } while (choicey != 3);
+		        	   
 		            break;
 		        case 3:
-		            
+		        	System.out.println("----------View and Manage Medication Inventory-----------");
 		            int choicew, choicev;
 		            do {
 		            System.out.println("Select action: ");
