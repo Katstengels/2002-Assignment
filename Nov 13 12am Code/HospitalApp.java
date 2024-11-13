@@ -79,6 +79,7 @@ public class HospitalApp {
 				Doctor doctor = (Doctor) user;
 				
 				do {
+					System.out.println("===============================================");
 					System.out.println("Hello " + doctor.getName() + ", welcome to the doctor menu");
 					System.out.println("1. View Patient Medical Records");
 					System.out.println("2. Update Patient Medical Records");
@@ -88,6 +89,8 @@ public class HospitalApp {
 					System.out.println("6. View Upcoming Appointments");
 					System.out.println("7. Record Appointment Outcome");
 					System.out.println("8. Logout");
+					System.out.println("===============================================");
+
 					choice = sc.nextInt();
 					
 					switch(choice) {
@@ -352,6 +355,7 @@ public class HospitalApp {
 
 				do {
 					System.out.println();
+					System.out.println("===============================================");
 					System.out.println("Hello " + pharma.getName() + ", welcome to the Pharmacy menu");
 					System.out.println("1. Fulfill medication orders"); //TODO
 					System.out.println("2. Display stock"); //TODO
@@ -359,6 +363,8 @@ public class HospitalApp {
 					System.out.println("4. Request log"); //TODO
 					System.out.println("5. Change Password");
 					System.out.println("6. Log off");
+					System.out.println("===============================================");
+
 
 
 					do {
@@ -530,11 +536,14 @@ public class HospitalApp {
 				
 				//enter your code here
 				do {
+					System.out.println("===============================================");
 					System.out.println("1. View and Manage Hospital Staff");
 					System.out.println("2. Manage Appointments");
 					System.out.println("3. View and Manage Medication Inventory");
 					System.out.println("4. Approve Replenishment Requests");
 					System.out.println("5. Logout");
+					System.out.println("===============================================");
+
 					admchoice = sc.nextInt();
 					sc.nextLine();
 					switch(admchoice) {
@@ -1613,6 +1622,9 @@ public class HospitalApp {
 							System.out.println("Appointment with " + apt.getDoctor() + " at " + apt.getDate() + " " + apt.getTime() + " successfully cancelled.");
 							System.out.println("============================================");
 							cancelledDoc.removeAppointment(apt);
+						}
+						else {
+							System.out.println("No upcoming appointment to cancel.");
 						}
 						break;
 						

@@ -20,6 +20,9 @@ public class Administrator extends User {
     public MedicineInv getMedicineInventory() {
     	return this.medicineInventory;
     }
+    
+
+    
     // Staff Management
     public void addStaff() {
     	Scanner scanner = new Scanner(System.in);
