@@ -1,5 +1,3 @@
-package project2002;
-
 
 class Medicine {
     private String name;
