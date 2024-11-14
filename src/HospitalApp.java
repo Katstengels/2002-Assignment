@@ -1,17 +1,16 @@
 package src;
 
 import java.text.SimpleDateFormat;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.Calendar;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Scanner;
 
 public class HospitalApp {
 
 	public static void main(String[] args) {
 
-        	PatientInv pList = PatientInv.getInstance();
+        PatientInv pList = PatientInv.getInstance();
 		StaffInv sList = StaffInv.getInstance();
 		MedicineInv mList = MedicineInv.getInstance();
 		
@@ -19,6 +18,7 @@ public class HospitalApp {
 		ArrayList<Patient> patientList = pList.copyPatientList();
 		ArrayList<Medicine> medicineList = mList.copyMedicineList();
 		ArrayList<Appointment> appointmentList = new ArrayList<Appointment>();
+		ArrayList<RestockForm> restockList = new ArrayList<>();
 
 		
 		Scanner sc = new Scanner(System.in);
@@ -28,8 +28,9 @@ public class HospitalApp {
 		Calendar calendar = Calendar.getInstance();
 		Date now = calendar.getTime();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM YYYY");
-		int patSelect, aptSelect, medSelect, patAmount, aptAmount, medAmount;
+		int patSelect, aptSelect, medSelect, docSelect, patAmount, aptAmount, medAmount, docAmount;
 		Patient pat;
+		Doctor doc;
 		Appointment apt;
 		Medicine med;
 		int choice;
@@ -72,6 +73,7 @@ public class HospitalApp {
 				Doctor doctor = (Doctor) user;
 				
 				do {
+					System.out.println("===============================================");
 					System.out.println("Hello " + doctor.getName() + ", welcome to the doctor menu");
 					System.out.println("1. View Patient Medical Records");
 					System.out.println("2. Update Patient Medical Records");
@@ -81,10 +83,12 @@ public class HospitalApp {
 					System.out.println("6. View Upcoming Appointments");
 					System.out.println("7. Record Appointment Outcome");
 					System.out.println("8. Logout");
+					System.out.println("===============================================");
+
 					choice = sc.nextInt();
 					
 					switch(choice) {
-					case 1 -> { // view patient medical record
+					case 1: // view patient medical record
 						patAmount = 0;
 						for (Patient p : patientList) {
 							patAmount++;
@@ -110,10 +114,9 @@ public class HospitalApp {
 							}
 						}
 						System.out.println();
-                        break;
-					}
+						break;
 						
-					case 2 -> { // update patient record
+					case 2: // update patient record
 						patAmount = 0;
 						aptAmount = 0;
 						for (Patient p : patientList) {
@@ -129,42 +132,58 @@ public class HospitalApp {
 						
 						pat = patientList.get(patSelect-1);
 						
-						//pat.updatePart();
-							
-						System.out.println();
-                        break;
-					}
 						
-					case 3 -> { // personal schedule
-						doctor.getAllAvailability();
+						
 						System.out.println();
-                        break;
-					}
+						break;
+						
+					case 3: // personal schedule
+						doctor.getAllAvailability(true);
+						System.out.println();
+						break;
 					
-					case 4 -> { // set availability
+					case 4: // set availability
 						doctor.setAvailability();
 						System.out.println();
-                        break;
-					}
+						break;
 						
-					case 5 -> { // accept or reject appointments
+					case 5: // accept or reject appointments
 						aptAmount = 0;
+						String aptIDSelect = null;
 						for (Appointment a : appointmentList) {
-							if(a.getDoctor().equals(doctor.getName()) && a.getStatus().equals("pending")) { // list all appointments under dr's name
+							if(a.getDoctor().equals(doctor.getName()) && a.getStatus().equals("Pending")) { // list all appointments under dr's name
 								aptAmount++;
-								System.out.println(aptAmount + ". " + a.getID() + ": " + a.getDate() + " " + a.getTime());
+								System.out.println(aptAmount + ". " + a.getID() + ": " + "(" + a.getPatient() + ") " + a.getDate() + " " + a.getTime());
 							}
 						} 
 						
 						if (aptAmount != 0) {
+							
+							boolean exitAcceptApt = false;
+							apt = null;
+							
 							do {					
-								System.out.println("Select appointment:");
-								aptSelect = sc.nextInt();
-								if (aptSelect > aptAmount) System.out.println("Invalid appointment! Please enter again.");
-							} while (aptSelect > aptAmount); // appointment selection
+								System.out.println("Enter full appointment ID to accept (Enter 'Back' to cancel): ");
+								aptAmount = 0;
+								aptIDSelect = null;
+								sc.nextLine(); //clear scanner cos its acting up bruh
+								
+								aptIDSelect = sc.nextLine();
+								if (aptIDSelect.equals("Back")) {
+									exitAcceptApt = true;
+									break;
+								}
+								for (Appointment a : appointmentList) {
+									if (a.getID().equals(aptIDSelect)) {
+										apt = a;
+										aptAmount++;
+									}
+								}
+								
+								if (aptAmount == 0) System.out.println("Invalid appointment! Please enter again.");
+							} while (aptAmount == 0);
 							
-							apt = appointmentList.get(aptSelect-1);
-							
+							if (exitAcceptApt) break;
 							int acc;
 							
 							System.out.println("1. Accept appointment");
@@ -176,30 +195,30 @@ public class HospitalApp {
 							} while (acc>2);
 							
 							switch (acc) {
-							case 1 -> {
+							case 1:
 								apt.updateStatus("Confirmed");
 								doctor.addAppointment(apt);
 								System.out.println("Appointment accepted.");
-							}
-							case 2 -> {
-								apt.updateStatus("Rejected");
+								break;
+							case 2:
+								apt.updateStatus("Cancelled");
+								doctor.removeAppointment(apt);
 								System.out.println("Appointment rejected.");
-							}
+								break;
 							}
 						}
 						
 						else System.out.println("No appointment found!");
 						System.out.println();
-                        break;
-					}
+						break;
 						
-					case 6 -> { // view upcoming appointments
+					case 6: // view upcoming appointments
 						System.out.println("Upcoming appointments: ");
 						
 						aptAmount = 0;
 						
 						for (Appointment a : appointmentList) {
-							if (a.getDoctor().equals(doctor.getName()) && a.getDateTime().after(now)) { // list appointments that are in the future and under dr's name
+							if (a.getDoctor().equals(doctor.getName()) && a.getStatus().equals("Confirmed")) { // list appointments that are in the future and under dr's name
 								System.out.println();
 								System.out.println("Appointment ID	: " + a.getID());
 								System.out.println("Date			: " + a.getDate());
@@ -211,43 +230,41 @@ public class HospitalApp {
 						
 						if (aptAmount == 0) System.out.println("No appointment found!");
 						System.out.println();
-                        break;
-					}
+						break;
 					
-					case 7 -> { // appointment outcome
+					case 7: // appointment outcome
 						int medYN, medAptAmt;
-						patAmount = 0;
+						int medAmountCounter = 0;
 						aptAmount = 0;
-						for (Patient p : patientList) {
-							patAmount++;
-							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
-						} // list patients
-						
-						do {					
-							System.out.println("Select patient:");
-							patSelect = sc.nextInt();
-							if (patSelect > patAmount) System.out.println("Invalid patient! Please enter again.");
-						} while (patSelect > patAmount);
-						
-						pat = patientList.get(patAmount-1);
+						aptIDSelect = null;
 						for (Appointment a : appointmentList) {
-							if (pat.getName().equals(a.getPatient()) && doctor.getName().equals(a.getDoctor())) { // appointments with both pt's and dr's names
+							if(a.getDoctor().equals(doctor.getName()) && a.getStatus().equals("Confirmed")) { // list all appointments under dr's name
 								aptAmount++;
-								System.out.println((aptAmount) + ". " + a.getDate());
+								System.out.println(aptAmount + ". " + a.getID() + ": " + "(" + a.getPatient() + ") " + a.getDate() + " " + a.getTime());
 							}
-						}
+						} 
+						
 						if (aptAmount != 0) {
-							medAmount = 0;
-							medSelect = 0;
 							
+							
+							apt = null;
+							sc.nextLine();
 							do {					
-								System.out.println("Select appointment:");
-								aptSelect = sc.nextInt();
-								if (aptSelect > aptAmount) System.out.println("Invalid appointment! Please enter again.");
-							} while (aptSelect > aptAmount);
+								System.out.println("Enter full appointment ID to update outcome: ");
+								aptAmount = 0;
+								
+								aptIDSelect = sc.nextLine();
+								for (Appointment a : appointmentList) {
+									if (a.getID().equals(aptIDSelect)) {
+										apt = a;
+										aptAmount++;
+									}
+								}
+								
+								if (aptAmount == 0) System.out.println("Invalid appointment! Please enter again.");
+							} while (aptAmount == 0);
 							
-							apt = appointmentList.get(aptSelect-1);
-							
+							apt.updateStatus("Completed");
 							System.out.println("Enter appointment outcome: ");
 							apt.updateOutcome(sc.nextLine());
 							System.out.println("Any medications prescribed?");
@@ -258,53 +275,66 @@ public class HospitalApp {
 								System.out.println("Enter choice: ");
 								medYN = sc.nextInt();
 								
-								if (medYN<2) System.out.println("Invalid choice! Please enter again.");
-							} while (medYN<2);
+								if (medYN>2 || medYN<1) System.out.println("Invalid choice! Please enter again.");
+							} while (medYN>2 || medYN<1);
 							
 							switch (medYN) {
-							case 1 -> {
+							case 1:
 								apt.TrueHasMedication();
 								
 								System.out.println("Medicine list: ");
 								for (Medicine m : medicineList) {
-									medAmount++;
-									System.out.println(medAmount + ". " + m.getName());
+									medAmountCounter++;
+									System.out.println(medAmountCounter + ". " + m.getName());
 								}
+								medAmountCounter++;
+								System.out.println(medAmountCounter + ". " + "(Exit Menu)");
+								medAmountCounter--;
+								
 								
 								do {
-									System.out.println("Enter medicine: ");
-									medSelect = sc.nextInt();
+									do {
+										System.out.println("Enter medicine: ");
+										medSelect = sc.nextInt();
+										
+										if (medSelect>medAmountCounter+1) System.out.println("Invalid medicine! Please enter again.");
+										
+									} while (medSelect>medAmountCounter+1);
 									
-									if (medSelect>medAmount) System.out.println("Invalid medicine! Please enter again.");
-									
-								} while (medSelect>medAmount);
+									if(medSelect!=medAmountCounter+1) {
+										med = medicineList.get(medSelect-1);
+										
+										System.out.println("Enter medication amount: ");
+										medAptAmt = sc.nextInt();
+										System.out.println();
+										apt.addPrescript(med.getName(), medAptAmt);
+									}
+								} while(medSelect!=medAmountCounter+1);
+								break;
 								
-								med = medicineList.get(medSelect-1);
-								
-								System.out.println("Enter medication amount: ");
-								medAptAmt = sc.nextInt();
-								
-								apt.addPrescript(med.getName(), medAptAmt);
+							case 2:
+								break;
 							}
-								
-							case 2 -> {}
-							}
+							
+							System.out.println("Appointment outcomes for " + apt.getID() +  " | (" + apt.getPatient() + ") "+ apt.getDate() + " "+ apt.getTime() + " successfully recorded.");
 						}
+						
+						
 						
 						else System.out.println("No appointment found!");
 						System.out.println();
-                        break;
-					}
+						break;
 						
-					case 8 -> { // logout
+					case 8: // logout
 						System.out.println("Logging out...");
 						sc.nextLine();
 						loggedIn = false;
 						System.out.println();
-                        break;
-					}
+						break;
 						
-					default -> System.out.println("Invalid choice! Please enter again.");
+					default:
+						System.out.println("Invalid choice! Please enter again.");
+						break;
 					}
 				} while (choice != 8);
 				
@@ -320,13 +350,16 @@ public class HospitalApp {
 
 				do {
 					System.out.println();
+					System.out.println("===============================================");
 					System.out.println("Hello " + pharma.getName() + ", welcome to the Pharmacy menu");
 					System.out.println("1. Fulfill medication orders"); //TODO
 					System.out.println("2. Display stock"); //TODO
-					System.out.println("3. Request restock");
+					System.out.println("3. Request restock MENU");
 					System.out.println("4. Request log"); //TODO
 					System.out.println("5. Change Password");
 					System.out.println("6. Log off");
+					System.out.println("===============================================");
+
 
 
 					do {
@@ -340,21 +373,55 @@ public class HospitalApp {
 						case 1:
 							//1. Fulfill medication orders
 							//Print all appointments with prescriptions
-
+							Appointment aptToFulfil = null;
+							String aptID = null;
 							for (Appointment a : appointmentList) {
 								if(a.isHasMedication())
 								{
-									int index = appointmentList.indexOf(a);
-									System.out.println("================= Prescription ===================");
-									System.out.printf("%-10s %-10s %-10s %-10s \n",index,"Medication","Amount","Status");
-									System.out.println("==================================================");
+									aptID = a.getID();
+									System.out.println("==================== Prescription ======================");
+									System.out.printf("%-20s %-14s %-6s %-6s \n","Appointment ID","Medication","Amount","Status");
+									System.out.println("========================================================");
 
-									a.printPrescription();
+									
+									a.printPrescriptionFormatting();
 								}
 							}
 							//Choose appointment with the index shown
+							if(aptID != null)
+							{
+								scPharma.nextLine();
+								System.out.println("Enter Appointment ID to fulfil medicine: ");
+								aptID = scPharma.nextLine();
+								while (true) {													//Reject non-int inputs
+									for (Appointment a : appointmentList) {
+										if (a.getID().equals(aptID) && a.isHasMedication()) {
+											aptToFulfil = a;
+										}
+									}
+									if (aptToFulfil != null) {
+										
+										break; // Exit loop if an integer was successfully read
+									} else {
+										System.out.println("Invalid input. Please enter again.");
+										scPharma.next(); // Consume the invalid input to avoid infinite loop
+									}
+								}
+								
+								System.out.println("--------------------------------------------------");
+								aptToFulfil.printPrescription();
 
-							//Choose which medication to fulfill, update "medIsFilled" per PrescriptedMed and update medicineList
+								System.out.println("Enter prescription you would like to fulfill");
+								//Choose which medication to fulfill, update "medIsFilled" per PrescriptedMed and update medicineList
+								
+								String prescription = scPharma.nextLine();
+								
+								aptToFulfil.fulfillPrescription(prescription);
+								mList.minusStock(prescription,aptToFulfil.getPrescribedAmount(prescription));
+								System.out.println("Prescription fulfilled!");
+
+							}else System.out.println("No appointment found!");
+
 
 							break;
 						case 2:
@@ -363,45 +430,81 @@ public class HospitalApp {
 							break;
 						case 3:
 							//3. Request restock
-							mList.printList();
 							int m;
 							do {
-								System.out.println("1. ");
-								System.out.println("2. ");
-								System.out.println("3. ");
-								System.out.println("4. Previous Menu");
+								mList.printList();
+								//RestockForm rForm = new RestockForm(null,-1,null);
+								System.out.println("1. Request restock - Specific medication");
+								System.out.println("2. Request restock - All of low");
+								System.out.println("3. Cancel restock request");
+								System.out.println("4. Back");
 								do {
 									System.out.println("Enter selection: ");
 									m = scPharma.nextInt();
-									if (m > 4 || m < 1) System.out.println("Invalid choiceP! Please enter again.");
+									if (m > 4 || m < 1) System.out.println("Invalid choice! Please enter again.");
 								} while (m > 4 || m < 1);
 								switch (m) {
 									case 1:
-										//mList.minusStock("Paracetamol",90);
-
+										//1. Request restock - Specific medication
 										mList.printList();
+										String restockMed = null;
+										int restockAmt = 0;
+
+										System.out.println("Which medication would you like to restock?");
+										scPharma.nextLine();
+										restockMed = scPharma.nextLine();
+										System.out.println("How much would you like to restock?");
+										restockAmt = scPharma.nextInt();
+
+										RestockForm rForm = new RestockForm(restockMed,restockAmt);
+										restockList.add(rForm);
+
+										System.out.println("Restock request has been made successfully.");
 										break;
 									case 2:
-
+										//2. Request restock - All low
+										mList.printLowStockMedicine();
+										//
 										break;
 									case 3:
+										//3. Cancel restock request
+										//Lists all requests
+										boolean triggg = false;
+										System.out.printf("%-10s %-20s %-10s %-20s\n","restockID","Medicine","Amount","Status");
+										for (RestockForm rF : restockList) {
+											if(!rF.isFulfilled()){
+												rF.printFormDetails();
+												triggg = true;
+											};
+										}
+										if (!triggg) {System.out.println("==========  There are no past requests  =========="); break;}
 
+										//RestockForm restockList = new RestockForm()
+
+
+										//restockList.remove(restockList);
 										break;
 									case 4:
+										//4. Back
 										break;
 								}
 							} while (m != 4);
-
-
 							break;
 						case 4:
 							//4. Request log
+							boolean trigg = false;
+							System.out.printf("%-10s %-20s %-10s %-20s\n","restockID","Medicine","Amount","Status");
+							for (RestockForm rF : restockList) {
+								rF.printFormDetails();
+								trigg = true;
+							}
+							if (!trigg) {System.out.println("==========  There are no past requests  ==========");}
 
 							break;
 						case 5:
 							//5. Change Password
+							scPharma.nextLine();
 							String oldP, newP;
-							boolean trig;
 							System.out.println("Please enter your current password: ");
 							oldP = scPharma.nextLine();
 							System.out.println("Please enter your new password");
@@ -416,7 +519,6 @@ public class HospitalApp {
 							break;
 					}
 
-
 				} while (choiceP != 6);
 
 
@@ -426,13 +528,17 @@ public class HospitalApp {
 			case "Administrator":
 				user = new Administrator(username, password, username);	
 				int admchoice, staffSelect=0, staffAmount=0;
+				
 				//enter your code here
 				do {
+					System.out.println("===============================================");
 					System.out.println("1. View and Manage Hospital Staff");
-					System.out.println("2. View Appointments Details");
+					System.out.println("2. Manage Appointments");
 					System.out.println("3. View and Manage Medication Inventory");
 					System.out.println("4. Approve Replenishment Requests");
 					System.out.println("5. Logout");
+					System.out.println("===============================================");
+
 					admchoice = sc.nextInt();
 					sc.nextLine();
 					switch(admchoice) {
@@ -479,7 +585,7 @@ public class HospitalApp {
 		
 		                case 2:
 		                    int choice3;
-		                    System.out.println("Managing hospital staff...");
+		                    System.out.println("-----------Manage hospital staff------------");
 		                    //show hospital staff
 		                    do {
 		                        System.out.println("Select action: ");
@@ -581,10 +687,464 @@ public class HospitalApp {
 		            }  while (choice2!=3);
 		            break;
 		        case 2:
-		            System.out.println("Case 2 entered.");
+		        	int choicey, choicez, apptamt, choicef = 0;
+		        	Staff tttStaff = null;
+		        	Doctor tttDoc = null;
+		        	Patient tttPat = null;
+		        	boolean IDexists = false;
+		        	String docID, patID = null;
+		        	 do  {
+		        	       System.out.println("1. View Appointment Details");
+		        	       System.out.println("2. Manage Appointment Details");
+		        	       System.out.println("3. Back");
+		        	       System.out.println("Select option: ");
+		        	       choicey = sc.nextInt();
+		        	       switch (choicey) {
+		        	           case 1:
+		        	                System.out.println("---------View Appointment Details----------");
+		        	                do {
+		        	                    System.out.println("1. Filter by doctor");
+		        	                    System.out.println("2. Filter by patient");
+		        	                    System.out.println("3. Filter by Appointment ID");
+		        	                    System.out.println("4. Back");
+		        	                    System.out.println("Select option: ");
+		        	                    choicez = sc.nextInt();
+		        	                    switch (choicez) {
+		        	                        case 1:
+		        	                        	IDexists = false;
+		        	                            System.out.println("---------Filter by doctor----------");
+		        	                            sc.nextLine();
+		        	                            do {
+			        	                            System.out.println("Enter doctor ID: ");
+			        	                            docID = sc.nextLine();
+			        	                            for (Staff s:staffList) {
+			        	                            	if (s.getID().equals(docID)) {
+			        	                            		tttStaff = s;
+			        	                            		tttDoc = (Doctor) tttStaff;
+			        	                            		IDexists = true;
+			        	                            	}
+			        	                            }
+			        	                            if(!IDexists) {
+			        	                            	System.out.println("ID does not exist!");
+			        	                            }
+		        	                            } while(!IDexists);
+		        	                           
+    	                                        System.out.println("Viewing appointments for " + docID + " " + tttDoc.getName());
+    	                                        apptamt = 0;
+    	                						
+    	                						for (Appointment a : appointmentList) {
+    	                							if (a.getDoctorID().equals(docID)) {
+    	                								System.out.println();
+    	                								System.out.println("Appointment ID	: " + a.getID());
+    	                								System.out.println("Date			: " + a.getDate());
+    	                								System.out.println("Time 			: " + a.getTime());
+    	                								System.out.println("Patient			: " + a.getPatient());
+    	                								System.out.println("Status			: " + a.getStatus());
+    	                								if(a.getOutcome()==null) {
+    	                									System.out.println("Outcome			: N/A, Appointment not completed");
+    	                								}
+    	                								else {
+    	                								System.out.println("Outcome			: " + a.getOutcome());
+    	                								}
+    	                								apptamt++;
+    	                							}
+    	                						}
+    	                						
+    	                						if (apptamt == 0) System.out.println("No appointment found!");
+    	                						System.out.println();
+    	                                        break;
+		        	                            
+		        	                        case 2:
+		        	                        	IDexists = false;
+		        	                        	System.out.println("---------Filter by patient----------");
+		        	                            sc.nextLine();
+		        	                            do {
+			        	                            System.out.println("Enter patient ID: ");
+			        	                            patID = sc.nextLine();
+			        	                            for (Patient p:patientList) {
+			        	                            	if (p.getID().equals(patID)) {
+			        	                            		tttPat = p;
+			        	                            		IDexists = true;
+			        	                            	}
+			        	                            }
+			        	                            if(!IDexists) {
+			        	                            	System.out.println("ID does not exist!");
+			        	                            }
+		        	                            } while(!IDexists);
+		        	                           
+    	                                        System.out.println("Viewing appointments for " + patID + " " + tttPat.getName());
+    	                                        apptamt=0;
+    	                						for (Appointment a : appointmentList) {
+    	                							if (a.getPatientID().equals(patID)) { // list appointments that are in the future and under dr's name
+    	                								System.out.println();
+    	                								System.out.println("Appointment ID	: " + a.getID());
+    	                								System.out.println("Date			: " + a.getDate());
+    	                								System.out.println("Time 			: " + a.getTime());
+    	                								System.out.println("Patient			: " + a.getPatient());
+    	                								System.out.println("Status			: " + a.getStatus());
+    	                								if(a.getOutcome()==null) {
+    	                									System.out.println("Outcome			: N/A, Appointment not completed");
+    	                								}
+    	                								else {
+    	                								System.out.println("Outcome			: " + a.getOutcome());
+    	                								}
+    	                								apptamt++;
+    	                							}
+    	                						}
+    	                						
+    	                						if (apptamt == 0) System.out.println("No appointment found!");
+    	                						System.out.println();
+    	                                        break;
+		        	                                    
+		        	                            
+		        	                            
+		        	                        case 3:
+		        	                            System.out.println("---------Filter by Appointment ID----------");
+		        	                            sc.nextLine();
+		        	                            System.out.println("Enter Appointment ID: ");
+		        	                            String apptID = sc.nextLine();
+		        	                            
+    	                                        apptamt=0;
+    	                						for (Appointment a : appointmentList) {
+    	                							if (a.getID().equals(apptID)) { // list appointments that are in the future and under dr's name
+    	                								System.out.println();
+    	                								System.out.println("Appointment ID	: " + a.getID());
+    	                								System.out.println("Date			: " + a.getDate());
+    	                								System.out.println("Time 			: " + a.getTime());
+    	                								System.out.println("Patient			: " + a.getPatient());
+    	                								System.out.println("Status			: " + a.getStatus());
+    	                								if(a.getOutcome()==null) {
+    	                									System.out.println("Outcome			: N/A, Appointment not completed");
+    	                								}
+    	                								else {
+    	                								System.out.println("Outcome			: " + a.getOutcome());
+    	                								}
+    	                								apptamt++;
+    	                							}
+    	                						}
+    	                						
+    	                						if (apptamt == 0) System.out.println("No appointment found!");
+    	                						System.out.println();
+    	                                        
+		        	                          
+		        	                            break;
+		        	                        case 4:
+		        	                            System.out.println("Case 4 entered. Going back...");
+		        	                            break;
+		        	                    }
+		        	                } while (choicez!=4);
+		        	                
+		        	                break;
+		        	           case 2:
+		        	                System.out.println("---------Manage Appointment Details----------");
+	///////////////////////////////////EDIT HERE!!!!!////
+		        	                
+	
+   	                            	System.out.println("Enter Appointment ID: ");
+   	                            	sc.nextLine();
+   	                            	String apptID = sc.nextLine();
+   	                            	apptamt = 0;
+	           						for (Appointment a : appointmentList) {
+	           							if (a.getID().equals(apptID)) { // print current details of appointment to be edited
+	           								
+	           								String tempPatientID = null;
+	           								String tempDoctorID = null;
+	           								
+	           								for (Patient tempPat : patientList) {
+	           									if (tempPat.getName().equals(a.getPatient())){
+	           										tempPatientID = tempPat.getID();
+	           									}
+	           								}
+	           								
+	           								for (Staff tempDoc : staffList) {
+	           									if (tempDoc.getName().equals(a.getDoctor())){
+	           										tempDoctorID = tempDoc.getID();
+	           									}
+	           								}
+	           								
+	           								System.out.println();
+	           								System.out.println("Current Appointment Details:");
+	           								System.out.println("==================================");
+	           								System.out.println("(1) Patient ID			: " + tempPatientID);
+	           								System.out.println("(2) Doctor ID			: " + tempDoctorID);
+	           								System.out.println("(3) Appointment Status	 	: " + a.getStatus());
+	           								System.out.println("(4) Date			: " + a.getDate());
+	           								System.out.println("(5) Time			: " + a.getTime());
+	           								if(a.getStatus().equals("Confirmed") || a.getStatus().equals("Pending") || a.getStatus().equals("Cancelled")) {
+	           									System.out.println("(6) Outcome Record		: N/A");
+	           								}
+	           								else {
+	           									System.out.println("(6) Outcome Record		: " + a.getOutcome());
+	           								}
+	           								System.out.println("(7) Back");
+	           								System.out.println("==================================");
+	           								apptamt++;
+	           								
+	           								break;
+	           							}
+	           						}
+	           							
+	           						if (apptamt == 0) {
+	           							System.out.println("No appointment found!");
+	           							System.out.println();
+	           						}
+	           						
+	           						else {
+	           							for (Appointment a : appointmentList) {
+		           							if (a.getID().equals(apptID)) {
+			           							
+
+			           							int manageAptChoice = 0;
+			           							Patient tempPat = null;
+			           							Staff tempStaff = null;
+			           							boolean patExists = false;
+			           							boolean staffExists = false;
+			           							do {
+			           								System.out.println("Choose option from (1)-(7) to edit: ");
+				           							manageAptChoice = sc.nextInt();
+			           								switch(manageAptChoice) {
+			           								case 1:
+			           									System.out.println("Current Patient ID: " + a.getPatientID() + ", Patient Name: " + a.getPatient());
+			           									System.out.println("Enter new Patient ID: ");
+			           									sc.nextLine();
+			           									String newPatID = sc.nextLine();
+			           									
+			           									
+			           									for(Patient p : patientList) {
+			           										if (p.getID().equals(newPatID)){
+			           											tempPat = p;
+			           											patExists = true;
+			           											break;
+			           										}
+			           									}
+			           									if (patExists) {
+			           										a.updatePatientID(newPatID);
+			           										a.updatePatientName(tempPat.getName());
+			           										
+			           										System.out.println("Patient ID updated to " + newPatID + ", Patient Name automatically updated to " + a.getPatient());
+			           									}
+			           									break;
+			           								case 2:
+			           									Doctor newdoctor = null;
+			           									Doctor olddoctor = null;
+			           									System.out.println("Current Doctor ID: " + a.getDoctorID() + ", Doctor Name: " + a.getDoctor());
+			           									System.out.println("Enter new Doctor ID: ");
+			           									sc.nextLine();
+			           									String newDocID = sc.nextLine();
+			           									for(Staff s : staffList) {
+			           										if (s.getID().equals(newDocID)){
+			           											tempStaff = s;
+			           											newdoctor = (Doctor)s;
+			           											staffExists = true;
+			           											break;
+			           										}
+			           									}
+			           									newdoctor = (Doctor) staffList.get(sList.findStaffIndexID(newDocID));
+			           									olddoctor = (Doctor) staffList.get(sList.findStaffIndexID(a.getDoctorID()));
+			           									
+			           									if (staffExists) {
+			           										a.updateDoctorID(newDocID);
+			           										a.updateDoctorName(tempStaff.getName());
+			           										olddoctor.removeAppointment(a);
+			           										newdoctor.addAppointment(a);
+			           										
+			           										System.out.println("Doctor ID updated to " + newDocID + ", Doctor Name automatically updated to " + a.getDoctor());
+			           									}
+			           									break;
+
+			           								case 3:
+			           									Doctor tempDoc = null;
+			           									Staff tStaff = null;
+			           									for(Staff s:staffList) {
+			           										if (s.getID().equals(a.getDoctorID())){
+			           											tStaff = s;
+			           										}
+			           									}
+			           									tempDoc = (Doctor) staffList.get(sList.findStaffIndexID(a.getDoctorID()));
+			           									boolean isDefault = true;
+				           									if(a.getStatus().equals("Cancelled")) {
+				           										System.out.println("Current status: Cancelled");
+				           										System.out.println("Enter new status of Appointment (Pending/Confirmed:) ");
+					           									String newStatusChoice = null;
+					           									sc.nextLine();		
+						           								do{
+						           									newStatusChoice = sc.nextLine();
+					           										switch(newStatusChoice){
+						           									case "Pending":
+						           										if (tempDoc.addAppointment(a)) {
+						           											a.updateStatus(newStatusChoice);
+						           										}
+						           										
+						           										break;
+						           									case "Cancelled":
+						           										System.out.println("No change in status.");	
+						           										break;
+						           									case "Confirmed":
+						           										if (tempDoc.addAppointment(a)) {
+						           											a.updateStatus(newStatusChoice);
+						           										}
+						           					           										
+						           										
+						           										break;
+						           									default: System.out.println("Invalid input.");
+						           									}
+						           								}while(!isDefault);
+				           									}
+				           									
+				           									else if(a.getStatus().equals("Confirmed")) {
+				           										System.out.println("Current status: Confirmed");
+				           										System.out.println("Enter new status of Appointment (Pending/Cancelled:) ");
+					           									String newStatusChoice = null;
+					           									sc.nextLine();		
+						           								do{
+						           									newStatusChoice = sc.nextLine();
+					           										switch(newStatusChoice){
+						           									case "Pending":
+
+						           									//tempDoc.removeAppointment(a);
+						           										a.updateStatus(newStatusChoice);
+						           										break;
+						           									case "Cancelled":
+						           										a.updateStatus(newStatusChoice);
+						           										tempDoc.removeAppointment(a);
+						           										break;
+						           									case "Confirmed":
+						           										System.out.println("No change in status.");	
+						           										break;
+						           									default: System.out.println("Invalid input.");
+						           									}
+						           								}while(!isDefault);
+				           									}
+				           									
+				           									else if(a.getStatus().equals("Pending")) {
+				           										System.out.println("Current status: Pending");
+				           										System.out.println("Enter new status of Appointment (Confirmed/Cancelled:) ");
+					           									String newStatusChoice = null;
+					           									sc.nextLine();		
+						           								do{
+						           									newStatusChoice = sc.nextLine();
+						           									switch(newStatusChoice){
+						           									case "Pending":
+	
+						           										System.out.println("No change in status.");	
+						           										break;
+						           									case "Cancelled":
+						           										tempDoc.removeAppointment(a);
+						           										a.updateStatus(newStatusChoice);
+						           										break;
+						           									case "Confirmed":
+						           										a.updateStatus(newStatusChoice);
+						           										tempDoc.addAppointment(a);
+						           										break;
+						           									default: System.out.println("Invalid input.");
+						           									}
+						           								}while(!isDefault);
+				           									}
+				           									
+				           								
+			           									break;
+			           								case 4:
+			           									int tChoice, dChoice = 0;
+			           									
+			           									doc = (Doctor) staffList.get(sList.findStaffIndexID(a.getDoctorID()));
+			           									pat = (Patient) patientList.get(pList.findPatientIndexID(a.getPatientID()));
+			           									
+			           									do {
+			           										for (int i=0; i<7; i++) {
+			           											System.out.format("%d. %s\n", i+1, doc.getSchedule()[i][1].getDate());
+			           										}
+			           										System.out.println("8. Back");
+			           										System.out.println("Choose new date: ");
+			           										dChoice = sc.nextInt();
+			           										
+			           										if (dChoice > 0 && dChoice < 8) {
+			           											do {
+			           												System.out.format("%s\n", doc.getSchedule()[dChoice-1][1].getDate());
+			           												for(int j=0; j<7; j++) {
+			           													String slotAvailability;
+			           													if (doc.getSchedule()[dChoice-1][j].getAvail()) {
+			           														slotAvailability = "Available";
+			           													}
+			           													else {
+			           														slotAvailability = "Unavailable";
+			           													}
+			           													System.out.format("%d. %s\n", j+1, doc.getSchedule()[dChoice-1][j].getTime() + " : " + slotAvailability);
+			           													}
+			           												System.out.println((7+1) + ". Back");
+			           												System.out.println("Choose time: ");
+			           												tChoice = sc.nextInt();
+			           												
+			           												if (tChoice > 0 && tChoice < 7+1) {
+			           													if (doc.getSchedule()[dChoice-1][tChoice-1].getAvail()) {
+			           														Appointment appoint = new Appointment(pat, doc, doc.getSchedule()[dChoice-1][tChoice-1].getDateTime(), doc.getSchedule()[dChoice-1][tChoice-1].getTime());
+			           														System.out.println("Appointment successfully booked with " + doc.getName() + " at " + doc.getSchedule()[dChoice-1][tChoice-1].getDate() + ", " + doc.getSchedule()[dChoice-1][tChoice-1].getTime());
+			           														appoint.updateStatus("Pending");
+			           														appointmentList.add(appoint);
+			           														doc.addAppointment(appoint);
+			           														doc.removeAppointment(a);
+			           														a.updateStatus("Cancelled");
+			           														
+			           													}
+			           													else {
+			           														System.out.println("Slot is unavailable!");
+			           													}
+			           												}
+			           												else if(tChoice > 7+1 || tChoice < 1){
+			           													System.out.println("Invalid time! Please enter again.");
+			           												}
+			           												
+			           											} while (tChoice > 7+1 || tChoice < 1);
+			           										}
+			           											
+			           										else if (dChoice > 8 || dChoice < 1){
+			           												System.out.println("Date invalid! Please enter again.");
+			           										}
+			           									} while (dChoice > 8 || dChoice < 1); 
+			           									
+			           									
+			           									System.out.println();
+			           									break;
+			           								case 5:
+			           									
+			           									break;
+			           								case 6:
+			           									           									
+			           									if(a.getStatus().equals("Confirmed") || a.getStatus().equals("Pending") || a.getStatus().equals("Cancelled")) {
+				           									System.out.println("Appointment not completed, no outcome to update.");
+				           								}
+			           									else {
+			           										System.out.println("Current outcome: " + a.getOutcome());
+			           										System.out.println("Enter new outcome: ");
+			           										String newOutcome = null;
+			           										newOutcome = sc.nextLine();
+			           										a.updateOutcome(newOutcome);
+			           									}
+			           									break;
+			           								case 7:
+			           									System.out.println("Case 7 entered. Going back...");
+			           									break;
+			           								default:
+			           									break;
+			           								}
+			           							} while (manageAptChoice < 1 || manageAptChoice > 7);
+			           							break;
+		           							}
+	           							}
+	           						}
+	           						
+		        	                break;
+		        	           case 3:
+		        	               System.out.println("Case 3 entered. Going back...");
+		        	                break;
+		        	          
+		        	            
+		        	       }
+		        	       
+		        	   } while (choicey != 3);
+		        	   
 		            break;
 		        case 3:
-		            
+		        	System.out.println("----------View and Manage Medication Inventory-----------");
 		            int choicew, choicev;
 		            do {
 		            System.out.println("Select action: ");
@@ -700,10 +1260,98 @@ public class HospitalApp {
 		            }while (choicew!=3);
 		            break;
 		        case 4: 
-		            System.out.println("Case 4 entered.");
+		        	int choicex;
+		        	do {
+		        		
+			        	System.out.println("---- Approve replenishment requests ----");
+			        	System.out.println("1. View approved replenishment requests");
+			        	System.out.println("2. View pending replenishment requests");
+			        	System.out.println("3. Approve pending replenishment requests");
+			        	System.out.println("4. Back");
+			        	System.out.println("Enter selection:");
+			        	choicex = sc.nextInt();
+		        		switch(choicex) {
+		        		case 1:
+		        			boolean anyrequests = false;
+		        			System.out.println("Approved replenishment requests: ");
+		        			System.out.printf("%-10s %-20s %-10s %-20s\n","restockID","Medicine","Amount","Status");
+							for (RestockForm rF : restockList) {
+								if (rF.isFulfilled() == true) {
+								rF.printFormDetails();
+								anyrequests = true;
+								}
+							}
+							if (anyrequests == false) {
+								System.out.println("There are no approved replenishment requests!");
+							}
+		        			break;
+		        		case 2:
+		        			System.out.println("Pending replenishment requests: ");
+		        			boolean anyrequest = false;
+		        
+		        			System.out.printf("%-10s %-20s %-10s %-20s\n","restockID","Medicine","Amount","Status");
+							for (RestockForm rF : restockList) {
+								if (rF.isFulfilled() == false) {
+								rF.printFormDetails();
+								anyrequest = true;
+								}
+							}
+							if (anyrequest == false) {
+								System.out.println("There are no pending replenishment requests!");
+							}
+		        			break;
+		        		case 3:
+		        			System.out.println("Pending replenishment requests: ");
+		        	
+		        			boolean anyreques = false, anyrestockID = false;
+		        			int approveID = -1;
+		        			
+		        			
+		        			System.out.printf("%-10s %-20s %-10s %-20s\n","restockID","Medicine","Amount","Status");
+							for (RestockForm rF : restockList) {
+								if (rF.isFulfilled() == false) {
+								rF.printFormDetails();
+								anyreques = true;
+								}
+							}
+							if (anyreques == false) {
+								System.out.println("There are no pending replenishment requests!");
+								break;
+							}
+							
+							do {
+		        			System.out.println("Enter Restock ID of request to approve: ");
+		        			approveID = sc.nextInt();
+		        			anyrestockID = false;
+		        			for (RestockForm rF : restockList) {
+								if (rF.getRestockID() == approveID && rF.getFulfilled() == false) {
+				
+									((Administrator) user).plusStock(rF.getMedicationName(), rF.getRestockAmount());
+									rF.setFulfilled(true);
+									mList.printList();
+									anyrestockID = true;
+									break;
+				
+								}
+								
+							}
+		        			
+		        			if (anyrestockID == false) {
+		        				System.out.println("This Restock ID does not exist!");
+		        			}
+							} while (anyrestockID == false);
+		        			
+		        			break;
+		        		case 4:
+		        			System.out.println("Case 4 entered. Going back...");
+		        			break;
+		        		}
+		        	} while (choicex!=4);
+
 		            break;
 		        case 5:
 		            System.out.println("Case 5 entered. Logging out...");
+		            loggedIn = false;
 		            break;
 		        default:
 		            System.out.println("Invalid option entered. Please try again. ");
@@ -713,132 +1361,438 @@ public class HospitalApp {
 				
 				break;
 				
-	                    case "Patient":
-    Patient patient = (Patient) user;
-
-    int choicePatient = 0;
-    do {
-        System.out.println();
-        System.out.println("Hello " + patient.getName() + ", welcome to the Patient menu");
-        System.out.println("1. View Medical Record");
-        System.out.println("2. Update Personal Information");
-        System.out.println("3. View Available Appointment Slots");
-        System.out.println("4. Schedule an Appointment");
-        System.out.println("5. Reschedule an Appointment");
-        System.out.println("6. Cancel an Appointment");
-        System.out.println("7. View Scheduled Appointments");
-        System.out.println("8. View Past Appointment Outcome Records");
-        System.out.println("9. Logout");
-
-        // Ensure valid input for choicePatient
-        do {
-            System.out.print("Enter selection: ");
-            choicePatient = sc.nextInt();
-            sc.nextLine(); // Clear the newline
-            if (choicePatient < 1 || choicePatient > 9) {
-                System.out.println("Invalid choice! Please enter a number between 1 and 9.");
-            }
-        } while (choicePatient < 1 || choicePatient > 9);
-
-        switch (choicePatient) {
-            case 1:
-                // View Medical Record
-                patient.viewMedicalRecord();
-                break;
-
-            case 2:
-                // Update Personal Information
-                patient.updatePersonalInfo();
-                break;
-
-            case 3:
-                // View Available Appointment Slots
-                System.out.println("Enter the doctor's ID to view available slots: ");
-                String doctorID = sc.nextLine();
-                Doctor doctor1 = Doctor.getDoctorByID(doctorID);
-                if (doctor1 != null) {
-                    patient.viewAvailableSlots(doctor1);
-                } else {
-                    System.out.println("Doctor not found.");
-                }
-                break;
-
-            case 4:
-                // Schedule an Appointment
-                System.out.println("Enter the doctor's ID to view available slots: ");
-                doctorID = sc.nextLine();
-                doctor = Doctor.getDoctorByID(doctorID);
-                if (doctor != null) {
-                    patient.viewAvailableSlots(doctor);
-                    
-                    System.out.println("Enter the date and time for the appointment (yyyy-MM-dd HH:mm): ");
-                    try {
-                        Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(sc.nextLine());
-                        patient.scheduleAppointment(doctor, date);
-                    } catch (ParseException e) {
-                        System.out.println("Invalid date format. Please enter in 'yyyy-MM-dd HH:mm' format.");
-                    }
-                } else {
-                    System.out.println("Doctor not found.");
-                }
-                break;
-
-            case 5:
-                // Reschedule an Appointment
-                System.out.println("Enter Appointment ID to reschedule: ");
-                String appointmentID = sc.nextLine();
-                System.out.println("Enter the new date and time (yyyy-MM-dd HH:mm): ");
-                try {
-                    Date newDate = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(sc.nextLine());
-                    Appointment appointmentToReschedule = Appointment.getAppointmentByID(appointmentID);
-                    
-                    if (appointmentToReschedule != null) {
-                        Doctor rescheduleDoctor = appointmentToReschedule.getDoctor();
-                        patient.rescheduleAppointment(appointmentID, rescheduleDoctor, newDate);
-                    } else {
-                        System.out.println("Appointment not found.");
-                    }
-                } catch (ParseException e) {
-                    System.out.println("Invalid date format. Please enter in 'yyyy-MM-dd HH:mm' format.");
-                }
-                break;
-
-            case 6:
-                // Cancel an Appointment
-                System.out.println("Enter Appointment ID to cancel: ");
-                appointmentID = sc.nextLine();
-                Appointment appointmentToCancel = Appointment.getAppointmentByID(appointmentID);
-                if (appointmentToCancel != null) {
-                    patient.cancelAppointment(appointmentToCancel);
-                } else {
-                    System.out.println("Appointment not found.");
-                }
-                break;
-
-            case 7:
-                // View Scheduled Appointments
-                patient.viewScheduledAppointments();
-                break;
-
-            case 8:
-                // View Past Appointment Outcome Records
-                patient.viewPastAppointmentOutcomes();
-                break;
-
-            case 9:
-                // Logout
-                System.out.println("Logging out...");
-                loggedIn = false;
-                break;
-        }
-
-    } while (choicePatient != 9);
-    break;
-
-
-                    }
+			case "Patient":
+				Patient patient = (Patient) user;
+				int counting = 0;
+				int patientChoice = 0;
+				String docID = "";
+				System.out.println("Hello " + patient.getName() + ", welcome to the patient menu");
+				do {
+					System.out.println("1. View Medical Records");
+					System.out.println("2. Update Personal Information");
+					System.out.println("3. View Available Appointment Slots");
+					System.out.println("4. Schedule Appointment");
+					System.out.println("5. Reschedule Appointment");
+					System.out.println("6. Cancel Appointment");
+					System.out.println("7. View Scheduled Appointments");
+					System.out.println("8. View Past Appointment Records");
+					System.out.println("9. Logout");
+					patientChoice = sc.nextInt();
+					
+					switch(patientChoice) {
+					case 1: // view med record
+						System.out.println("Name		: " + patient.getName());
+						System.out.println("DOB		: " + dateFormat.format(patient.getDOB()));
+						System.out.println("Email		: " + patient.getEmail());
+						System.out.println("Contact no.	: " + patient.getContactNum());
+						System.out.println("Blood type	: " + patient.getBloodType());
+						System.out.println("Previous appointment outcomes:");
+						for (Appointment a : appointmentList) {
+							if (patient.getName().equals(a.getPatient())) {
+								System.out.println(a.getDate() + ": " + a.getOutcome());
+							}
+						}
+						System.out.println();
+						break;
+						
+					case 2: // update particular
+						patient.updatePart();
+						System.out.println();
+						break;
+						
+					case 3: // view avail apt slots
+						docSelect = 0;
+						docAmount = 0;
+						
+						System.out.println("Select Doctor:");
+						for (Staff s : staffList) {
+							if (s.getRole().equals("Doctor")) {
+								docAmount++;
+								System.out.println(docAmount + ". " + s.getName());
+							}	
+						}
+						
+						do {
+							System.out.println("Select doctor: ");
+							docSelect = sc.nextInt();
+							
+							if (docSelect>docAmount) System.out.println("Invalid doctor! Please enter again.");
+						} while (docSelect>docAmount);
+						
+						for (Staff s : staffList) {
+							if (s.getRole().equals("Doctor")) {
+								counting++;
+								if (counting == docSelect) {
+									docID = s.getID();
+									break;
+								}
+							}
+						}
+						
+						doc = (Doctor) staffList.get(sList.findStaffIndexID(docID));
+						
+						doc.getAvailSlots();
+						
+						System.out.println("==================================");
+						break;
+						
+					case 4: // make apt
+						docSelect = 0;
+						docAmount = 0;
+						int dChoice, tChoice;
+						
+						for (Staff s : staffList) {
+							if (s.getRole().equals("Doctor")) {
+								docAmount++;
+								System.out.println(docAmount + ". " + s.getName());
+							}
+							
+							
+						}
+						
+						do {
+							System.out.println("Select doctor: ");
+							docSelect = sc.nextInt();
+							
+							if (docSelect>docAmount) System.out.println("Invalid doctor! Please enter again.");
+						} while (docSelect>docAmount);
+						
+						for (Staff s : staffList) {
+							if (s.getRole().equals("Doctor")) {
+								counting++;
+								if (counting == docSelect) {
+									docID = s.getID();
+									break;
+								}
+							}
+						}
+						
+						doc = (Doctor) staffList.get(sList.findStaffIndexID(docID));
+						
+						do {
+							for (int i=0; i<7; i++) {
+								System.out.format("%d. %s\n", i+1, doc.getSchedule()[i][1].getDate());
+							}
+							System.out.println("8. Back");
+							System.out.println("Choose date: ");
+							dChoice = sc.nextInt();
+							
+							if (dChoice > 0 && dChoice < 8) {
+								do {
+									System.out.format("%s\n", doc.getSchedule()[dChoice-1][1].getDate());
+									for(int j=0; j<7; j++) {
+										String slotAvailability;
+										if (doc.getSchedule()[dChoice-1][j].getAvail()) {
+											slotAvailability = "Available";
+										}
+										else {
+											slotAvailability = "Unavailable";
+										}
+										System.out.format("%d. %s\n", j+1, doc.getSchedule()[dChoice-1][j].getTime() + " : " + slotAvailability);
+										}
+									System.out.println((7+1) + ". Back");
+									System.out.println("Choose time: ");
+									tChoice = sc.nextInt();
+									
+									if (tChoice > 0 && tChoice < 7+1) {
+										if (doc.getSchedule()[dChoice-1][tChoice-1].getAvail()) {
+											Appointment appoint = new Appointment(patient, doc, doc.getSchedule()[dChoice-1][tChoice-1].getDateTime(), doc.getSchedule()[dChoice-1][tChoice-1].getTime());
+											System.out.println("Appointment successfully booked with " + doc.getName() + " at " + doc.getSchedule()[dChoice-1][tChoice-1].getDate() + ", " + doc.getSchedule()[dChoice-1][tChoice-1].getTime());
+											appoint.updateStatus("Pending");
+											appointmentList.add(appoint);
+											doc.addAppointment(appoint);
+											
+										}
+										else {
+											System.out.println("Slot is unavailable!");
+										}
+									}
+									else if(tChoice > 7+1 || tChoice < 1){
+										System.out.println("Invalid time! Please enter again.");
+									}
+									
+								} while (tChoice > 7+1 || tChoice < 1);
+							}
+								
+							else if (dChoice > 8 || dChoice < 1){
+									System.out.println("Date invalid! Please enter again.");
+							}
+						} while (dChoice > 8 || dChoice < 1); 
+						
+						
+						System.out.println();
+						break;
+						
+					case 5: // reschedule apt
+						aptAmount = 0;
+						String aptIDSelect = null;
+						
+						for (Appointment a : appointmentList) {
+							if (patient.getName().equals(a.getPatient()) && (a.getStatus().equals("Confirmed") || a.getStatus().equals("Pending"))) { 
+								aptAmount++;
+								System.out.println(a.getID() + ": (Doctor: " + a.getDoctor() + " )" + a.getDate() +  " " + a.getTime() + "| Status: " + a.getStatus()); 
+							}
+						}
+						if (aptAmount != 0) {
+							medAmount = 0;
+							medSelect = 0;
+							Doctor cancelledDoc = null;
+							apt = null;
+								
+							do {					
+								System.out.println("Enter full appointment ID to reschedule: ");
+								aptAmount = 0;
+								sc.nextLine();
+								aptIDSelect = sc.nextLine();
+								for (Appointment a : appointmentList) {
+									if (a.getID().equals(aptIDSelect)) {
+										apt = a;
+										aptAmount++;
+									}
+								}
+								
+								if (aptAmount == 0) System.out.println("Invalid appointment! Please enter again.");
+							} while (aptAmount == 0);
+								
+							
+							
+							//give option to reschedule to new avail slot
+							System.out.println("Rescheduling appointment...... ");
+							apt.updateStatus("Cancelled");
+							for (Staff s : staffList) {
+								if (apt.getDoctor().equals(s.getName())) {
+									cancelledDoc = (Doctor) s;
+								}
+							}
+							System.out.println("Appointment with " + apt.getDoctor() + " at " + apt.getDate() + " " + apt.getTime() + " successfully cancelled.");
+							System.out.println("============================================");
+							cancelledDoc.removeAppointment(apt);
+							
+							docSelect = 0;
+							docAmount = 0;
+							dChoice = 0; 
+							tChoice = 0;
+							
+							for (Staff s : staffList) {
+								if (s.getRole().equals("Doctor")) {
+									docAmount++;
+									System.out.println(docAmount + ". " + s.getName());
+								}
+								
+								
+							}
+							
+							do {
+								System.out.println("Select doctor to reschedule to: ");
+								docSelect = sc.nextInt();
+								
+								if (docSelect>docAmount) System.out.println("Invalid doctor! Please enter again.");
+							} while (docSelect>docAmount);
+							
+							for (Staff s : staffList) {
+								if (s.getRole().equals("Doctor")) {
+									counting++;
+									if (counting == docSelect) {
+										docID = s.getID();
+										break;
+									}
+								}
+							}
+							
+							doc = (Doctor) staffList.get(sList.findStaffIndexID(docID));
+							
+							do {
+								for (int i=0; i<7; i++) {
+									System.out.format("%d. %s\n", i+1, doc.getSchedule()[i][1].getDate());
+								}
+								System.out.println("8. Back");
+								System.out.println("Choose date: ");
+								dChoice = sc.nextInt();
+								
+								if (dChoice > 0 && dChoice < 8) {
+									do {
+										System.out.format("%s\n", doc.getSchedule()[dChoice-1][1].getDate());
+										for(int j=0; j<7; j++) {
+											String slotAvailability;
+											if (doc.getSchedule()[dChoice-1][j].getAvail()) {
+												slotAvailability = "Available";
+											}
+											else {
+												slotAvailability = "Unavailable";
+											}
+											System.out.format("%d. %s\n", j+1, doc.getSchedule()[dChoice-1][j].getTime() + " : " + slotAvailability);
+											}
+										System.out.println((7+1) + ". Back");
+										System.out.println("Choose time: ");
+										tChoice = sc.nextInt();
+										
+										if (tChoice > 0 && tChoice < 7+1) {
+											if (doc.getSchedule()[dChoice-1][tChoice-1].getAvail()) {
+												Appointment appoint = new Appointment(patient, doc, doc.getSchedule()[dChoice-1][tChoice-1].getDateTime(), doc.getSchedule()[dChoice-1][tChoice-1].getTime());
+												System.out.println("Appointment successfully booked with " + doc.getName() + " at " + doc.getSchedule()[dChoice-1][tChoice-1].getDate() + ", " + doc.getSchedule()[dChoice-1][tChoice-1].getTime());
+												appointmentList.add(appoint);
+												appoint.updateStatus("Pending");
+												doc.addAppointment(appoint);
+											}
+										}
+										else if(tChoice > 7+1 || tChoice < 1){
+											System.out.println("Invalid time! Please enter again.");
+										}
+										
+									} while (tChoice > 7+1 || tChoice < 1);
+								}
+									
+								else if (dChoice > 8 || dChoice < 1){
+										System.out.println("Date invalid! Please enter again.");
+								}
+							} while (dChoice > 8 || dChoice < 1); 
+							
+							
+							System.out.println();
+							break;
+				
+						}
+						
+						else System.out.println("No scheduled appointment.");
+						System.out.println();
+						break;
+						
+					case 6: // cancel apt
+						aptAmount = 0;
+						aptIDSelect = null;
+						
+						for (Appointment a : appointmentList) {
+							if (patient.getName().equals(a.getPatient()) && (a.getStatus().equals("Confirmed") || a.getStatus().equals("Pending"))) { 
+								aptAmount++;
+								System.out.println(a.getID() + ": (Doctor: " + a.getDoctor() + " )" + a.getDate() +  " " + a.getTime() + "| Status: " + a.getStatus());
+							}
+						}
+						if (aptAmount != 0) {
+							medAmount = 0;
+							medSelect = 0;
+							Doctor cancelledDoc = null;
+							apt = null;
+								
+							do {					
+								System.out.println("Enter full appointment ID to cancel: ");
+								aptAmount = 0;
+								sc.nextLine();
+								aptIDSelect = sc.nextLine();
+								for (Appointment a : appointmentList) {
+									if (a.getID().equals(aptIDSelect)) {
+										apt = a;
+										aptAmount++;
+									}
+								}
+								
+								if (aptAmount == 0) System.out.println("Invalid appointment! Please enter again.");
+							} while (aptAmount == 0);
+								
+							
+							
+							//give option to reschedule to new avail slot
+							System.out.println("Cancelling appointment...... ");
+							apt.updateStatus("Cancelled");
+							for (Staff s : staffList) {
+								if (apt.getDoctor().equals(s.getName())) {
+									cancelledDoc = (Doctor) s;
+								}
+							}
+							System.out.println("Appointment with " + apt.getDoctor() + " at " + apt.getDate() + " " + apt.getTime() + " successfully cancelled.");
+							System.out.println("============================================");
+							cancelledDoc.removeAppointment(apt);
+						}
+						else {
+							System.out.println("No upcoming appointment to cancel.");
+						}
+						break;
+						
+					case 7: // view apt
+						aptAmount = 0;
+						
+						System.out.println("Showing upcoming appointment status:");
+						System.out.println("=========================================");
+						for (Appointment a : appointmentList) {
+							if (patient.getName().equals(a.getPatient()) && (a.getStatus().equals("Confirmed") || a.getStatus().equals("Pending"))) { 
+								aptAmount++;
+								System.out.println(a.getID() + ": (Doctor: " + a.getDoctor() + " )" + a.getDate() +  " " + a.getTime() + "| Status: " + a.getStatus());
+							}
+						}
+						if (aptAmount == 0) {
+							System.out.println("No upcoming appointments scheduled.");
+							System.out.println();
+						}
+						break;
+						
+					case 8: // view apt record
+						aptAmount = 0;
+						
+						System.out.println("Past appointments and statuses:");
+						System.out.println("===================================================");
+						for (Appointment a : appointmentList) {
+							if (patient.getName().equals(a.getPatient()) && a.getStatus().equals("Completed")) { 
+								aptAmount++;
+								System.out.println(a.getID() + ": (Doctor: " + a.getDoctor() + " )" + a.getDate() +  " " + a.getTime() + "| Status: " + a.getStatus()); 
+							}
+						}
+						if (aptAmount != 0) {
+							
+							apt = null;
+								
+							do {					
+								System.out.println("Enter full appointment ID to display past outcome record: ");
+								aptAmount = 0;
+								sc.nextLine();
+								aptIDSelect = sc.nextLine();
+								for (Appointment a : appointmentList) {
+									if (a.getID().equals(aptIDSelect)) {
+										apt = a;
+										aptAmount++;
+									}
+								}
+								
+								if (aptAmount == 0) System.out.println("Invalid appointment! Please enter again.");
+							} while (aptAmount == 0);
+							
+							System.out.println("Appointment records of " + apt.getID());
+							System.out.println("===================================================");
+							System.out.println("Appointment ID		: " + apt.getID());
+							System.out.println("Patient Name		: " + apt.getPatient());
+							System.out.println("Doctor Name		: " + apt.getDoctor());
+							System.out.println("Date and Time		: " + apt.getDate() + " " + apt.getTime());
+							System.out.println("Status			: " + apt.getStatus());
+							System.out.println("Outcome			: " + apt.getOutcome());
+							System.out.println();
+							System.out.println("Prescribed Medicine");
+							System.out.println("--------------------------------------------------");
+							apt.printPrescription();
+							System.out.println();
+						}
+						
+						else {
+							System.out.println("No past appointment record!");
+							System.out.println();
+						}
+						break;
+						
+					case 9:
+						System.out.println("Logging out...");
+						sc.nextLine();
+						loggedIn = false;
+						System.out.println();
+						break;
+						
+					default:
+						System.out.println("Invalid choice! Please enter again.");
+						break;
+					}
+				} while (patientChoice != 9);
+				
+				break;
+			}
 		} while (!loggedIn); //go back to login page
 	}
+
 
 	private static void logInScreen(){
 		System.out.println(

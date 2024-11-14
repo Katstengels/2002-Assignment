@@ -19,7 +19,7 @@ public class Schedule {
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
 		dateTime = calendar.getTime();						//Set dateTime for apt as the above
-		available = false;									//default value
+		available = true;									//default value
 	}
 	
 	public void changeAvail(boolean avail) {
@@ -44,6 +44,13 @@ public class Schedule {
 	public void addAppointment(Appointment inApt) {
 		appointment = inApt;
 		available = false;
+		System.out.println("Availability updated. Appointment added in schedule.");
+	}
+	
+	public void removeAppointment(Appointment inApt) {
+		appointment = null;
+		available = true;
+		System.out.println("Availability updated. Appointment removed in schedule.");
 	}
 	
 	public Appointment getAppointment() {
