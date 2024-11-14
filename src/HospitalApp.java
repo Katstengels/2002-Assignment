@@ -73,7 +73,7 @@ public class HospitalApp {
 				Doctor doctor = (Doctor) user;
 				
 				do {
-					System.out.println("===============================================");
+					System.out.println("==================================================");
 					System.out.println("Hello " + doctor.getName() + ", welcome to the doctor menu");
 					System.out.println("1. View Patient Medical Records");
 					System.out.println("2. Update Patient Medical Records");
@@ -83,7 +83,7 @@ public class HospitalApp {
 					System.out.println("6. View Upcoming Appointments");
 					System.out.println("7. Record Appointment Outcome");
 					System.out.println("8. Logout");
-					System.out.println("===============================================");
+					System.out.println("==================================================");
 
 					choice = sc.nextInt();
 					
@@ -108,11 +108,13 @@ public class HospitalApp {
 						System.out.println("Contact no.	: " + pat.getContactNum());
 						System.out.println("Blood type	: " + pat.getBloodType());
 						System.out.println("Previous appointment outcomes:");
+						boolean trig = false;
 						for (Appointment a : appointmentList) {
 							if (pat.getName().equals(a.getPatient())) {
-								System.out.println(a.getDate() + ": " + a.getOutcome());
+								System.out.println(a.getDate() + ": " + a.getOutcome()); trig = true;
 							}
 						}
+						if(!trig) { System.out.println("~ No appointment outcomes found!"); }
 						System.out.println();
 						break;
 						
@@ -354,7 +356,7 @@ public class HospitalApp {
 					System.out.println("Hello " + pharma.getName() + ", welcome to the Pharmacy menu");
 					System.out.println("1. Fulfill medication orders"); //TODO
 					System.out.println("2. Display stock"); //TODO
-					System.out.println("3. Request restock MENU");
+					System.out.println("3. Request restock menu");
 					System.out.println("4. Request log"); //TODO
 					System.out.println("5. Change Password");
 					System.out.println("6. Log off");
@@ -440,23 +442,62 @@ public class HospitalApp {
 								System.out.println("4. Back");
 								do {
 									System.out.println("Enter selection: ");
+
+									// Check if the input is an integer
+									while (!scPharma.hasNextInt()) {
+										System.out.println("Invalid input! Please enter an integer.");
+										scPharma.next(); // Consume the invalid input to avoid an infinite loop
+									}
+
 									m = scPharma.nextInt();
-									if (m > 4 || m < 1) System.out.println("Invalid choice! Please enter again.");
+
+									if (m > 4 || m < 1) {
+										System.out.println("Invalid choice! Please enter again.");
+									}
 								} while (m > 4 || m < 1);
+
+								scPharma.nextLine();
+
 								switch (m) {
 									case 1:
-										//1. Request restock - Specific medication
+										// 1. Request restock - Specific medication
 										mList.printList();
 										String restockMed = null;
 										int restockAmt = 0;
 
-										System.out.println("Which medication would you like to restock?");
-										scPharma.nextLine();
-										restockMed = scPharma.nextLine();
-										System.out.println("How much would you like to restock?");
-										restockAmt = scPharma.nextInt();
+										boolean validMedicine = false;
 
-										RestockForm rForm = new RestockForm(restockMed,restockAmt);
+										// Loop until a valid medication is entered
+										do {
+											System.out.println("Which medication would you like to restock?");
+
+											restockMed = scPharma.nextLine();
+
+											if (mList.findMedicineIndex(restockMed) != -1) {
+												validMedicine = true; // Medication is found in the list
+											} else {
+												System.out.println("Invalid medication name! Please enter a valid medication from the list.");
+											}
+										} while (!validMedicine);
+
+										System.out.println("How much would you like to restock?");
+
+										// Input validation to ensure restockAmt is a valid integer
+										while (true) {
+											while (!scPharma.hasNextInt()) {
+												System.out.println("Invalid input! Please enter an integer for the restock amount.");
+												scPharma.next(); // Consume the invalid input
+											}
+											restockAmt = scPharma.nextInt();
+											if (restockAmt >= 0) {
+												break; // Exit loop if the input is valid
+											} else {
+												System.out.println("Invalid amount! Please enter a non-negative number.");
+											}
+										}
+
+										// Create RestockForm and add to restockList
+										RestockForm rForm = new RestockForm(restockMed, restockAmt);
 										restockList.add(rForm);
 
 										System.out.println("Restock request has been made successfully.");
@@ -464,25 +505,71 @@ public class HospitalApp {
 									case 2:
 										//2. Request restock - All low
 										mList.printLowStockMedicine();
-										//
+
+										// Create restock requests for all low stock medications
+										for (Medicine medicine : medicineList) {
+											if (medicine.getQuantity() <= medicine.getLowStockAlertAmt()) {
+												int restockAmount = medicine.getLowStockAlertAmt() - medicine.getQuantity() + 10; //Restock to have 10 above the low stock amount
+												RestockForm rLowForm = new RestockForm(medicine.getName(), restockAmount);
+												restockList.add(rLowForm);
+												System.out.println("Restock request created for " + medicine.getName() + ": " + restockAmount + " units.");
+											}
+										}
+
+										System.out.println("Restock requests for all low stock medications have been made successfully.");
+
+
 										break;
 									case 3:
-										//3. Cancel restock request
-										//Lists all requests
+										// 3. Cancel restock request
+										// Lists all requests not yet fulfilled
 										boolean triggg = false;
-										System.out.printf("%-10s %-20s %-10s %-20s\n","restockID","Medicine","Amount","Status");
+										ArrayList<RestockForm> unfulfilledRequests = new ArrayList<>();
+										System.out.println("===== Unfulfilled requests =====");
+										System.out.printf("%-10s %-10s %-20s %-10s %-20s\n", "Index", "restockID", "Medicine", "Amount", "Status");
+
+										int index = 0;
 										for (RestockForm rF : restockList) {
-											if(!rF.isFulfilled()){
+											if (!rF.isFulfilled()) {
+												System.out.printf("%-10d", index + 1); // Print the index for selection
 												rF.printFormDetails();
+												unfulfilledRequests.add(rF);
 												triggg = true;
-											};
+												index++;
+											}
 										}
-										if (!triggg) {System.out.println("==========  There are no past requests  =========="); break;}
 
-										//RestockForm restockList = new RestockForm()
+										if (!triggg) {
+											System.out.println("==========  There are no past requests  ==========");
+											break;
+										}
 
+										// Let the user choose an unfulfilled restock request to cancel
+										int cancelIndex = -1;
+										do {
+											System.out.println("Enter the index of the restock request you want to cancel (or enter 0 to go back): ");
 
-										//restockList.remove(restockList);
+											// Validate that the input is an integer
+											while (!scPharma.hasNextInt()) {
+												System.out.println("Invalid input! Please enter a valid integer.");
+												scPharma.next(); // Consume the invalid input
+											}
+											cancelIndex = scPharma.nextInt();
+
+											if (cancelIndex == 0) {
+												// User chooses to go back
+												break;
+											} else if (cancelIndex > 0 && cancelIndex <= unfulfilledRequests.size()) {
+												// Remove the selected request
+												RestockForm toRemove = unfulfilledRequests.get(cancelIndex - 1);
+												restockList.remove(toRemove);
+												System.out.println("Restock request for " + toRemove.getMedicationName() + " has been successfully cancelled.");
+												break;
+											} else {
+												System.out.println("Invalid index! Please enter a valid index.");
+											}
+										} while (true);
+
 										break;
 									case 4:
 										//4. Back
@@ -1387,11 +1474,13 @@ public class HospitalApp {
 						System.out.println("Contact no.	: " + patient.getContactNum());
 						System.out.println("Blood type	: " + patient.getBloodType());
 						System.out.println("Previous appointment outcomes:");
+						boolean trig = false;
 						for (Appointment a : appointmentList) {
 							if (patient.getName().equals(a.getPatient())) {
-								System.out.println(a.getDate() + ": " + a.getOutcome());
+								System.out.println(a.getDate() + ": " + a.getOutcome()); trig = true;
 							}
 						}
+						if(!trig) { System.out.println("~ No appointment outcomes found!"); }
 						System.out.println();
 						break;
 						
@@ -1446,16 +1535,24 @@ public class HospitalApp {
 								docAmount++;
 								System.out.println(docAmount + ". " + s.getName());
 							}
-							
-							
 						}
-						
+
 						do {
 							System.out.println("Select doctor: ");
-							docSelect = sc.nextInt();
-							
-							if (docSelect>docAmount) System.out.println("Invalid doctor! Please enter again.");
-						} while (docSelect>docAmount);
+
+							if (sc.hasNextInt()) {
+								docSelect = sc.nextInt();
+
+								if (docSelect > docAmount || docSelect <= 0) {
+									System.out.println("Invalid doctor! Please enter again.");
+								}
+							} else {
+								System.out.println("Invalid input! Please enter an integer.");
+								sc.next(); // Consume the invalid input to prevent an infinite loop
+								docSelect = -1; // Set to a value that will re-trigger the loop
+							}
+
+						} while (docSelect > docAmount || docSelect <= 0);
 						
 						for (Staff s : staffList) {
 							if (s.getRole().equals("Doctor")) {
@@ -1468,58 +1565,65 @@ public class HospitalApp {
 						}
 						
 						doc = (Doctor) staffList.get(sList.findStaffIndexID(docID));
-						
+
 						do {
-							for (int i=0; i<7; i++) {
-								System.out.format("%d. %s\n", i+1, doc.getSchedule()[i][1].getDate());
+							for (int i = 0; i < 7; i++) {
+								System.out.format("%d. %s\n", i + 1, doc.getSchedule()[i][1].getDate());
 							}
 							System.out.println("8. Back");
 							System.out.println("Choose date: ");
+
+							// Input validation for dChoice
+							while (!sc.hasNextInt()) {
+								System.out.println("Invalid input! Please enter an integer.");
+								sc.next(); // Consume the invalid input
+							}
 							dChoice = sc.nextInt();
-							
+
 							if (dChoice > 0 && dChoice < 8) {
 								do {
-									System.out.format("%s\n", doc.getSchedule()[dChoice-1][1].getDate());
-									for(int j=0; j<7; j++) {
+									System.out.format("%s\n", doc.getSchedule()[dChoice - 1][1].getDate());
+									for (int j = 0; j < 7; j++) {
 										String slotAvailability;
-										if (doc.getSchedule()[dChoice-1][j].getAvail()) {
+										if (doc.getSchedule()[dChoice - 1][j].getAvail()) {
 											slotAvailability = "Available";
-										}
-										else {
+										} else {
 											slotAvailability = "Unavailable";
 										}
-										System.out.format("%d. %s\n", j+1, doc.getSchedule()[dChoice-1][j].getTime() + " : " + slotAvailability);
-										}
-									System.out.println((7+1) + ". Back");
+										System.out.format("%d. %s\n", j + 1, doc.getSchedule()[dChoice - 1][j].getTime() + " : " + slotAvailability);
+									}
+									System.out.println((7 + 1) + ". Back");
 									System.out.println("Choose time: ");
+
+									// Input validation for tChoice
+									while (!sc.hasNextInt()) {
+										System.out.println("Invalid input! Please enter an integer.");
+										sc.next(); // Consume the invalid input
+									}
 									tChoice = sc.nextInt();
-									
-									if (tChoice > 0 && tChoice < 7+1) {
-										if (doc.getSchedule()[dChoice-1][tChoice-1].getAvail()) {
-											Appointment appoint = new Appointment(patient, doc, doc.getSchedule()[dChoice-1][tChoice-1].getDateTime(), doc.getSchedule()[dChoice-1][tChoice-1].getTime());
-											System.out.println("Appointment successfully booked with " + doc.getName() + " at " + doc.getSchedule()[dChoice-1][tChoice-1].getDate() + ", " + doc.getSchedule()[dChoice-1][tChoice-1].getTime());
+
+									if (tChoice > 0 && tChoice < 7 + 1) {
+										if (doc.getSchedule()[dChoice - 1][tChoice - 1].getAvail()) {
+											Appointment appoint = new Appointment(patient, doc, doc.getSchedule()[dChoice - 1][tChoice - 1].getDateTime(), doc.getSchedule()[dChoice - 1][tChoice - 1].getTime());
+											System.out.println("Appointment successfully booked with " + doc.getName() + " at " + doc.getSchedule()[dChoice - 1][tChoice - 1].getDate() + ", " + doc.getSchedule()[dChoice - 1][tChoice - 1].getTime());
 											appoint.updateStatus("Pending");
 											appointmentList.add(appoint);
 											doc.addAppointment(appoint);
-											
-										}
-										else {
+										} else {
 											System.out.println("Slot is unavailable!");
 										}
-									}
-									else if(tChoice > 7+1 || tChoice < 1){
+									} else if (tChoice > 7 + 1 || tChoice < 1) {
 										System.out.println("Invalid time! Please enter again.");
 									}
-									
-								} while (tChoice > 7+1 || tChoice < 1);
+
+								} while (tChoice > 7 + 1 || tChoice < 1);
+							} else if (dChoice > 8 || dChoice < 1) {
+								System.out.println("Date invalid! Please enter again.");
 							}
-								
-							else if (dChoice > 8 || dChoice < 1){
-									System.out.println("Date invalid! Please enter again.");
-							}
-						} while (dChoice > 8 || dChoice < 1); 
-						
-						
+						} while (dChoice > 8 || dChoice < 1);
+
+
+
 						System.out.println();
 						break;
 						
