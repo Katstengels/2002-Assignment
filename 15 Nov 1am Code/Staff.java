@@ -1,4 +1,3 @@
-package project2002;
 
 public class Staff extends User {
 
