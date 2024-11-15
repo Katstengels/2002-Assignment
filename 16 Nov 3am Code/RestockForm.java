@@ -1,4 +1,4 @@
-package project2002;
+
 
 public class RestockForm {
 	private int restockID;
