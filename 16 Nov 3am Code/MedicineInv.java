@@ -1,5 +1,3 @@
-package project2002;
-
 
 import java.io.File;
 import java.io.FileNotFoundException;
