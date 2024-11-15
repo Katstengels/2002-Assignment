@@ -82,7 +82,8 @@ public class HospitalApp {
 					System.out.println("5. Accept or Decline Appointment Requests");
 					System.out.println("6. View Upcoming Appointments");
 					System.out.println("7. Record Appointment Outcome");
-					System.out.println("8. Logout");
+					System.out.println("8. Change Password");
+					System.out.println("9. Logout");
 					System.out.println("==================================================");
 
 					choice = sc.nextInt();
@@ -350,7 +351,17 @@ public class HospitalApp {
 						System.out.println();
 						break;
 						
-					case 8: // logout
+					case 8: // change password
+						String oldPa, newPa;
+						System.out.println("Please enter your current password: ");
+						oldPa = sc.nextLine();
+						System.out.println("Please enter your new password");
+						newPa = sc.nextLine();
+
+						if(!doctor.changePassword(oldPa,newPa))
+						{System.out.println("Password is incorrect");}
+						break;
+					case 9: // logout
 						System.out.println("Logging out...");
 						sc.nextLine();
 						loggedIn = false;
@@ -361,7 +372,7 @@ public class HospitalApp {
 						System.out.println("Invalid choice! Please enter again.");
 						break;
 					}
-				} while (choice != 8);
+				} while (choice != 9);
 				
 				
 				break;
@@ -646,7 +657,8 @@ public class HospitalApp {
 					System.out.println("2. Manage Appointments");
 					System.out.println("3. View and Manage Medication Inventory");
 					System.out.println("4. Approve Replenishment Requests");
-					System.out.println("5. Logout");
+					System.out.println("5. Change Password");
+					System.out.println("6. Logout");
 					System.out.println("===============================================");
 
 					admchoice = sc.nextInt();
@@ -1459,7 +1471,17 @@ public class HospitalApp {
 		        	} while (choicex!=4);
 
 		            break;
-		        case 5:
+			case 5:
+				String oldPas, newPas;
+				System.out.println("Please enter your current password: ");
+				oldPas = sc.nextLine();
+				System.out.println("Please enter your new password");
+				newPas = sc.nextLine();
+
+				if(!user.changePassword(oldPas,newPas))
+				{System.out.println("Password is incorrect");}
+				break;
+		        case 6:
 		            System.out.println("Case 5 entered. Logging out...");
 		            loggedIn = false;
 		            break;
@@ -1467,7 +1489,7 @@ public class HospitalApp {
 		            System.out.println("Invalid option entered. Please try again. ");
 		            break;
 		    }
-		} while (admchoice!=5);
+		} while (admchoice!=6);
 				
 				break;
 				
@@ -1486,7 +1508,8 @@ public class HospitalApp {
 					System.out.println("6. Cancel Appointment");
 					System.out.println("7. View Scheduled Appointments");
 					System.out.println("8. View Past Appointment Records");
-					System.out.println("9. Logout");
+					System.out.println("9. Change Password");
+					System.out.println("10. Logout");
 					patientChoice = sc.nextInt();
 					
 					switch(patientChoice) {
@@ -1902,7 +1925,17 @@ public class HospitalApp {
 						}
 						break;
 						
-					case 9:
+					case 9: // change password
+						String oldPass, newPass;
+						System.out.println("Please enter your current password: ");
+						oldPass = sc.nextLine();
+						System.out.println("Please enter your new password");
+						newPass = sc.nextLine();
+
+						if(!patient.changePassword(oldPass,newPass))
+						{System.out.println("Password is incorrect");}
+						break;
+					case 10:
 						System.out.println("Logging out...");
 						sc.nextLine();
 						loggedIn = false;
@@ -1913,7 +1946,7 @@ public class HospitalApp {
 						System.out.println("Invalid choice! Please enter again.");
 						break;
 					}
-				} while (patientChoice != 9);
+				} while (patientChoice != 10);
 				
 				break;
 			}
