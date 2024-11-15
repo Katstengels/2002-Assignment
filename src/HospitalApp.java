@@ -119,8 +119,10 @@ public class HospitalApp {
 						break;
 						
 					case 2: // update patient record
+						String IDChoice, update;
 						patAmount = 0;
 						aptAmount = 0;
+						apt = null;
 						for (Patient p : patientList) {
 							patAmount++;
 							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
@@ -134,7 +136,28 @@ public class HospitalApp {
 						
 						pat = patientList.get(patSelect-1);
 						
+						System.out.println("Past records: ");
+						for (Appointment a : appointmentList) {
+							if (a.getPatient().equals(pat.getName())) {
+								System.out.println( (a.getID()) + ". " + a.getDate() + ": " + a.getOutcome());
+							}
+						}
 						
+						do {
+							System.out.println("Select appointment ID of record to update: ");
+							IDChoice = sc.nextLine();
+							
+							for (Appointment a : appointmentList) {
+								if (IDChoice.equals(a.getID()) && pat.getName().equals(a.getPatient())) {
+									apt = a;
+								}
+							}
+						} while (apt == null);
+						
+						System.out.println("Enter updated record: ");
+						update = sc.nextLine();
+						apt.updateOutcome(update);
+						System.out.println("Record updated!");
 						
 						System.out.println();
 						break;
@@ -1497,7 +1520,7 @@ public class HospitalApp {
 						for (Staff s : staffList) {
 							if (s.getRole().equals("Doctor")) {
 								docAmount++;
-								System.out.println(docAmount + ". " + s.getName());
+								System.out.println(docAmount + ". dr. " + s.getName());
 							}	
 						}
 						
@@ -1533,7 +1556,7 @@ public class HospitalApp {
 						for (Staff s : staffList) {
 							if (s.getRole().equals("Doctor")) {
 								docAmount++;
-								System.out.println(docAmount + ". " + s.getName());
+								System.out.println(docAmount + ". dr. " + s.getName());
 							}
 						}
 
@@ -1605,7 +1628,7 @@ public class HospitalApp {
 									if (tChoice > 0 && tChoice < 7 + 1) {
 										if (doc.getSchedule()[dChoice - 1][tChoice - 1].getAvail()) {
 											Appointment appoint = new Appointment(patient, doc, doc.getSchedule()[dChoice - 1][tChoice - 1].getDateTime(), doc.getSchedule()[dChoice - 1][tChoice - 1].getTime());
-											System.out.println("Appointment successfully booked with " + doc.getName() + " at " + doc.getSchedule()[dChoice - 1][tChoice - 1].getDate() + ", " + doc.getSchedule()[dChoice - 1][tChoice - 1].getTime());
+											System.out.println("Appointment successfully booked with dr. " + doc.getName() + " at " + doc.getSchedule()[dChoice - 1][tChoice - 1].getDate() + ", " + doc.getSchedule()[dChoice - 1][tChoice - 1].getTime());
 											appoint.updateStatus("Pending");
 											appointmentList.add(appoint);
 											doc.addAppointment(appoint);
@@ -1634,7 +1657,7 @@ public class HospitalApp {
 						for (Appointment a : appointmentList) {
 							if (patient.getName().equals(a.getPatient()) && (a.getStatus().equals("Confirmed") || a.getStatus().equals("Pending"))) { 
 								aptAmount++;
-								System.out.println(a.getID() + ": (Doctor: " + a.getDoctor() + " )" + a.getDate() +  " " + a.getTime() + "| Status: " + a.getStatus()); 
+								System.out.println(a.getID() + ": (Doctor: dr. " + a.getDoctor() + " )" + a.getDate() +  " " + a.getTime() + "| Status: " + a.getStatus()); 
 							}
 						}
 						if (aptAmount != 0) {
@@ -1668,7 +1691,7 @@ public class HospitalApp {
 									cancelledDoc = (Doctor) s;
 								}
 							}
-							System.out.println("Appointment with " + apt.getDoctor() + " at " + apt.getDate() + " " + apt.getTime() + " successfully cancelled.");
+							System.out.println("Appointment with dr. " + apt.getDoctor() + " at " + apt.getDate() + " " + apt.getTime() + " successfully cancelled.");
 							System.out.println("============================================");
 							cancelledDoc.removeAppointment(apt);
 							
@@ -1680,7 +1703,7 @@ public class HospitalApp {
 							for (Staff s : staffList) {
 								if (s.getRole().equals("Doctor")) {
 									docAmount++;
-									System.out.println(docAmount + ". " + s.getName());
+									System.out.println(docAmount + ". dr. " + s.getName());
 								}
 								
 								
@@ -1733,7 +1756,7 @@ public class HospitalApp {
 										if (tChoice > 0 && tChoice < 7+1) {
 											if (doc.getSchedule()[dChoice-1][tChoice-1].getAvail()) {
 												Appointment appoint = new Appointment(patient, doc, doc.getSchedule()[dChoice-1][tChoice-1].getDateTime(), doc.getSchedule()[dChoice-1][tChoice-1].getTime());
-												System.out.println("Appointment successfully booked with " + doc.getName() + " at " + doc.getSchedule()[dChoice-1][tChoice-1].getDate() + ", " + doc.getSchedule()[dChoice-1][tChoice-1].getTime());
+												System.out.println("Appointment successfully booked with dr. " + doc.getName() + " at " + doc.getSchedule()[dChoice-1][tChoice-1].getDate() + ", " + doc.getSchedule()[dChoice-1][tChoice-1].getTime());
 												appointmentList.add(appoint);
 												appoint.updateStatus("Pending");
 												doc.addAppointment(appoint);
@@ -1768,7 +1791,7 @@ public class HospitalApp {
 						for (Appointment a : appointmentList) {
 							if (patient.getName().equals(a.getPatient()) && (a.getStatus().equals("Confirmed") || a.getStatus().equals("Pending"))) { 
 								aptAmount++;
-								System.out.println(a.getID() + ": (Doctor: " + a.getDoctor() + " )" + a.getDate() +  " " + a.getTime() + "| Status: " + a.getStatus());
+								System.out.println(a.getID() + ": (Doctor: dr. " + a.getDoctor() + " )" + a.getDate() +  " " + a.getTime() + "| Status: " + a.getStatus());
 							}
 						}
 						if (aptAmount != 0) {
@@ -1802,7 +1825,7 @@ public class HospitalApp {
 									cancelledDoc = (Doctor) s;
 								}
 							}
-							System.out.println("Appointment with " + apt.getDoctor() + " at " + apt.getDate() + " " + apt.getTime() + " successfully cancelled.");
+							System.out.println("Appointment with dr. " + apt.getDoctor() + " at " + apt.getDate() + " " + apt.getTime() + " successfully cancelled.");
 							System.out.println("============================================");
 							cancelledDoc.removeAppointment(apt);
 						}
@@ -1819,7 +1842,7 @@ public class HospitalApp {
 						for (Appointment a : appointmentList) {
 							if (patient.getName().equals(a.getPatient()) && (a.getStatus().equals("Confirmed") || a.getStatus().equals("Pending"))) { 
 								aptAmount++;
-								System.out.println(a.getID() + ": (Doctor: " + a.getDoctor() + " )" + a.getDate() +  " " + a.getTime() + "| Status: " + a.getStatus());
+								System.out.println(a.getID() + ": (Doctor: dr. " + a.getDoctor() + " )" + a.getDate() +  " " + a.getTime() + "| Status: " + a.getStatus());
 							}
 						}
 						if (aptAmount == 0) {
@@ -1836,7 +1859,7 @@ public class HospitalApp {
 						for (Appointment a : appointmentList) {
 							if (patient.getName().equals(a.getPatient()) && a.getStatus().equals("Completed")) { 
 								aptAmount++;
-								System.out.println(a.getID() + ": (Doctor: " + a.getDoctor() + " )" + a.getDate() +  " " + a.getTime() + "| Status: " + a.getStatus()); 
+								System.out.println(a.getID() + ": (Doctor: dr. " + a.getDoctor() + " )" + a.getDate() +  " " + a.getTime() + "| Status: " + a.getStatus()); 
 							}
 						}
 						if (aptAmount != 0) {
@@ -1862,7 +1885,7 @@ public class HospitalApp {
 							System.out.println("===================================================");
 							System.out.println("Appointment ID		: " + apt.getID());
 							System.out.println("Patient Name		: " + apt.getPatient());
-							System.out.println("Doctor Name		: " + apt.getDoctor());
+							System.out.println("Doctor Name		: dr. " + apt.getDoctor());
 							System.out.println("Date and Time		: " + apt.getDate() + " " + apt.getTime());
 							System.out.println("Status			: " + apt.getStatus());
 							System.out.println("Outcome			: " + apt.getOutcome());
