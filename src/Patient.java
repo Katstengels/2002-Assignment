@@ -4,6 +4,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * The {@code Patient} class represents a patient in the system, inheriting basic user information
+ * from the {@code User} class. This class stores and manages detailed information about patients,
+ * including their personal information and contact details.
+ * <p>
+ * This class provides methods to retrieve and update patient information.
+ * </p>
+ */
+
 public class Patient extends User {
 	private Calendar calendar = Calendar.getInstance();
     private String patientID;
@@ -14,6 +23,22 @@ public class Patient extends User {
     private String contactNum;
     private String bloodType;
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+
+	/**
+	 * Constructs a {@code Patient} object with the specified details.
+	 *
+	 * @param userID      the unique identifier of the user
+	 * @param password    the password for authentication
+	 * @param role        the role of the user in the system
+	 * @param patientID   the unique identifier of the patient
+	 * @param name        the name of the patient
+	 * @param dateOfBirth the date of birth of the patient
+	 * @param gender      the gender of the patient
+	 * @param email       the email address of the patient
+	 * @param contactNum  the contact number of the patient
+	 * @param bloodType   the blood type of the patient
+	 */
 
     // Constructor
     public Patient(String userID, String password, String role, String patientID, String name, Date dateOfBirth,
@@ -175,11 +200,6 @@ public class Patient extends User {
                 " , Email: " + this.email +
                 " , Contact: " + this.contactNum +
                 " , BloodType: " + this.bloodType + "}";
-    }
-
-    private boolean verifyPW(String pw) {
-        if (pw == this.getPassword()) return true;
-        else return false;
     }
 
 }
