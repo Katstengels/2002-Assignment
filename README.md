@@ -2,27 +2,37 @@
 
 # Class Hierarchy for Package `src`
 ```
+resources/
+├── Medicine_List.csv
+├── Patient_List.csv
+└── Staff_List.csv
+
 src/
 ├── Appointment.java
 ├── HospitalApp.java
+├── Medicine.java
 ├── MedicineInv.java
 ├── PatientInv.java
 ├── PrescriptedMed.java
 ├── RestockForm.java
 ├── Schedule.java
 ├── StaffInv.java
-├── User/
-│ ├── Patient.java
-│ └── Staff/
-│ │ │ ├── Administrator.java
-      └── Pharmacist.java
+└── User.java/
+      ├── Patient.java
+      └── Staff.java/
+            ├── Administrator.java
+            ├── Doctor.java
+            └── Pharmacist.java
 ```
+## Step 1
+Download all the files.
+## Step 2
+Seperate the csv and java files into the 2 folders in the directory tree.
+Note: java files are all in the same level of the directory.
+## Step 3 
+???
+
 ## Class Descriptions
-
-### `java.lang.Object`
-The base class from which all Java classes are derived.
-
----
 
 ### `src.Appointment`
 Handles appointment-related functionality, including scheduling, patient-doctor mappings, and appointment status.
