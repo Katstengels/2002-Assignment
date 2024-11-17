@@ -1,6 +1,6 @@
 # 2002-Assignment
 
-# Class Hierarchy for Package `src`
+# Class Hierarchy for Package `resources` and `src`
 ```
 resources/
 ├── Medicine_List.csv
