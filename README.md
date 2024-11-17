@@ -1,5 +1,11 @@
 # 2002-Assignment
 
+# Class Hierarchy for Package `src`
+
+The following outlines the class hierarchy for the `src` package:
+java.lang.Object ├── src.Appointment ├── src.HospitalApp ├── src.MedicineInv ├── src.PatientInv ├── src.PrescriptedMed ├── src.RestockForm ├── src.Schedule ├── src.StaffInv └── src.User ├── src.Patient └── src.Staff ├── src.Administrator └── src.Pharmacist
+
+
 ## Class Descriptions
 
 ### `java.lang.Object`
