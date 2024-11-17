@@ -2,7 +2,20 @@
 
 # Class Hierarchy for Package `src`
 ```
-src/ ├── Appointment.java ├── HospitalApp.java ├── MedicineInv.java ├── PatientInv.java ├── PrescriptedMed.java ├── RestockForm.java ├── Schedule.java ├── StaffInv.java ├── User/ │ ├── Patient.java │ └── Staff/ │ ├── Administrator.java │ └── Pharmacist.java
+src/
+├── Appointment.java
+├── HospitalApp.java
+├── MedicineInv.java
+├── PatientInv.java
+├── PrescriptedMed.java
+├── RestockForm.java
+├── Schedule.java
+├── StaffInv.java
+├── User/
+│ ├── Patient.java
+│ └── Staff/
+│ │ │ ├── Administrator.java
+      └── Pharmacist.java
 ```
 ## Class Descriptions
 
