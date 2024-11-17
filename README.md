@@ -2,28 +2,7 @@
 
 # Class Hierarchy for Package `src`
 
-The following outlines the class hierarchy for the `src` package:
-java.lang.Object 
-├── src.Appointment ├── src.HospitalApp ├── src.MedicineInv ├── src.PatientInv ├── src.PrescriptedMed ├── src.RestockForm ├── src.Schedule ├── src.StaffInv └── src.User ├── src.Patient └── src.Staff ├── src.Administrator └── src.Pharmacist
-'''
-├── src
-│   ├── controller
-│   │   ├── **/*.css
-│   ├── views
-│   ├── model
-│   ├── index.js
-├── public
-│   ├── css
-│   │   ├── **/*.css
-│   ├── images
-│   ├── js
-│   ├── index.html
-├── dist (or build
-├── node_modules
-├── package.json
-├── package-lock.json
-└── .gitignore
-'''
+src/ ├── Appointment.java ├── HospitalApp.java ├── MedicineInv.java ├── PatientInv.java ├── PrescriptedMed.java ├── RestockForm.java ├── Schedule.java ├── StaffInv.java ├── User/ │ ├── Patient.java │ └── Staff/ │ ├── Administrator.java │ └── Pharmacist.java
 ## Class Descriptions
 
 ### `java.lang.Object`
