@@ -6,7 +6,28 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Scanner;
 
+/**
+ * The {@code HospitalApp} class serves as the main entry point for a hospital management system.
+ * <p>
+ * This application handles user authentication and provides different menus for various roles
+ * (e.g., Doctor, Pharmacist, Administrator, Patient) based on the user's role. Users can perform
+ * actions such as viewing medical records, scheduling appointments, managing staff, and handling
+ * inventory.
+ * </p>
+ */
+
 public class HospitalApp {
+
+	/**
+	 * The main method is the entry point of the application.
+	 * <p>
+	 * It initializes instances of patient, staff, and medicine inventories and handles user login.
+	 * Based on the user's role, different menu options are provided to manage hospital-related
+	 * operations such as appointments, inventory, and staff.
+	 * </p>
+	 *
+	 * @param args command-line arguments (not used)
+	 */
 
 	public static void main(String[] args) {
 
@@ -2160,6 +2181,11 @@ public class HospitalApp {
 		} while (!loggedIn); //go back to login page
 	}
 
+	/**
+	 * Displays the login screen banner to the user.
+	 * <p>
+	 * This method prints an ASCII art banner for the hospital management system.
+	 */
 
 	private static void logInScreen(){
 		System.out.println(
