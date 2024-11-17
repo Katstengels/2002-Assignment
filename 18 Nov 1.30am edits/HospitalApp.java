@@ -2321,6 +2321,10 @@ public class HospitalApp {
 				} while (patientChoice != 10);
 				
 				break;
+			default: 
+				loggedIn = false;
+				System.out.println("User on Leave or otherwise. Redirecting...");
+				break;
 			}
 		} while (!loggedIn); //go back to login page
 	}
