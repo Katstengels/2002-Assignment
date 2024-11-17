@@ -156,11 +156,6 @@ public class Appointment {
 
   }
 
-  public void testingAddDescription(){   //TEMP FOR TESTING ONLY
-    addPrescript("Paracetamol",10);
-    addPrescript("Ibuprofen",20);
-    this.hasMedication = true;
-  }
 
   public void printPrescriptionFormatting(){
 	  	int MedCount = pMedList.size();

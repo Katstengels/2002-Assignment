@@ -589,7 +589,7 @@ public class HospitalApp {
 
 										// Loop until a valid medication is entered
 										do {
-											System.out.println("Which medication would you like to restock?");
+											System.out.println("Which medication would you like to restock? (Case Sensitive)");
 
 											restockMed = scPharma.nextLine();
 
@@ -1504,8 +1504,8 @@ public class HospitalApp {
 		                            	sc.nextLine();
 		                                System.out.println("Updating medication...");
 		                                int choice4, medCount=0; 
-						medSelect=0; 
-						medAmount=0;
+													medSelect=0;
+													medAmount=0;
 		                                boolean foundm = false;
 		                                String desiredMedName;
 		                                System.out.println("---- Update Medication ----");

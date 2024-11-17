@@ -73,12 +73,42 @@ public class Administrator extends Staff {
         } while (duplicateindicator);
 
 
-        System.out.print("Enter Quantity: ");
-        int quantity = scanner.nextInt();
+        int quantity = 0;
+        int lowstockalertval = 0;
 
-        System.out.print("Enter Low Stock Alert Value: ");
-        int lowstockalertval = scanner.nextInt();
+        // Get Quantity with input validation
+        while (true) {
+            System.out.print("Enter Quantity: ");
 
+            if (scanner.hasNextInt()) {
+                quantity = scanner.nextInt();
+                if (quantity > 0) { // Validate positive quantity
+                    break;
+                } else {
+                    System.out.println("Quantity must be greater than 0. Please try again.");
+                }
+            } else {
+                System.out.println("Invalid input! Please enter a valid integer.");
+                scanner.next(); // Consume the invalid token
+            }
+        }
+
+        // Get Low Stock Alert Value with input validation
+        while (true) {
+            System.out.print("Enter Low Stock Alert Value: ");
+
+            if (scanner.hasNextInt()) {
+                lowstockalertval = scanner.nextInt();
+                if (lowstockalertval > 0) { // Validate positive value
+                    break;
+                } else {
+                    System.out.println("Low Stock Alert Value must be greater than 0. Please try again.");
+                }
+            } else {
+                System.out.println("Invalid input! Please enter a valid integer.");
+                scanner.next(); // Consume the invalid token
+            }
+        }
 
         // Clear the scanner buffer
         scanner.nextLine();
