@@ -20,7 +20,7 @@ public class Appointment {
 
     // Constructor
   public Appointment(Patient pat, Doctor doc, Date day, String time) {
-    this.appointmentID = generateID(); // You can replace this with your own ID logic
+    this.appointmentID = generateID(); //  ID logic
     this.patientName = pat.getName();
     this.patientID = pat.getID();
     this.doctorName = doc.getName(); // Assuming Doctor has a getName() method
@@ -185,4 +185,22 @@ public class Appointment {
 	    }
 
 	  }
+
+      public boolean isThisPrescribedMedication(String medName){
+          for (PrescriptedMed medicine : pMedList) {
+              if (medicine.getMedName().equals(medName)) {
+                  return true; // The medication is found in the prescription list
+              }
+          }
+          return false; // The medication is not found
+      }
+
+    public boolean isPrescriptionFulfilled(String medName) {
+        for (PrescriptedMed medicine : pMedList) {
+            if (medicine.getMedName().equalsIgnoreCase(medName)) {
+                return medicine.isMedIsFilled(); // Return fulfillment status
+            }
+        }
+        return false; // Return false if the medication is not found
+    }
 }

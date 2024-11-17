@@ -76,7 +76,7 @@ public class HospitalApp {
 					System.out.println("==================================================");
 					System.out.println("Hello " + doctor.getName() + ", welcome to the doctor menu");
 					System.out.println("1. View Patient Medical Records");
-					System.out.println("2. Update Patient Medical Records");
+					System.out.println("2. Update Patient Medical Records (Outcome)");
 					System.out.println("3. View Personal Schedule");
 					System.out.println("4. Set Availability for Appointments");
 					System.out.println("5. Accept or Decline Appointment Requests");
@@ -86,7 +86,16 @@ public class HospitalApp {
 					System.out.println("9. Logout");
 					System.out.println("==================================================");
 
-					choice = sc.nextInt();
+					while (true) {
+						System.out.print("Enter your choice: ");
+						if (sc.hasNextInt()) { // Check if input is an integer
+							choice = sc.nextInt();
+							break; // Exit the validation loop
+						} else {
+							System.out.println("Invalid input! Please enter a number.");
+							sc.next(); // Clear the invalid input
+						}
+					}
 					
 					switch(choice) {
 					case 1: // view patient medical record
@@ -95,16 +104,28 @@ public class HospitalApp {
 							patAmount++;
 							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
 						} // print patient list
-						
-						do {					
+
+						do {
 							System.out.println("Select patient:");
+
+							// Validate input for integer
+							while (!sc.hasNextInt()) {
+								System.out.println("Invalid input! Please enter a valid integer.");
+								sc.next(); // Consume the invalid input
+							}
+
 							patSelect = sc.nextInt();
-							if (patSelect > patAmount) System.out.println("Invalid patient! Please enter again.");
-						} while (patSelect > patAmount); // patient selection
+
+							// Check if the input is within the valid range
+							if (patSelect <= 0 || patSelect > patAmount) {
+								System.out.println("Invalid patient! Please enter a number between 1 and " + patAmount + ".");
+							}
+
+						} while (patSelect <= 0 || patSelect > patAmount); // Continue until a valid patient is selected
 						
 						pat = patientList.get(patSelect-1);
 						System.out.println("Name		: " + pat.getName());
-						System.out.println("DOB		: " + dateFormat.format(pat.getDOB()));
+						System.out.println("DOB			: " + dateFormat.format(pat.getDOB()));
 						System.out.println("Email		: " + pat.getEmail());
 						System.out.println("Contact no.	: " + pat.getContactNum());
 						System.out.println("Blood type	: " + pat.getBloodType());
@@ -128,38 +149,50 @@ public class HospitalApp {
 							patAmount++;
 							System.out.println((patAmount) + ". " + p.getID() + " " + p.getName());
 						} // print patient list
-						
-						do {					
+
+						do {
 							System.out.println("Select patient:");
+							while (!sc.hasNextInt()) {
+								System.out.println("Invalid input! Please enter a valid integer.");
+								sc.next(); // Consume the invalid input
+							}
 							patSelect = sc.nextInt();
-							if (patSelect > patAmount) System.out.println("Invalid patient! Please enter again.");
-						} while (patSelect > patAmount); // patient selection
+							// Check if the input is within the valid range
+							if (patSelect <= 0 || patSelect > patAmount) {
+								System.out.println("Invalid patient! Please enter a number between 1 and " + patAmount + ".");
+							}
+						} while (patSelect <= 0 || patSelect > patAmount); // Continue until a valid patient is selected
 						
 						pat = patientList.get(patSelect-1);
-						
+						boolean ptrig = false;
 						System.out.println("Past records: ");
 						for (Appointment a : appointmentList) {
 							if (a.getPatient().equals(pat.getName())) {
 								System.out.println( (a.getID()) + ". " + a.getDate() + ": " + a.getOutcome());
+								ptrig = true;
 							}
 						}
-						
-						do {
-							System.out.println("Select appointment ID of record to update: ");
-							IDChoice = sc.nextLine();
-							
-							for (Appointment a : appointmentList) {
-								if (IDChoice.equals(a.getID()) && pat.getName().equals(a.getPatient())) {
-									apt = a;
+						sc.nextLine();
+						if(ptrig){
+							do {
+								System.out.println("Select appointment ID of record to update: ");
+								IDChoice = sc.nextLine();
+
+								for (Appointment a : appointmentList) {
+									if (IDChoice.equals(a.getID()) && pat.getName().equals(a.getPatient())) {
+										apt = a;
+									}
 								}
-							}
-						} while (apt == null);
-						
-						System.out.println("Enter updated record: ");
-						update = sc.nextLine();
-						apt.updateOutcome(update);
-						System.out.println("Record updated!");
-						
+							} while (apt == null);
+
+							System.out.println("Enter updated record: ");
+							update = sc.nextLine();
+							apt.updateOutcome(update);
+							System.out.println("Record updated!");
+						}
+						else{
+							System.out.println("No appointment outcomes found!");
+						}
 						System.out.println();
 						break;
 						
@@ -216,14 +249,20 @@ public class HospitalApp {
 							System.out.println("2. Reject appointment");
 							do {
 								System.out.println("Enter selection: ");
+								while (!sc.hasNextInt()) {
+									System.out.println("Invalid input! Please enter a valid integer.");
+									sc.next();
+								}
 								acc = sc.nextInt();
-								if (acc > 2) System.out.println("Invalid selection! Please enter again.");
-							} while (acc>2);
+								if (acc > 2 || acc <= 0) {
+									System.out.println("Invalid selection! Please enter 1 or 2.");
+								}
+							} while (acc > 2 || acc <= 0);
 							
 							switch (acc) {
 							case 1:
 								apt.updateStatus("Confirmed");
-								doctor.addAppointment(apt);
+								//doctor.addAppointment(apt);
 								System.out.println("Appointment accepted.");
 								break;
 							case 2:
@@ -313,29 +352,35 @@ public class HospitalApp {
 									medAmountCounter++;
 									System.out.println(medAmountCounter + ". " + m.getName());
 								}
-								medAmountCounter++;
-								System.out.println(medAmountCounter + ". " + "(Exit Menu)");
-								medAmountCounter--;
-								
-								
+								System.out.println((medAmountCounter + 1) + ". (Exit Menu)");
+
 								do {
 									do {
-										System.out.println("Enter medicine: ");
+										System.out.println("Enter medicine index or Exit: ");
+										while (!sc.hasNextInt()) {
+											System.out.println("Invalid input! Please enter a valid integer.");
+											sc.next(); // Consume invalid input
+										}
 										medSelect = sc.nextInt();
-										
-										if (medSelect>medAmountCounter+1) System.out.println("Invalid medicine! Please enter again.");
-										
-									} while (medSelect>medAmountCounter+1);
-									
-									if(medSelect!=medAmountCounter+1) {
-										med = medicineList.get(medSelect-1);
-										
+										if (medSelect < 1 || medSelect > medAmountCounter + 1) {
+											System.out.println("Invalid medicine! Please enter a number between 1 and " + (medAmountCounter + 1) + ".");
+										}
+									} while (medSelect < 1 || medSelect > medAmountCounter + 1);
+									// Process selected medicine
+									if (medSelect != medAmountCounter + 1) { // If not the exit option
+										med = medicineList.get(medSelect - 1);
 										System.out.println("Enter medication amount: ");
+										// Validate input for medication amount
+										while (!sc.hasNextInt()) {
+											System.out.println("Invalid input! Please enter a valid integer.");
+											sc.next(); // Consume invalid input
+										}
 										medAptAmt = sc.nextInt();
 										System.out.println();
-										apt.addPrescript(med.getName(), medAptAmt);
+										apt.addPrescript(med.getName(), medAptAmt); // Add prescription
 									}
-								} while(medSelect!=medAmountCounter+1);
+								} while (medSelect != medAmountCounter + 1); // Loop until user selects the exit option
+
 								break;
 								
 							case 2:
@@ -388,7 +433,7 @@ public class HospitalApp {
 					System.out.println();
 					System.out.println("===============================================");
 					System.out.println("Hello " + pharma.getName() + ", welcome to the Pharmacy menu");
-					System.out.println("1. Fulfill medication orders"); //TODO
+					System.out.println("1. All medication orders"); //TODO
 					System.out.println("2. Display stock"); //TODO
 					System.out.println("3. Request restock menu");
 					System.out.println("4. Request log"); //TODO
@@ -400,9 +445,16 @@ public class HospitalApp {
 
 					do {
 						System.out.println("Enter selection: ");
+						while (!scPharma.hasNextInt()) {
+							System.out.println("Invalid input! Please enter a valid integer.");
+							scPharma.next(); // Consume the invalid input
+						}
 						choiceP = scPharma.nextInt();
-						if (choiceP > 6 || choiceP < 1) System.out.println("Invalid choiceP! Please enter again.");
-					} while (choiceP > 6 || choiceP < 1);
+						if (choiceP > 6 || choiceP < 1) {
+							System.out.println("Invalid choice! Please enter a number between 1 and 6.");
+						}
+
+					} while (choiceP > 6 || choiceP < 1); // Ensure input is within the valid range
 
 
 					switch (choiceP) {
@@ -428,8 +480,8 @@ public class HospitalApp {
 							{
 								scPharma.nextLine();
 								System.out.println("Enter Appointment ID to fulfil medicine: ");
-								aptID = scPharma.nextLine();
-								while (true) {													//Reject non-int inputs
+								while (true) {
+									aptID = scPharma.nextLine(); //Reject non-int inputs
 									for (Appointment a : appointmentList) {
 										if (a.getID().equals(aptID) && a.isHasMedication()) {
 											aptToFulfil = a;
@@ -447,15 +499,28 @@ public class HospitalApp {
 								System.out.println("--------------------------------------------------");
 								aptToFulfil.printPrescription();
 
-								System.out.println("Enter prescription you would like to fulfill");
+								System.out.println("Enter prescription you would like to fulfill (Case Sensitive)");
 								//Choose which medication to fulfill, update "medIsFilled" per PrescriptedMed and update medicineList
-								
-								String prescription = scPharma.nextLine();
-								
-								aptToFulfil.fulfillPrescription(prescription);
-								mList.minusStock(prescription,aptToFulfil.getPrescribedAmount(prescription));
-								System.out.println("Prescription fulfilled!");
 
+								String prescription = scPharma.nextLine().trim();
+
+								if (aptToFulfil.isThisPrescribedMedication(prescription)) {
+									if (aptToFulfil.isPrescriptionFulfilled(prescription)) { // Check if already fulfilled
+										System.out.println("The prescription for " + prescription + " is already fulfilled.");
+									} else {
+										if (mList.getQuanity(prescription) >= aptToFulfil.getPrescribedAmount(prescription)) {
+											// Deduct the stock
+											mList.minusStock(prescription, aptToFulfil.getPrescribedAmount(prescription));
+											// Mark the prescription as fulfilled
+											aptToFulfil.fulfillPrescription(prescription);
+										} else {
+											System.out.println("There is not enough stock, please refill.");
+										}
+									}
+								} else {
+									// Invalid prescription input
+									System.out.println("The entered medication is not in the prescribed list. Please try again.");
+								}
 							}else System.out.println("No appointment found!");
 
 
@@ -465,11 +530,11 @@ public class HospitalApp {
 							mList.printList();
 							break;
 						case 3:
-							//3. Request restock
+							//3. Menu
 							int m;
 							do {
 								mList.printList();
-								//RestockForm rForm = new RestockForm(null,-1,null);
+
 								System.out.println("1. Request restock - Specific medication");
 								System.out.println("2. Request restock - All of low");
 								System.out.println("3. Cancel restock request");
@@ -539,6 +604,7 @@ public class HospitalApp {
 									case 2:
 										//2. Request restock - All low
 										mList.printLowStockMedicine();
+										boolean  lsTrig = false;
 
 										// Create restock requests for all low stock medications
 										for (Medicine medicine : medicineList) {
@@ -547,11 +613,11 @@ public class HospitalApp {
 												RestockForm rLowForm = new RestockForm(medicine.getName(), restockAmount);
 												restockList.add(rLowForm);
 												System.out.println("Restock request created for " + medicine.getName() + ": " + restockAmount + " units.");
+												lsTrig = true;
 											}
 										}
 
-										System.out.println("Restock requests for all low stock medications have been made successfully.");
-
+										if (lsTrig) {System.out.println("Restock requests for all low stock medications have been made successfully.");}
 
 										break;
 									case 3:
@@ -647,12 +713,14 @@ public class HospitalApp {
 				break;
 				
 			case "Administrator":
-				user = new Administrator(username, password, username);	
+				
+				Administrator admin = (Administrator) user;
 				int admchoice, staffSelect=0, staffAmount=0;
 				
 				//enter your code here
 				do {
 					System.out.println("===============================================");
+					System.out.println("Hello " + admin.getName() + ", welcome to the Administrator menu");
 					System.out.println("1. View and Manage Hospital Staff");
 					System.out.println("2. Manage Appointments");
 					System.out.println("3. View and Manage Medication Inventory");
@@ -697,7 +765,55 @@ public class HospitalApp {
 		                    }
 		                    
 		                    else {
-		                    	((Administrator) user).filterStaff(filterc);  
+		                    	 // Prompt the user to choose a filter criterion
+
+		                        // Filter based on the chosen criterion
+		                        ArrayList<Staff> filteredStaff = new ArrayList<>();
+		                        do {
+		                            switch (filterc) {
+		                                case 1:
+		                                    System.out.print("Enter the role to filter by (e.g., Doctor, Nurse): ");
+		                                    String role = sc.nextLine();
+		                                    for (Staff staff : staffList) {
+		                                        if (staff.getRole().equalsIgnoreCase(role)) {
+		                                            filteredStaff.add(staff);
+		                                        }
+		                                    }
+		                                    break;
+		                                case 2:
+		                                    System.out.print("Enter the gender to filter by (e.g., Male, Female): ");
+		                                    String gender = sc.nextLine();
+		                                    for (Staff staff : staffList) {
+		                                        if (staff.getGender().equalsIgnoreCase(gender)) {
+		                                            filteredStaff.add(staff);
+		                                        }
+		                                    }
+		                                    break;
+		                                case 3:
+		                                    System.out.print("Enter the minimum age to filter by: ");
+		                                    int minAge = sc.nextInt();
+		                                    System.out.print("Enter the maximum age to filter by: ");
+		                                    int maxAge = sc.nextInt();
+		                                    for (Staff staff : staffList) {
+		                                        if (staff.getAge() >= minAge && staff.getAge() <= maxAge) {
+		                                            filteredStaff.add(staff);
+		                                        }
+		                                    }
+		                                    break;
+		                                default:
+		                                    System.out.println("Invalid choice. Please select 1, 2, or 3.");
+		                                    filterc = 4;
+		                            }
+		                        } while (filterc == 4);
+
+		                        if (filteredStaff.isEmpty()) {
+		                            System.out.println("No staff members found matching the criteria.");
+		                        } else {
+		                            System.out.println("Filtered Staff List:");
+		                            for (Staff staff : filteredStaff) {
+		                                System.out.println(staff);
+		                            }
+		                        } 
 		                    	break;
 		                    }
 		                    
@@ -720,7 +836,58 @@ public class HospitalApp {
 		                        switch(choice3){
 		                            case 1:
 		                                System.out.println("---- Add hospital staff ----");
-		                                ((Administrator) user).addStaff();
+		                                boolean duplicateindicator = false;
+		                                String userID = "null";
+		                                do {
+		                                    duplicateindicator = false;
+		                                    System.out.print("Enter User ID: ");
+		                                    userID = sc.nextLine();
+		                                    for (Staff staff : staffList) {
+		                                        if (staff.getID().equalsIgnoreCase(userID)) {
+		                                            System.out.println("User ID taken! Please select another.");
+		                                            duplicateindicator = true;
+		                                            break;
+		                                        }
+		                                    }
+		                                } while (duplicateindicator);
+
+
+		                                System.out.print("Enter Name: ");
+		                                String name = sc.nextLine();
+
+		                                System.out.print("Enter Role: ");
+		                                String role = sc.nextLine();
+
+		                                System.out.print("Enter Gender: ");
+		                                String gender = sc.nextLine();
+
+		                                System.out.print("Enter Age: ");
+		                                int age = sc.nextInt();
+
+		                                // Clear the scanner buffer
+		                                sc.nextLine();
+
+		                                Staff newStaff = null;
+		                                //ADD SWITCH STATEMENT TO CREATE diff staff objects
+
+		                                switch(role) {
+		                                    case "Doctor":
+		                                        newStaff = new Doctor(userID, name, role, gender, age, "password");
+		                                        break;
+		                                    case "Pharmacist":
+		                                        newStaff = new Pharmacist(userID, name, role, gender, age, "password");
+		                                        break;
+
+		                                }
+
+
+
+		                                // Add the new staff member to the staffInventory
+		                                sList.addStaff(newStaff);
+
+		                                System.out.println("[" + userID + ", " + name + ", " + role + ", " + gender + ", " + age + " years old]" + " added successfully.");
+
+
 		                                break;
 		                            case 2:
 		                                int choice4, staffCount=0;
@@ -731,6 +898,7 @@ public class HospitalApp {
 		                                do{
 		                                System.out.println("Enter User ID of staff to update:");
 		                                desiredID = sc.nextLine();
+		                                staffAmount = 0;
 		                                for (Staff staff : staffList) {
 		            	                    if (staff.getID().equalsIgnoreCase(desiredID)) {
 		            	                        staffSelect = staffAmount;
@@ -792,7 +960,22 @@ public class HospitalApp {
 		        
 		                            case 3:
 		                                System.out.println("---- Remove hospital staff ----");
-		                                ((Administrator) user).removeStaff();
+		                                // Prompt the user to enter the User ID of the staff member to remove
+		                                System.out.print("Enter the User ID of the staff member to remove: ");
+		                                String userID2 = sc.nextLine();
+
+		                                // Attempt to remove the staff member from the staffInventory
+		                                boolean success = sList.removeStaff(userID2);
+
+		                                // Optionally, update the CSV file if the staff member was removed
+		                                if (success) {
+		                                    System.out.println("User ID " + userID2 + " removed.");
+		                                }
+
+		                                else {
+		                                    System.out.println("User ID " + userID2 + " does not exist.");
+		                                    // Close the scanner
+		                                }
 		                                break;
 		                            case 4:
 		                                System.out.println("Case 4 entered. Going back..."); 
@@ -1266,7 +1449,7 @@ public class HospitalApp {
 		        	   
 		            break;
 		        case 3:
-		        	System.out.println("----------View and Manage Medication Inventory-----------");
+		        	System.out.println("-------View and Manage Medication Inventory-------");
 		            int choicew, choicev;
 		            do {
 		            System.out.println("Select action: ");
@@ -1277,7 +1460,7 @@ public class HospitalApp {
 		            switch(choicew) {
 		                case 1:
 		                    System.out.println("Viewing medication...");
-		                    ((Administrator) user).getMedicineInventory().printList();
+		                    ((Administrator) admin).getMedicineInventory().printList();
 		                    break;
 		                case 2:
 		                     do {
@@ -1290,11 +1473,11 @@ public class HospitalApp {
 		                        switch(choicev) {
 		                            case 1:
 		                                System.out.println("Adding medication...");
-		                                ((Administrator) user).addMedicine();
+		                                ((Administrator) admin).addMedicine();
 		                                break;
 		                            case 2:
 		                                System.out.println("Removing medication...");
-		                                ((Administrator) user).removeMedicine();
+		                                ((Administrator) admin).removeMedicine();
 		                                break;
 		                            case 3:
 		                            	sc.nextLine();
@@ -1385,7 +1568,7 @@ public class HospitalApp {
 		        	int choicex;
 		        	do {
 		        		
-			        	System.out.println("---- Approve replenishment requests ----");
+			        	System.out.println("--------- Approve replenishment requests ---------");
 			        	System.out.println("1. View approved replenishment requests");
 			        	System.out.println("2. View pending replenishment requests");
 			        	System.out.println("3. Approve pending replenishment requests");
@@ -1448,7 +1631,7 @@ public class HospitalApp {
 		        			for (RestockForm rF : restockList) {
 								if (rF.getRestockID() == approveID && rF.getFulfilled() == false) {
 				
-									((Administrator) user).plusStock(rF.getMedicationName(), rF.getRestockAmount());
+									((Administrator) admin).plusStock(rF.getMedicationName(), rF.getRestockAmount());
 									rF.setFulfilled(true);
 									mList.printList();
 									anyrestockID = true;
@@ -1471,35 +1654,37 @@ public class HospitalApp {
 		        	} while (choicex!=4);
 
 		            break;
-			case 5:
-				String oldPas, newPas;
-				System.out.println("Please enter your current password: ");
-				oldPas = sc.nextLine();
-				System.out.println("Please enter your new password");
-				newPas = sc.nextLine();
+						case 5:
+							String oldPas, newPas;
+							System.out.println("Please enter your current password: ");
+							oldPas = sc.nextLine();
+							System.out.println("Please enter your new password");
+							newPas = sc.nextLine();
 
-				if(!user.changePassword(oldPas,newPas))
-				{System.out.println("Password is incorrect");}
-				break;
-		        case 6:
-		            System.out.println("Case 5 entered. Logging out...");
-		            loggedIn = false;
-		            break;
-		        default:
-		            System.out.println("Invalid option entered. Please try again. ");
-		            break;
-		    }
-		} while (admchoice!=6);
-				
-				break;
+							if(!user.changePassword(oldPas,newPas))
+							{System.out.println("Password is incorrect");}
+							break;
+							case 6:
+								System.out.println("Case 5 entered. Logging out...");
+								loggedIn = false;
+								break;
+							default:
+								System.out.println("Invalid option entered. Please try again. ");
+								break;
+						}
+						} while (admchoice!=6);
+
+							break;
 				
 			case "Patient":
 				Patient patient = (Patient) user;
 				int counting = 0;
 				int patientChoice = 0;
 				String docID = "";
-				System.out.println("Hello " + patient.getName() + ", welcome to the patient menu");
 				do {
+					System.out.println();
+					System.out.println("===============================================");
+					System.out.println("Hello " + patient.getName() + ", welcome to the patient menu");
 					System.out.println("1. View Medical Records");
 					System.out.println("2. Update Personal Information");
 					System.out.println("3. View Available Appointment Slots");
@@ -1510,7 +1695,18 @@ public class HospitalApp {
 					System.out.println("8. View Past Appointment Records");
 					System.out.println("9. Change Password");
 					System.out.println("10. Logout");
-					patientChoice = sc.nextInt();
+					System.out.println("===============================================");
+
+					while (true) {
+						System.out.print("Enter your choice: ");
+						if (sc.hasNextInt()) { // Check if input is an integer
+							patientChoice = sc.nextInt();
+							break; // Exit the validation loop
+						} else {
+							System.out.println("Invalid input! Please enter a number.");
+							sc.next(); // Clear the invalid input
+						}
+					}
 					
 					switch(patientChoice) {
 					case 1: // view med record
@@ -1546,13 +1742,23 @@ public class HospitalApp {
 								System.out.println(docAmount + ". dr. " + s.getName());
 							}	
 						}
-						
+
 						do {
 							System.out.println("Select doctor: ");
-							docSelect = sc.nextInt();
-							
-							if (docSelect>docAmount) System.out.println("Invalid doctor! Please enter again.");
-						} while (docSelect>docAmount);
+
+							// Check if the next input is an integer
+							if (sc.hasNextInt()) {
+								docSelect = sc.nextInt();
+
+								if (docSelect > docAmount) {
+									System.out.println("Invalid doctor! Please enter again.");
+								}
+							} else {
+								System.out.println("Invalid input! Please enter a valid integer.");
+								sc.next(); // Consume the invalid input to avoid an infinite loop
+								docSelect = -1; // Reset docSelect to an invalid value to continue the loop
+							}
+						} while (docSelect > docAmount || docSelect <= 0); // Ensure docSelect is valid
 						
 						for (Staff s : staffList) {
 							if (s.getRole().equals("Doctor")) {
@@ -1568,7 +1774,7 @@ public class HospitalApp {
 						
 						doc.getAvailSlots();
 						
-						System.out.println("==================================");
+						System.out.println("==================================================");
 						break;
 						
 					case 4: // make apt
@@ -1715,7 +1921,7 @@ public class HospitalApp {
 								}
 							}
 							System.out.println("Appointment with dr. " + apt.getDoctor() + " at " + apt.getDate() + " " + apt.getTime() + " successfully cancelled.");
-							System.out.println("============================================");
+							System.out.println("==================================================");
 							cancelledDoc.removeAppointment(apt);
 							
 							docSelect = 0;
@@ -1822,11 +2028,11 @@ public class HospitalApp {
 							medSelect = 0;
 							Doctor cancelledDoc = null;
 							apt = null;
+							sc.nextLine();
 								
 							do {					
 								System.out.println("Enter full appointment ID to cancel: ");
 								aptAmount = 0;
-								sc.nextLine();
 								aptIDSelect = sc.nextLine();
 								for (Appointment a : appointmentList) {
 									if (a.getID().equals(aptIDSelect)) {
@@ -1849,7 +2055,7 @@ public class HospitalApp {
 								}
 							}
 							System.out.println("Appointment with dr. " + apt.getDoctor() + " at " + apt.getDate() + " " + apt.getTime() + " successfully cancelled.");
-							System.out.println("============================================");
+							System.out.println("==================================================");
 							cancelledDoc.removeAppointment(apt);
 						}
 						else {
@@ -1861,7 +2067,7 @@ public class HospitalApp {
 						aptAmount = 0;
 						
 						System.out.println("Showing upcoming appointment status:");
-						System.out.println("=========================================");
+						System.out.println("==================================================");
 						for (Appointment a : appointmentList) {
 							if (patient.getName().equals(a.getPatient()) && (a.getStatus().equals("Confirmed") || a.getStatus().equals("Pending"))) { 
 								aptAmount++;
@@ -1878,7 +2084,7 @@ public class HospitalApp {
 						aptAmount = 0;
 						
 						System.out.println("Past appointments and statuses:");
-						System.out.println("===================================================");
+						System.out.println("==================================================");
 						for (Appointment a : appointmentList) {
 							if (patient.getName().equals(a.getPatient()) && a.getStatus().equals("Completed")) { 
 								aptAmount++;
@@ -1905,7 +2111,7 @@ public class HospitalApp {
 							} while (aptAmount == 0);
 							
 							System.out.println("Appointment records of " + apt.getID());
-							System.out.println("===================================================");
+							System.out.println("==================================================");
 							System.out.println("Appointment ID		: " + apt.getID());
 							System.out.println("Patient Name		: " + apt.getPatient());
 							System.out.println("Doctor Name		: dr. " + apt.getDoctor());
@@ -1927,6 +2133,7 @@ public class HospitalApp {
 						
 					case 9: // change password
 						String oldPass, newPass;
+						sc.nextLine();
 						System.out.println("Please enter your current password: ");
 						oldPass = sc.nextLine();
 						System.out.println("Please enter your new password");

@@ -1,6 +1,5 @@
 package src;
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -130,6 +129,7 @@ public class MedicineInv {
             System.out.println(amount + " has been removed from " + name);
             medicineList.get(findMedicineIndex(name)).minusStock(amount);
             this.stockWarning(name);
+            System.out.println("Prescription fulfilled!");
         }
     }
 

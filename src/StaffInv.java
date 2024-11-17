@@ -68,7 +68,7 @@ public class StaffInv {
                     staff = new Pharmacist(userID, name, role, gender, age, password);
                 } else {
                     //System.out.println(" PLEB here");
-                    staff = new Staff(userID, name, role, gender, age, password);
+                    staff = new Administrator(userID, name, role, gender, age, password);
                 }
                 allStaff.add(staff);
             }

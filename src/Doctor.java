@@ -317,7 +317,7 @@ public boolean cancelAppointmentByID(Patient patient, String appointmentID) {
 			    System.out.println("Appointment removed in doctor.");
 			    System.out.println("Availability of slot: ");
 			    if (schedule[i][j].getAvail()) System.out.println("available");
-			    else System.out.println("UNavailable");
+			    else System.out.println("Unavailable");
 			    return;
 			  }
 			    
