@@ -96,7 +96,7 @@ public class Patient extends User {
 			if (choice > 2 || choice < 1) {
 				System.out.println("Invalid selection! Please enter again.");
 			}
-		} while (choice > 6 || choice < 1);
+		} while (choice > 2 || choice < 1);
 
 		sc.nextLine(); // Consume the newline character left by nextInt()
 
