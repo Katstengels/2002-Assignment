@@ -1,153 +1,29 @@
 package src;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-public class Administrator extends User {
-    private StaffInv staffInventory;
+public class Administrator extends Staff {
+
     private List<Appointment> appointments;
     private List<MedicineInv> inventory;
     private MedicineInv medicineInventory;
 
-    public Administrator(String userID, String password, String role) {
-        super(userID, password, role);
-        this.staffInventory = StaffInv.getInstance();
+    public Administrator(String userID, String name, String role, String gender, int age, String password) {
+        super(userID, name, role, gender, age, password);
+
         this.appointments = new ArrayList<>();
         this.inventory = new ArrayList<>();
         this.medicineInventory = MedicineInv.getInstance();
     }
 
+
+
     public MedicineInv getMedicineInventory() {
-    	return this.medicineInventory;
-    }
-    // Staff Management
-    public void addStaff() {
-    	Scanner scanner = new Scanner(System.in);
-    	boolean duplicateindicator = false;
-    	String userID = "null";
-    	do {
-    		duplicateindicator = false;
-        	System.out.print("Enter User ID: ");
-            userID = scanner.nextLine();
-            for (Staff staff : staffInventory.copyStaffList()) {
-                if (staff.getID().equalsIgnoreCase(userID)) {
-                    System.out.println("User ID taken! Please select another.");
-                    duplicateindicator = true;
-                    break;
-                }
-            }
-        	} while (duplicateindicator);
-    	
-
-        System.out.print("Enter Name: ");
-        String name = scanner.nextLine();
-
-        System.out.print("Enter Role: ");
-        String role = scanner.nextLine();
-
-        System.out.print("Enter Gender: ");
-        String gender = scanner.nextLine();
-
-        System.out.print("Enter Age: ");
-        int age = scanner.nextInt();
-
-        // Clear the scanner buffer
-        scanner.nextLine();
-
-        // Create a new Staff object
-        Staff newStaff = new Staff(userID, name, role, gender, age, "defaultPassword");
-
-        // Add the new staff member to the staffInventory
-        staffInventory.addStaff(newStaff);
-        
-        System.out.println("[" + userID + ", " + name + ", " + role + ", " + gender + "]" + age + " added successfully.");
-        
-
-
+        return this.medicineInventory;
     }
 
-    public void updateStaffInv() {
-        staffInventory.updateCSV();
-    }
-
-    public void removeStaff() {
-        Scanner scanner = new Scanner(System.in);
-
-        // Prompt the user to enter the User ID of the staff member to remove
-        System.out.print("Enter the User ID of the staff member to remove: ");
-        String userID = scanner.nextLine();
-
-        // Attempt to remove the staff member from the staffInventory
-        boolean success = staffInventory.removeStaff(userID);
-
-        // Optionally, update the CSV file if the staff member was removed
-        if (success) {
-            System.out.print("User ID " + userID + " removed.");
-        }
-        
-        else {
-        	System.out.print("User ID " + userID + " does not exist.");
-        // Close the scanner
-    }
-}
-
-    // Filtering the staff list
-    public void filterStaff(int choice) {
-        Scanner scanner = new Scanner(System.in);
-
-        // Prompt the user to choose a filter criterion
-        
-        // Filter based on the chosen criterion
-        ArrayList<Staff> filteredStaff = new ArrayList<>();
-        do {
-	        switch (choice) {
-	            case 1:
-	                System.out.print("Enter the role to filter by (e.g., Doctor, Nurse): ");
-	                String role = scanner.nextLine();
-	                for (Staff staff : staffInventory.copyStaffList()) {
-	                    if (staff.getRole().equalsIgnoreCase(role)) {
-	                        filteredStaff.add(staff);
-	                    }
-	                }
-	                break;
-	            case 2:
-	                System.out.print("Enter the gender to filter by (e.g., Male, Female): ");
-	                String gender = scanner.nextLine();
-	                for (Staff staff : staffInventory.copyStaffList()) {
-	                    if (staff.getGender().equalsIgnoreCase(gender)) {
-	                        filteredStaff.add(staff);
-	                    }
-	                }
-	                break;
-	            case 3:
-	                System.out.print("Enter the minimum age to filter by: ");
-	                int minAge = scanner.nextInt();
-	                System.out.print("Enter the maximum age to filter by: ");
-	                int maxAge = scanner.nextInt();
-	                for (Staff staff : staffInventory.copyStaffList()) {
-	                    if (staff.getAge() >= minAge && staff.getAge() <= maxAge) {
-	                        filteredStaff.add(staff);
-	                    }
-	                }
-	                break;
-	            default:
-	                System.out.println("Invalid choice. Please select 1, 2, or 3.");
-	                choice = 4;
-	        }
-        } while (choice == 4);
-        
-        if (filteredStaff.isEmpty()) {
-            System.out.println("No staff members found matching the criteria.");
-        } else {
-            System.out.println("Filtered Staff List:");
-            for (Staff staff : filteredStaff) {
-                System.out.println(staff);
-            }
-        }
-    }
-    
 
     // Appointment Management
     public void addAppointment(Appointment appointment) {
@@ -180,12 +56,12 @@ public class Administrator extends User {
 
     //Medicine Inventory Management
     public void addMedicine() {
-    	Scanner scanner = new Scanner(System.in);
-    	boolean duplicateindicator = false;
-    	String medName = "null";
-    	do {
-    		duplicateindicator = false;
-        	System.out.print("Enter Medicine Name: ");
+        Scanner scanner = new Scanner(System.in);
+        boolean duplicateindicator = false;
+        String medName = "null";
+        do {
+            duplicateindicator = false;
+            System.out.print("Enter Medicine Name: ");
             medName = scanner.nextLine();
             for (Medicine medicine : medicineInventory.copyMedicineList()) {
                 if (medicine.getName().equalsIgnoreCase(medName)) {
@@ -194,52 +70,109 @@ public class Administrator extends User {
                     break;
                 }
             }
-        	} while (duplicateindicator);
-    	
-  
-        System.out.print("Enter Quantity: ");
-        int quantity = scanner.nextInt();
+        } while (duplicateindicator);
 
-        System.out.print("Enter Low Stock Alert Value: ");
-        int lowstockalertval = scanner.nextInt();
 
-       
+        int quantity = 0;
+        int lowstockalertval = 0;
+
+        // Get Quantity with input validation
+        while (true) {
+            System.out.print("Enter Quantity: ");
+
+            if (scanner.hasNextInt()) {
+                quantity = scanner.nextInt();
+                if (quantity > 0) { // Validate positive quantity
+                    break;
+                } else {
+                    System.out.println("Quantity must be greater than 0. Please try again.");
+                }
+            } else {
+                System.out.println("Invalid input! Please enter a valid integer.");
+                scanner.next(); // Consume the invalid token
+            }
+        }
+
+        // Get Low Stock Alert Value with input validation
+        while (true) {
+            System.out.print("Enter Low Stock Alert Value: ");
+
+            if (scanner.hasNextInt()) {
+                lowstockalertval = scanner.nextInt();
+                if (lowstockalertval > 0) { // Validate positive value
+                    break;
+                } else {
+                    System.out.println("Low Stock Alert Value must be greater than 0. Please try again.");
+                }
+            } else {
+                System.out.println("Invalid input! Please enter a valid integer.");
+                scanner.next(); // Consume the invalid token
+            }
+        }
+
         // Clear the scanner buffer
         scanner.nextLine();
 
-        // Create a new Staff object
+        // Create a new Medicine object
         Medicine newMedicine = new Medicine(medName, quantity, lowstockalertval);
 
-        // Add the new staff member to the staffInventory
+        // Add the new medicine to the medicineInventory
         medicineInventory.addMedicine(newMedicine);
-        
+
         System.out.println("[Medicine Name: " + medName + ", Quantity: " + quantity + ", Low Stock Level Alert: " + lowstockalertval + "] added successfully.");
-        
+
 
 
     }
-    
+
     public void removeMedicine() {
         Scanner scanner = new Scanner(System.in);
 
-        // Prompt the user to enter the User ID of the staff member to remove
+        // Prompt the user to enter the name of the medicine to remove
         System.out.println("Enter the name of the medicine to remove: ");
         String medName = scanner.nextLine();
-        
-        // Attempt to remove the staff member from the staffInventory
+
+        // Attempt to remove the medicine from the medicineInventory
         boolean success = medicineInventory.removeMedicine(medName);
 
-        // Optionally, update the CSV file if the staff member was removed
+
         if (success) {
             System.out.println("Medicine " + medName + " removed.");
         }
-        
+
         else {
-        	System.out.println("Medicine " + medName + " does not exist.");
-        // Close the scanner
-        
+            System.out.println("Medicine " + medName + " does not exist.");
+            // Close the scanner
+
+        }
+
+
     }
-      
-        
-}
+    public void plusStock(String medName, int medAmount) {
+        medicineInventory.plusStock(medName, medAmount);
+
+    }
+    
+	//attribute changers
+	  public void changeName(String newname) {
+	    	super.changeName(newname);
+	    	System.out.println("Administrator name changed successfully!");
+	    	return;
+	    }
+	    public void changeAge(int newage) {
+	    	super.changeAge(newage);
+	    	System.out.println("Administrator age changed successfully!");
+	    	return;
+	    }
+	    public void changeGender(String newgender) {
+	    	super.changeGender(newgender);
+	    	System.out.println("Administrator gender changed successfully!");
+	    	return;
+	    }
+	    public void changeRole(String newrole) {
+	    	super.changeRole(newrole);
+	    	System.out.println("Administrator role changed successfully!");
+	    	return;
+	    }
+
 }

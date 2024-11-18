@@ -2,10 +2,10 @@ package src;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class StaffInv {
 
@@ -13,7 +13,7 @@ public class StaffInv {
     public StaffInv(){
         //Initialise the staffList
         this.staffList = importCSV_S();
-        System.out.println("S loaded");
+        //System.out.println("S loaded");
     }
 
     //Static instance of the class
@@ -68,7 +68,7 @@ public class StaffInv {
                     staff = new Pharmacist(userID, name, role, gender, age, password);
                 } else {
                     //System.out.println(" PLEB here");
-                    staff = new Staff(userID, name, role, gender, age, password);
+                    staff = new Administrator(userID, name, role, gender, age, password);
                 }
                 allStaff.add(staff);
             }

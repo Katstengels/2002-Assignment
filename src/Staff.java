@@ -34,22 +34,18 @@ public class Staff extends User {
     
     public void changeName(String newname) {
     	this.name = newname;
-    	System.out.println("Name changed successfully!");
     	return;
     }
     public void changeAge(int newage) {
     	this.age = newage;
-    	System.out.println("Age changed successfully!");
     	return;
     }
     public void changeGender(String newgender) {
     	this.gender = newgender;
-    	System.out.println("Gender changed successfully!");
     	return;
     }
     public void changeRole(String newrole) {
     	super.setRole(newrole);
-    	System.out.println("Role changed successfully!");
     	return;
     }
 

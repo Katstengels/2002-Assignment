@@ -1,151 +1,138 @@
 package src;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.Scanner;
+
+/**
+ * The {@code Patient} class represents a patient in the system, inheriting basic user information
+ * from the {@code User} class. This class stores and manages detailed information about patients,
+ * including their personal information and contact details.
+ * <p>
+ * This class provides methods to retrieve and update patient information.
+ * </p>
+ */
 
 public class Patient extends User {
+	private Calendar calendar = Calendar.getInstance();
+    private String patientID;
     private String name;
     private Date dateOfBirth;
     private String gender;
-    private String contactNumber;
-    private String emailAddress;
+    private String email;
+    private String contactNum;
     private String bloodType;
-    private ArrayList<String> pastDiagnoses;
-    private ArrayList<String> treatments;
-    private ArrayList<Appointment> appointments;
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    Scanner sc = new Scanner(System.in);
+
+	/**
+	 * Constructs a {@code Patient} object with the specified details.
+	 *
+	 * @param userID      the unique identifier of the user
+	 * @param password    the password for authentication
+	 * @param role        the role of the user in the system
+	 * @param patientID   the unique identifier of the patient
+	 * @param name        the name of the patient
+	 * @param dateOfBirth the date of birth of the patient
+	 * @param gender      the gender of the patient
+	 * @param email       the email address of the patient
+	 * @param contactNum  the contact number of the patient
+	 * @param bloodType   the blood type of the patient
+	 */
 
     // Constructor
-    public Patient(String userID, String password, String name, Date dob, String gender, String contact, String email, String bloodType) {
-        super(userID, password, "Patient");
+    public Patient(String userID, String password, String role, String patientID, String name, Date dateOfBirth,
+                   String gender, String email, String contactNum, String bloodType) {
+        super(userID, password, role);
+        this.patientID = patientID;
         this.name = name;
-        this.dateOfBirth = dob;
+        this.dateOfBirth = dateOfBirth;
         this.gender = gender;
-        this.contactNumber = contact;
-        this.emailAddress = email;
+        this.email = email;
+        this.contactNum = contactNum;
         this.bloodType = bloodType;
-        this.pastDiagnoses = new ArrayList<>();
-        this.treatments = new ArrayList<>();
-        this.appointments = new ArrayList<>();
     }
 
-    public String getID() {
-        return super.getUserID(); // Assuming userID is stored in the parent User class
-    }
-
+    // Getters
     public String getName() {
         return name;
     }
-
+    public String getID() {
+        return patientID;   //UserID = PatientID
+    }
     public Date getDOB() {
         return dateOfBirth;
     }
-
-    public String getEmail() {
-        return emailAddress;
+    public String getGender() {
+        return gender;
     }
-
-    public String getContactNum() {
-        return contactNumber;
-    }
-
     public String getBloodType() {
         return bloodType;
     }
-
-    // Access patient medical records
-    public void viewMedicalRecord() {
-        System.out.println("Patient ID: " + getUserID());
-        System.out.println("Name: " + name);
-        System.out.println("Date of Birth: " + dateOfBirth);
-        System.out.println("Gender: " + gender);
-        System.out.println("Contact: " + contactNumber);
-        System.out.println("Email: " + emailAddress);
-        System.out.println("Blood Type: " + bloodType);
-        System.out.println("Past Diagnoses: " + String.join(", ", pastDiagnoses));
-        System.out.println("Treatments: " + String.join(", ", treatments));
+    public String getEmail() {
+        return email;
+    }
+    public String getContactNum() {
+        return contactNum;
     }
 
-    // Update non-medical personal information
-    public void updatePersonalInfo() {
-        System.out.println("Update Personal Information:");
-        System.out.println("1. Update Contact Number");
-        System.out.println("2. Update Email Address");
-        System.out.print("Choose an option: ");
-        int choice = sc.nextInt();
-        sc.nextLine(); // Consume newline
-        switch (choice) {
-            case 1:
-                System.out.print("Enter new contact number: ");
-                contactNumber = sc.nextLine();
-                System.out.println("Contact number updated.");
-                break;
-            case 2:
-                System.out.print("Enter new email address: ");
-                emailAddress = sc.nextLine();
-                System.out.println("Email address updated.");
-                break;
-            default:
-                System.out.println("Invalid choice.");
-        }
+	public void updatePart() {
+		int choice = 0;
+		String newPart;
+
+		System.out.println("Choose particular to change: ");
+		System.out.println("1. Email");
+		System.out.println("2. Contact number");
+
+		// Input validation for 'choice'
+		do {
+			System.out.println("Enter selection: ");
+			while (!sc.hasNextInt()) {
+				System.out.println("Invalid input! Please enter an integer.");
+				sc.next(); // Consume the invalid input
+			}
+			choice = sc.nextInt();
+
+			if (choice > 2 || choice < 1) {
+				System.out.println("Invalid selection! Please enter again.");
+			}
+		} while (choice > 2 || choice < 1);
+
+		sc.nextLine(); // Consume the newline character left by nextInt()
+
+		switch (choice) {
+			case 1:
+				System.out.println("Enter new email: ");
+				newPart = sc.nextLine();
+				email = newPart;
+				System.out.println("Email edited ");
+				break;
+
+			case 2:
+				System.out.println("Enter new contact number: ");
+				newPart = sc.nextLine();
+				contactNum = newPart;
+				System.out.println("Contact number edited ");
+				break;
+		}
+	}
+
+
+
+
+
+	@Override
+    public String toString() { //FOR TESTING ONLY
+        return "Patient {" +
+                "UserID='" + super.getUserID()+
+                "', Password: " + super.getPassword()+ "\n"+
+                "Role: " + super.getRole()+
+                " , PatientID: " + this.patientID +  "\n"+
+                " Name: " + this.name+
+                " , DOB: " + formatter.format(dateOfBirth)+
+                " , Email: " + this.email +
+                " , Contact: " + this.contactNum +
+                " , BloodType: " + this.bloodType + "}";
     }
 
-    // View available appointment slots
-    public void viewAvailableSlots(Doctor doctor) {
-        doctor.getAvailSlots();
-    }
-
-    // Schedule an appointment
-    public void scheduleAppointment(Doctor doctor, Date date) {
-        if (doctor.getAvailability(date)) {
-            Appointment newAppointment = new Appointment(this, doctor, date);
-            doctor.addAppointment(newAppointment);
-            appointments.add(newAppointment);
-            System.out.println("Appointment scheduled successfully.");
-        } else {
-            System.out.println("Selected time is unavailable.");
-        }
-    }
-
-    // Reschedule an appointment
-    public void rescheduleAppointment(String appointmentID, Doctor doctor, Date newDate) {
-        Appointment appointment = Appointment.getAppointmentByID(appointmentID);
-        if (appointment != null && appointments.contains(appointment)) {
-            cancelAppointment(appointment);
-            scheduleAppointment(doctor, newDate);
-            System.out.println("Appointment rescheduled successfully.");
-        } else {
-            System.out.println("Appointment not found.");
-        }
-    }
-
-    // Cancel an appointment
-    public void cancelAppointment(Appointment appointment) {
-        if (appointments.contains(appointment)) {
-            appointments.remove(appointment);
-            System.out.println("Appointment canceled successfully.");
-        } else {
-            System.out.println("Appointment not found.");
-        }
-    }
-
-    // View scheduled appointments
-    public void viewScheduledAppointments() {
-        System.out.println("Scheduled Appointments:");
-        for (Appointment appt : appointments) {
-            System.out.println("Appointment ID: " + appt.getID() + " with Dr. " + appt.getDoctor() + " on " + appt.getDate() + " at " + appt.getTime());
-        }
-    }
-
-    // View past appointment outcomes
-    public void viewPastAppointmentOutcomes() {
-        System.out.println("Past Appointment Outcomes:");
-        for (Appointment appt : appointments) {
-            if ("completed".equals(appt.getStatus())) {
-                System.out.println("Appointment ID: " + appt.getID() + " - Outcome: " + appt.getOutcome());
-            }
-        }
-    }
 }

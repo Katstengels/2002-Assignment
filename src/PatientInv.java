@@ -2,11 +2,11 @@ package src;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Scanner;
+import java.util.Date;
+import java.text.ParseException;
 
 public class PatientInv {
 
@@ -14,7 +14,7 @@ public class PatientInv {
     public PatientInv(){
         // Initialize the inventory
         this.patientList = importCSV_P();
-        System.out.println("P loaded");
+        //System.out.println("P loaded");
     }
 
     //Static instance of the class
@@ -74,7 +74,7 @@ public class PatientInv {
                 String conNum = "-1";
 
                 // Create a new Patient object and add it to the list
-                Patient patient = new Patient(patID, passWord, name, dateOfBirth, gender, email, conNum, bloodType);
+                Patient patient = new Patient(patID, passWord, role, patID, name, dateOfBirth, gender, email, conNum, bloodType);
                 patients.add(patient);
             }
 

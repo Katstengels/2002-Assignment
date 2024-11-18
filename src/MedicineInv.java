@@ -11,7 +11,7 @@ public class MedicineInv {
     private MedicineInv() {
         // Initialize the inventory
         this.medicineList = importCSV_M();
-        System.out.println("M loaded");
+        //System.out.println("M loaded");
     }
 
     // Static instance of the class
@@ -129,6 +129,7 @@ public class MedicineInv {
             System.out.println(amount + " has been removed from " + name);
             medicineList.get(findMedicineIndex(name)).minusStock(amount);
             this.stockWarning(name);
+            System.out.println("Prescription fulfilled!");
         }
     }
 
@@ -159,6 +160,22 @@ public class MedicineInv {
         }
     }
 
+
+    public void printLowStockMedicine(){
+        boolean trig = false;
+        System.out.println("==================================================");
+        System.out.printf("%-20s %-10s %-10s \n","Medication","Amount","Low Stock Amt");
+        System.out.println("==================================================");
+        for (Medicine medicine : medicineList) {
+            if(medicine.getQuantity() <= medicine.getLowStockAlertAmt()){
+              trig = true;
+                System.out.printf("%-20s %-10d %-10d \n", medicine.getName(),medicine.getQuantity(),medicine.getLowStockAlertAmt());
+
+            }
+        }
+        if(!trig){System.out.println("---------- All stocks are healthy ! :) -----------");};
+    }
+
     //Medicine methods
     public void addMedicine(Medicine medicine) {
         if (medicine != null) {
@@ -181,5 +198,14 @@ public class MedicineInv {
             System.out.println("Medicine " + medName + " not found.");
             return false;
         }
+    }
+
+    public boolean medicineExists(String name) {
+        for (Medicine medicine : medicineList) {
+            if (medicine.getName().equalsIgnoreCase(name)) {
+                return true; // Medicine exists in the list
+            }
+        }
+        return false; // Medicine not found in the list
     }
 }
