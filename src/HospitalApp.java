@@ -1948,6 +1948,7 @@ public class HospitalApp {
 					case 4: // make apt
 						docSelect = 0;
 						docAmount = 0;
+						counting = 0;
 						int dChoice, tChoice;
 						
 						for (Staff s : staffList) {
