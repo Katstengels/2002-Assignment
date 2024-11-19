@@ -3,8 +3,6 @@ A group project created by students in NTU to fulfil their SC2002 assessment.
 
 In this project, we created a Hospital Management System (HMS) that can be used to manage appointments, store medical records, manage prescription and medicine inventory, and conduct administrative matters.
 
-# 2002-Assignment
-
 # Class Hierarchy for Package `resources` and `src`
 ```
 resources/
@@ -33,4 +31,4 @@ src/
 Download all the files.
 ## Step 2
 Seperate the csv and java files into the 2 folders in the directory tree.
-Note: java files are all in the same level of the directory.
+Note: ALL .java files are in the same folder (src).
