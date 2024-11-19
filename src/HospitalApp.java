@@ -1902,7 +1902,7 @@ public class HospitalApp {
 					case 3: // view avail apt slots
 						docSelect = 0;
 						docAmount = 0;
-						
+						counting = 0;
 						System.out.println("Select Doctor:");
 						for (Staff s : staffList) {
 							if (s.getRole().equals("Doctor")) {
