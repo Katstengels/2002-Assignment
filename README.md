@@ -37,4 +37,4 @@ Edit csv file with additional users as needed.
 
 # Documents
 
-JavaDoc, Test Cases.pdf, GAI Declaration, Report.pdf and UML.pdf
+JavaDoc, Test Cases.pdf, GAI Declaration, project report and UML.pdf
