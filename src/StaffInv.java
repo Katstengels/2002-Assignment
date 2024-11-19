@@ -125,30 +125,4 @@ public class StaffInv {
         }
     }
     
-    public void updateCSV() {
-        String filePath = "resources/Staff_list.csv";
-
-        try (FileWriter writer = new FileWriter(filePath)) {
-            // Write the header row
-            writer.write("StaffID,name,role,gender,age\n");
-
-            // Write each staff member's data
-            for (Staff staff : staffList) {
-                writer.write(String.format("%s,%s,%s,%s,%d\n",
-                    staff.getUserID(),
-                    staff.getName(),
-                    staff.getRole(),
-                    staff.getGender(),
-                    staff.getAge()
-                ));
-            }
-
-            System.out.println("CSV file has been updated successfully.");
-
-        } catch (IOException e) {
-            System.out.println("Error while writing to the CSV file.");
-            e.printStackTrace();
-        }
-    }
-
 }
