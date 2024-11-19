@@ -2067,7 +2067,6 @@ public class HospitalApp {
 							do {					
 								System.out.println("Enter full appointment ID to reschedule: ");
 								aptAmount = 0;
-								sc.nextLine();
 								aptIDSelect = sc.nextLine();
 								for (Appointment a : appointmentList) {
 									if (a.getID().equals(aptIDSelect)) {
