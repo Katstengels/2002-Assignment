@@ -35,4 +35,4 @@ Note: ALL .java files are in the same folder (src).
 
 # Documents
 
-JavaDoc, Test Cases and UML
+JavaDoc, Test Cases pdf and UML pdf
