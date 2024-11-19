@@ -32,3 +32,7 @@ Download all the files.
 ## Step 2
 Seperate the csv and java files into the 2 folders in the directory tree.
 Note: ALL .java files are in the same folder (src).
+
+#Documents
+
+JavaDoc, Test Cases and UML
