@@ -8,13 +8,21 @@ import java.util.Scanner;
 import java.util.Date;
 import java.text.ParseException;
 
+/**
+ * The {@code PatientInv} class manages the inventory of patients, providing methods for
+ * importing patient data from a CSV file, printing the patient list, and finding patients by ID.
+ * It implements the Singleton pattern to ensure a single instance of the patient inventory is
+ * maintained across the application.
+ */
+
+
 public class PatientInv {
 
     // Private constructor to prevent multiple instances
     public PatientInv(){
         // Initialize the inventory
         this.patientList = importCSV_P();
-        //System.out.println("P loaded");
+        System.out.printf(" P loaded ");
     }
 
     //Static instance of the class
@@ -23,6 +31,11 @@ public class PatientInv {
     //Patient List
     private ArrayList<Patient> patientList;
 
+    /**
+     * Returns the singleton instance of {@code PatientInv}.
+     *
+     * @return The singleton instance of the {@code PatientInv} class.
+     */
     //Singleton pattern to ensure only 1 instance of data exist within entire app
     public static PatientInv getInstance() {
         if (instance == null) {

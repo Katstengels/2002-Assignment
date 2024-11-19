@@ -1,9 +1,24 @@
 package src;
 
+/**
+ * The {@code Medicine} class represents a medicine with attributes for its name, quantity,
+ * and a low-stock alert threshold. It includes methods for managing stock and updating
+ * attributes.
+ */
+
+
 class Medicine {
     private String name;
     private int quantity;
     private int lowStockAlert;
+
+    /**
+     * Constructs a {@code Medicine} object with the specified name, quantity, and low-stock alert threshold.
+     *
+     * @param name   The name of the medicine.
+     * @param quantity The current stock quantity of the medicine.
+     * @param alert The low-stock alert threshold.
+     */
 
     // Constructor
     public Medicine(String name, int quantity, int alert) {
@@ -12,7 +27,7 @@ class Medicine {
         this.lowStockAlert = alert;
     }
 
-    // Getters and Setters (optional, for accessing fields later)
+    // Getters and Setters
     public String getName() {
         return name;
     }
@@ -24,7 +39,7 @@ class Medicine {
     public int getLowStockAlertAmt() {
         return lowStockAlert;
     }
-    
+
     public void changeName(String newName) {
     	this.name = newName;
     	System.out.println("Name changed successfully!");
@@ -40,7 +55,7 @@ class Medicine {
     	System.out.println("Low Stock Alert threshold changed successfully!");
     	return;
     }
-    
+
 
     @Override
     public String toString() {
@@ -56,6 +71,6 @@ class Medicine {
     public void minusStock(int amount) {
         quantity -= amount;
     }
-    
-    
+
+
 }

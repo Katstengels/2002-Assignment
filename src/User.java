@@ -2,6 +2,11 @@ package src;
 
 import java.util.Scanner;
 
+/**
+ * The {@code User} class represents a general user in the system, including their login credentials
+ * and role. It provides methods for login, password management, and role management.
+ */
+
 public class User {
 	Scanner sc = new Scanner(System.in);
 	
@@ -9,7 +14,15 @@ public class User {
   private String password;
   private String role;
   private boolean firstLogin;
-    
+
+    /**
+     * Constructs a new {@code User} object with the specified user ID, password, and role.
+     * The user is set to require a password change on their first login.
+     *
+     * @param userID   The unique identifier for the user.
+     * @param password The initial password for the user.
+     * @param role     The role of the user in the system.
+     */
     // Constructor
 	public User(String userID, String password, String role) {
 		this.userID = userID;

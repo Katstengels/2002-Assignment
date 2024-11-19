@@ -5,13 +5,21 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * The {@code MedicineInv} class manages the inventory of medicines, providing
+ * methods for adding, removing, updating stock levels, and checking low-stock warnings.
+ * It uses the Singleton pattern to ensure a single instance of the inventory is used across
+ * the application.
+ */
+
+
 public class MedicineInv {
 
     // Private constructor to prevent multiple instances
     private MedicineInv() {
         // Initialize the inventory
         this.medicineList = importCSV_M();
-        //System.out.println("M loaded");
+        System.out.printf(" M loaded ");
     }
 
     // Static instance of the class

@@ -5,10 +5,28 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
+/**
+ * The {@code Doctor} class extends {@code Staff} and manages schedules, appointments,
+ * and availability for a doctor.
+ */
+
+
 class Doctor extends Staff{
 	private final int MAX_APT = 7;		//Max no of appointment per day
 	Scanner sc = new Scanner(System.in);
-	private Schedule[][] schedule = new Schedule[7][MAX_APT];    
+	private Schedule[][] schedule = new Schedule[7][MAX_APT];
+
+	/**
+	 * Constructs a {@code Doctor} object with user details and initializes the schedule.
+	 *
+	 * @param userID   Unique ID of the doctor.
+	 * @param name     Name of the doctor.
+	 * @param role     Role of the doctor.
+	 * @param gender   Gender of the doctor.
+	 * @param age      Age of the doctor.
+	 * @param password Password for the doctor.
+	 */
+
 	public Doctor(String userID, String name, String role, String gender, int age, String password) {
 		super(userID, name, role, gender, age, password);
 	        

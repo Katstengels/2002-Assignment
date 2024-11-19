@@ -7,13 +7,19 @@ import java.util.Scanner;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * The {@code StaffInv} class represents the inventory of staff members in the system.
+ * It maintains a list of {@code Staff} objects and provides methods for managing the staff data.
+ * This class uses the Singleton pattern to ensure only one instance of the staff inventory exists in the application.
+ */
+
 public class StaffInv {
 
     // Private constructor to prevent multiple instances
     public StaffInv(){
         //Initialise the staffList
         this.staffList = importCSV_S();
-        //System.out.println("S loaded");
+        System.out.println(" S loaded ");
     }
 
     //Static instance of the class

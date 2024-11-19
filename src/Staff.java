@@ -1,11 +1,26 @@
 package src;
 
+/**
+ * The {@code Staff} class represents a staff member in the system, inheriting from the {@code User} class.
+ * This class stores additional attributes specific to staff, such as name, gender, and age.
+ */
+
 public class Staff extends User {
 
     private String name;
     private String gender;
     private int age;
 
+    /**
+     * Constructs a {@code Staff} object with the specified details.
+     *
+     * @param userID   The unique identifier for the staff member.
+     * @param name     The name of the staff member.
+     * @param role     The role of the staff member (e.g., "Doctor", "Administrator").
+     * @param gender   The gender of the staff member.
+     * @param age      The age of the staff member.
+     * @param password The password for the staff member's account.
+     */
 
     public Staff(String userID, String name, String role, String gender, int age, String password) {
         super(userID, password, role);

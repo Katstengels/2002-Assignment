@@ -1,5 +1,11 @@
 package src;
 
+/**
+ * The {@code PrescriptedMed} class represents a prescription for a specific medication,
+ * including the medication's name, the prescribed amount, and whether the prescription
+ * has been fulfilled.
+ */
+
 public class PrescriptedMed {
 
     private String medication;

@@ -1,5 +1,11 @@
 package src;
 
+/**
+ * The {@code RestockForm} class represents a restock request for a specific medication.
+ * Each restock form includes a unique ID, medication name, restock amount, and
+ * fulfillment status.
+ */
+
 public class RestockForm {
 	private int restockID;
 	private static int restockIDCounter=0;
@@ -7,6 +13,14 @@ public class RestockForm {
     private int restockAmount = -1;
 
     private boolean isFulfilled = false; // false = Pending_Admin, true = Fulfilled
+
+    /**
+     * Constructs a new {@code RestockForm} with the specified medication name and restock amount.
+     * The form is initially marked as pending (not fulfilled).
+     *
+     * @param medicationName The name of the medication to be restocked.
+     * @param restockAmount  The amount of medication to be restocked.
+     */
 
     // Constructor
     public RestockForm(String medicationName, int restockAmount) {
