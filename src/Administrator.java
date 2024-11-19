@@ -4,11 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * The {@code Administrator} class represents a hospital administrator who manages
+ * appointments, medicine inventory, and other administrative tasks.
+ * <p>
+ * It extends the {@code Staff} class and provides specific functionalities for
+ * handling appointments and managing the hospital's medicine inventory.
+ * </p>
+ */
+
 public class Administrator extends Staff {
 
     private List<Appointment> appointments;
     private List<MedicineInv> inventory;
     private MedicineInv medicineInventory;
+
+    /**
+     * Constructs an {@code Administrator} object with the specified details.
+     *
+     * @param userID    The unique identifier of the administrator.
+     * @param name      The name of the administrator.
+     * @param role      The role of the administrator.
+     * @param gender    The gender of the administrator.
+     * @param age       The age of the administrator.
+     * @param password  The password for the administrator's account.
+     */
 
     public Administrator(String userID, String name, String role, String gender, int age, String password) {
         super(userID, name, role, gender, age, password);
