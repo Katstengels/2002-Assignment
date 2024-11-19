@@ -68,9 +68,7 @@ public class Administrator extends User {
 
     }
 
-    public void updateStaffInv() {
-        staffInventory.updateCSV();
-    }
+
 
     public void removeStaff() {
         Scanner scanner = new Scanner(System.in);
